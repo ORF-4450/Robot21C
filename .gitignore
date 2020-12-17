@@ -1,0 +1,22 @@
+# Java class files
+*.class
+
+# Generated files
+bin/
+build/
+dist/
+
+# Misc temp files
+logging/
+
+# Backups
+*.zip
+
+# Gradle cache
+.gradle/
+
+# Eclipse settings
+.settings
+
+# Charaterization project
+Drive Characterization/characterization-project/

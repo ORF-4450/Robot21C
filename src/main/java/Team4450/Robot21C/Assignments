@@ -1,0 +1,116 @@
+Port and Button Assignments.
+
+CAN Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+1		CanTalon		Left front drive motor.
+2		CanTalon		Left rear drive motor.
+3		CanTalon		Right front drive motor.
+4		CanTalon		Right rear drive motor.
+5		CanTalon		Shooter motor.
+6		VictorSPX		Pickup motor.
+7		VictorSPX		Belt motor.
+8		VictorSPX		Winch front motor.
+9		VictorSPX		Winch back motor.
+10		VictorSPX		Hook motor.
+11		VictorSPX		Color wheel motor.
+
+
+PWM Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+
+
+PCM 0 Ports
+Port	Device blk-pos	Description
+-----------------------------------------------------------------------------------
+0		ValveDA 0		A side high/low speed shifter. Set Low speed. 
+1		ValveDA	0		B side high/low speed shifter. Set High speed.
+2		ValveDA 1		A side is extend pickup.
+3		ValveDA 1		B side is retract pickup.
+4		ValveDA	2		A side is engage climber brake.
+5		ValveDA	2		B side is release climber brake.
+
+
+PCM 1 Ports
+Port	Device blk-pos	Description
+-----------------------------------------------------------------------------------
+
+
+Digital I/O Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+0		Limit Switch	Climber low position limit switch.
+1		Encoder			Winch encoder. Orange = 5v, blue = signal.
+2		Encoder			Winch encoder. black = ground, yellow = signal.
+3		Optical Sensor	Ball sensor on pickup.
+
+
+Analog I/O Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+0		Pressure Sensor	Report air pressure.
+1		Analog Gyro		Gyro on climber hook to measure level.
+
+
+Left Joystick
+Button Name				Function
+-----------------------------------------------------------------------------------
+TRIGGER					Shift gear box low/high.
+Y Axis					Forward/Backward tank driving.
+
+
+Right Joystick
+Button Name				Function
+-----------------------------------------------------------------------------------
+TRIGGER					Enable alternate driving mode.
+Y Axis					Forward/Backward tank driving.
+
+
+Utility Joystick
+Button Name				Function
+-----------------------------------------------------------------------------------
+TOP_MIDDLE				Shooter motor toggle.
+TOP_BACK				Extend/retract pickup with motor.
+TOP_LEFT				Manual channel ball toward shooter.
+TO_RIGHT				Manual channel ball toward pickup.
+
+
+LaunchPad
+Button Name				Function
+-----------------------------------------------------------------------------------
+BUTTON_RED				Reset wheel encoders in teleop.
+BUTTON_BLUE				Manual color wheel operation.
+BUTTON_BLUE_RIGHT		Color wheel auto 3 turns.
+BUTTON_YELLOW			Color wheel Game Color auto locate.
+BUTTON_RED_RIGHT		Climber brake toggle.
+
+ROCKER_LEFT_FRONT		Switch Cameras.
+ROCKER_LEFT_BACK		Toggle drive talon brake mode. 
+
+
+Dashboard Indicators/Controls
+Name					Type			Description
+-----------------------------------------------------------------------------------
+AutoTarget				boolean			True when targeting code is running.
+TargetLocked			boolean			True when targeting completed with target
+                                        detected.
+Disabled				boolean			True when robot is disabled.
+Auto Mode				boolean			True when robot is in autonomous mode.
+Teleop Mode				boolean			True when robot is in teleop mode.
+FMS						boolean			True when robot is connected to the FMS.
+SteeringAssist			boolean			True when steering assist is active.
+AirPressure				Number			Is set to the current air pressure in psi.
+Brakes					boolean			True when drive Talons are in brake mode.
+AltDriveMode			boolean			True when alternate drive mode is enabled.
+Low Battery				boolean			True when battery is low.
+Overload				boolean			True when brownout has occurred.
+
+Pickup					boolean			True when pickup motor is running.
+PickupExtended			boolean			True when pickup is extended.
+Shooter					boolean			True when shooter motor is running.
+Belt					boolean			True when channel belt motor is running.
+Brake					boolean			True when climber brake is engaged.
+CountingTurns			boolean			True when color wheel is running and counting turns.
+RotatingToTarget		boolean			True when color wheel is running and rotating to target color.
+GameColor				string			Shows game color when sent from FMS.
