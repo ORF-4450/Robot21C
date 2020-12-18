@@ -1,9 +1,7 @@
-# Robot20C
+# Robot21C
 FRC Team 4450 2021 Robot Control program.
 
-## This is Mr. Corn's command based form of 2021 robot code.
-
-This is the 2021 competition robot control program created by the Olympia Robotics Federation (FRC Team 4450).
+This is the Command based 2021 competition robot control program reference implementation created by the Olympia Robotics Federation (FRC Team 4450). 
 Operates the robot "TBA" for FRC game "INFINITE RECHARGE".
 
 ## Instructions to setup development environment for VS Code
