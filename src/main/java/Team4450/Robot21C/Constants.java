@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC20C-12.15.20-1";
+	public static String		PROGRAM_NAME = "RAC20C-12.18.20-1";
 
 	public static Robot			robot;
 
@@ -56,6 +56,7 @@ public final class Constants
 	public static final double	COLORWHEEL_SPEED = .25;
 	public static final int		COLORWHEEL_ROTATIONS = 3;
 	public static final double	STEERING_ASSIST_GAIN = .05;
+	public static final double	TRACK_WIDTH = 23;				// Inches. 
 	
 	// LCD display line number constants showing class where the line is set.
 	public static final int		LCD_1 = 1;	// Robot, Auto Commands.
@@ -67,7 +68,7 @@ public final class Constants
 	public static final int		LCD_8 = 8;	// DriveCommand.
 	public static final int		LCD_9 = 9;	// DriveCommand, pickup.
 
-	// Default starting  field position for pose tracking.
+	// Default starting field position in meters for pose tracking.
 	public static final double	INITIAL_X = 1.2;
 	public static final double	INITIAL_Y = 0.5;
 	public static final double	INITIAL_HEADING = 0;

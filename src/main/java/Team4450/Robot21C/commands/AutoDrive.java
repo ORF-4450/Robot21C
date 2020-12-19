@@ -138,7 +138,8 @@ public class AutoDrive extends CommandBase
 			
 			//power = pidController.get();
 			
-			Util.consoleLog("error=%.2f  power=%.2f  time=%f", pidController.getError(), power, elapsedTime);
+			Util.consoleLog("avenc=%d  error=%.2f  power=%.2f  time=%f", driveBase.getAvgEncoder(), 
+							pidController.getError(), power, elapsedTime);
 		}
 		else
 			Util.consoleLog("tgt=%d  act=%d", encoderCounts, Math.abs(driveBase.getAvgEncoder()));
@@ -171,7 +172,7 @@ public class AutoDrive extends CommandBase
 		
 		int actualCount = Math.abs(driveBase.getAvgEncoder());
 		
-		Util.consoleLog("end: actual count=%d  error=%.2f pct", actualCount, 
+		Util.consoleLog("end: encoder counts=%d  actual count=%d  error=%.2f pct", encoderCounts, actualCount, 
 				((double) actualCount - encoderCounts) / (double) encoderCounts * 100.0);
 	}
 	

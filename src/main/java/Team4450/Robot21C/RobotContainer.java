@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -144,8 +145,10 @@ public class RobotContainer
 		// Navx calibrates at power on and must complete before robot moves. Takes 12 seconds.
 
 		navx = NavX.getInstance(NavX.PortType.SPI);
+		
+		//final AnalogGyroSim m_gyroSim = new AnalogGyroSim(navx);
 
-		// Add navx as a Sendable. Updates the Gyro indicator automatically.
+		// Add navx as a Sendable. Updates the heading indicator automatically.
  		
 		SmartDashboard.putData("Gyro2", navx);
 

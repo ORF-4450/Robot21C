@@ -13,14 +13,20 @@ import Team4450.Lib.ValveDA;
 import Team4450.Lib.SRXMagneticEncoderRelative.DistanceUnit;
 
 import Team4450.Robot21C.RobotContainer;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveBase extends SubsystemBase 
@@ -33,7 +39,14 @@ public class DriveBase extends SubsystemBase
   
 	// SRX magnetic encoder plugged into a CAN Talon.
 	public SRXMagneticEncoderRelative	leftEncoder, rightEncoder;
+	
+	// Simulation classes help us simulate our robot
+	private SimSRXRelativeEncoder		leftSimSRXEncoder, rightSimSRXEncoder;
 
+	private DifferentialDrivetrainSim 	driveSim;
+	private EncoderSim 					leftEncoderSim, rightEncoderSim;
+	private Encoder						leftDummyEncoder, rightDummyEncoder;
+	
 	private ValveDA				highLowValve = new ValveDA(HIGHLOW_VALVE);
 
 	private boolean				talonBrakeMode, lowSpeed, highSpeed;
@@ -48,7 +61,7 @@ public class DriveBase extends SubsystemBase
   	// instance!
   	private Field2d 			fieldSim;
 	
-	  /**
+	 /**
 	 * Creates a new DriveBase Subsystem.
 	 */
 	public DriveBase()
@@ -84,6 +97,37 @@ public class DriveBase extends SubsystemBase
 		leftEncoder = new SRXMagneticEncoderRelative(LRCanTalon, DRIVE_WHEEL_DIAMETER);
 		  
 		leftEncoder.setInverted(true);
+		
+		// Simulation classes help us simulate our robot. Our SRXMagneticEncoderRelative class
+		// is not compatible with the Wpilib EncoderSim so create regular Encoder objects which
+		// which are compatible with EncoderSim. We then pass the dummy encoders into the SRX
+		// encoders which will use the dummy encoders during sim. During sim, the EncoderSim
+		// classes drive the dummy encoders which then drive our SRX encoders.
+
+		leftDummyEncoder = new Encoder(4, 5);
+		rightDummyEncoder = new Encoder(6, 7);
+		
+		double distancePerTickMeters = Math.PI * Units.inchesToMeters(DRIVE_WHEEL_DIAMETER) / SRXMagneticEncoderRelative.TICKS_PER_REVOLUTION;
+		
+		leftDummyEncoder.setDistancePerPulse(distancePerTickMeters);
+		rightDummyEncoder.setDistancePerPulse(distancePerTickMeters);
+
+		leftEncoder.setSimEncoder(leftDummyEncoder);
+		rightEncoder.setSimEncoder(rightDummyEncoder);
+
+		leftEncoderSim = new EncoderSim(leftDummyEncoder);
+		rightEncoderSim = new EncoderSim(rightDummyEncoder);	
+		
+		// Create the simulation model of our drivetrain.
+		
+		driveSim = new DifferentialDrivetrainSim(
+			DCMotor.getCIM(2),       // 2 CIM motors on each side of the drivetrain.
+			7.29,                    // 7.29:1 gearing reduction.
+			7.5,                     // MOI of 7.5 kg m^2 (from CAD model).
+			60.0,                    // The mass of the robot is 60 kg.
+			Units.inchesToMeters(DRIVE_WHEEL_DIAMETER / 2),	// Wheel radius.
+			Units.inchesToMeters(TRACK_WIDTH),              // Track width in meters.
+			null);
 
 		// For 2020 robot, put rear talons into a differential drive object and set the
 	    // front talons to follow the rears.
@@ -176,13 +220,40 @@ public class DriveBase extends SubsystemBase
 		lastRightCount = right;
 		
 		odometer.update(RobotContainer.navx.getTotalYaw2d(), cumulativeLeftCount, cumulativeRightCount);
+
+		if (RobotBase.isSimulation()) fieldSim.setRobotPose(getOdometerPose());
 	}
 	
 	// Updates simulation data prior to each periodic() call.
 	@Override
   	public void simulationPeriodic() 
   	{
-		fieldSim.setRobotPose(getOdometerPose());
+		if (robot.isEnabled())
+		{
+			// To update our simulation, we set motor voltage inputs, update the
+			// simulation, and write the simulated positions and velocities to our
+			// simulated encoder and gyro. We negate the right side so that positive
+			// voltages make the right side move forward.
+			driveSim.setInputs(LRCanTalon.get() * RobotController.getInputVoltage(),
+							RRCanTalon.get() * RobotController.getInputVoltage());
+		
+			driveSim.update(0.02);
+
+				Util.consoleLog("ltg=%.2f  rcv=%.2f  ldspm=%.2f", LRCanTalon.get(), RobotController.getInputVoltage(),
+								driveSim.getLeftPositionMeters());
+				Util.consoleLog("rtg=%.2f  rcv=%.2f  rdspm=%.2f", RRCanTalon.get(), RobotController.getInputVoltage(),
+								driveSim.getRightPositionMeters());
+			
+			leftEncoderSim.setDistance(driveSim.getLeftPositionMeters());
+			leftEncoderSim.setRate(driveSim.getLeftVelocityMetersPerSecond());
+			
+			rightEncoderSim.setDistance(driveSim.getRightPositionMeters());
+			rightEncoderSim.setRate(driveSim.getRightVelocityMetersPerSecond());
+			
+			Util.consoleLog("lcount=%d ldist=%.2f  lget=%d", leftDummyEncoder.get(), leftDummyEncoder.getDistance(),
+							leftEncoder.get());
+			//gyroSim.setAngle(-driveSim.getHeading().getDegrees());
+		}
 	}
 
 	/**
@@ -398,7 +469,7 @@ public class DriveBase extends SubsystemBase
 	{
 		Util.consoleLog();
 		
-		Util.consoleLog("at encoder reset le=%d  re=%d", leftEncoder.get(), rightEncoder.get());
+		Util.consoleLog("at encoder reset lget=%d  rget=%d", leftEncoder.get(), rightEncoder.get());
 		
 		// Set encoders to update every 100ms.
 		rightEncoder.setStatusFramePeriod(100);
@@ -408,7 +479,7 @@ public class DriveBase extends SubsystemBase
 		int rightError = rightEncoder.reset(2);
 		int leftError = leftEncoder.reset(110);
 		
-		Util.consoleLog("after reset le=%d  re=%d  sl=%d  sr=%d", leftEncoder.get(), rightEncoder.get(),
+		Util.consoleLog("after reset lget=%d  rget=%d  lerr=%d  rerr=%d", leftEncoder.get(), rightEncoder.get(),
 						leftError, rightError);	
 	}
 	
@@ -465,8 +536,14 @@ public class DriveBase extends SubsystemBase
 	{
 		odometer.resetPosition(pose, Rotation2d.fromDegrees(heading));
 		
-		cumulativeLeftCount = 0;
-		cumulativeRightCount = 0;
+		Pose2d  newPose = odometer.getPoseMeters();
+
+		Util.consoleLog("x=%.2f  y=%.2f  hdg=%.2f", newPose.getX(), newPose.getY(), newPose.getRotation().getDegrees());
+
+		if (driveSim != null) driveSim.setPose(newPose);
+
+		cumulativeLeftCount = lastLeftCount = 0;
+		cumulativeRightCount = lastRightCount = 0;
 	}
 	
 	/** 

@@ -144,7 +144,7 @@ public class Robot extends TimedRobot
 	  SmartDashboard.putBoolean("Belt", false);
 	  SmartDashboard.putString("GameColor", "");
 
-	  Util.consoleLog("-------------------------------------------------------------------------");
+	  Util.consoleLog("end -------------------------------------------------------------------------");
   }
 
   /**
@@ -184,7 +184,7 @@ public class Robot extends TimedRobot
 	  
 	  if (autonomousCommand != null) autonomousCommand.schedule();
 	  
-	  Util.consoleLog("-------------------------------------------------------------------------");
+	  Util.consoleLog("end -------------------------------------------------------------------------");
   }
 
   /**
@@ -219,7 +219,7 @@ public class Robot extends TimedRobot
 	  // Driving handled by DriveCommand which is default command for the DriveBase.
 	  // Other commands scheduled by joystick buttons.
 	  
-	  Util.consoleLog("-------------------------------------------------------------------------");
+	  Util.consoleLog("end -------------------------------------------------------------------------");
   }
 
   /**

@@ -3,7 +3,11 @@ package Team4450.Robot21C.commands;
 
 import java.util.function.DoubleSupplier;
 
+import static Team4450.Robot21C.Constants.*;
+
 import Team4450.Lib.Util;
+import Team4450.Robot21C.Robot;
+import Team4450.Robot21C.RobotContainer;
 import Team4450.Robot21C.subsystems.Climber;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -63,8 +67,12 @@ public class Climb extends CommandBase
   public void execute() 
   {
 	  // Squaring tones down the responsiveness of the winch.
-	  
-	  climber.setWinchPower(Util.squareInput(climbPower.getAsDouble()));
+    
+    // Since this is the default command for the Climber, it is executed all the time
+    // when robot enabled. So we disable any activity when in auto mode.
+    
+    if (!robot.isAutonomous())
+	    climber.setWinchPower(Util.squareInput(climbPower.getAsDouble()));
   }
 
   /**
