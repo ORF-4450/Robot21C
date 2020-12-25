@@ -103,7 +103,7 @@ public class AutoRotate extends CommandBase
 			
 			Util.getElaspedTime();
 		}
-		else if (heading == Heading.heading)			// Simple turn, full power until target heading reached.
+		else if (heading == Heading.heading)		// Simple turn, full power until target heading reached.
 		{
 			yaw = RobotContainer.navx.getHeadingYaw();
 
@@ -153,7 +153,7 @@ public class AutoRotate extends CommandBase
 		{
 			driveBase.curvatureDrive(0, power, true);
 			
-			Util.consoleLog("yaw=%.2f  hdg=%.2f", yaw, RobotContainer.navx.getHeading());
+			Util.consoleLog("power=%.2f  yaw=%.2f  hdg=%.2f", power, yaw, RobotContainer.navx.getHeading());
 			
 			yaw = RobotContainer.navx.getHeadingYaw();
 		}

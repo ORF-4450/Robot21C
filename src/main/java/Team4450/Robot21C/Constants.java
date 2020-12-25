@@ -47,7 +47,9 @@ public final class Constants
 	public static final int		WINCH_SWITCH = 0, WINCH_ENCODER = 1, BALL_EYE = 3;
 	  
 	// Analog Input port assignments.
-	public static final int		PRESSURE_SENSOR = 0;
+	public static final int		SIM_GYRO = 0;
+	public static final int		CLIMBER_GYRO = 1;
+	public static final int		PRESSURE_SENSOR = 2;
 
 	public static final DriverStation	ds = DriverStation.getInstance();
 

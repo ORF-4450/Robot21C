@@ -94,7 +94,7 @@ public class AutoDrive extends CommandBase
 			
 			RobotContainer.navx.resetYawWait(1, 500);
 			
-			Util.consoleLog("after reset2=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
+			Util.consoleLog("after reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
 		}
 		
 		// If using PID to control distance, configure the PID object.
@@ -153,14 +153,21 @@ public class AutoDrive extends CommandBase
 		
 		LCD.printLine(LCD_5, "yaw=%.2f", yaw);
 		
-		Util.consoleLog("yaw=%.2f  hdg=%.2f  rot=%.2f", yaw, RobotContainer.navx.getHeading(), -yaw * kSteeringGain);
+		Util.consoleLog("yaw=%.2f  hdg=%.2f  curve=%.2f", yaw, RobotContainer.navx.getHeading(), 
+						Util.clampValue(-yaw * kSteeringGain, 1.0));
 		
 		// Note we invert sign on the angle because we want the robot to turn in the opposite
 		// direction than it is currently going to correct it. So a + angle says robot is veering
 		// right so we set the turn value to - because - is a turn left which corrects our right
 		// drift. kSteeringGain controls how aggressively we turn to stay on course.
+		Util.consoleLog("lpwr=%.2f  rpwr=%.2f", -driveBase.getLeftPower(), driveBase.getRightPower());
 		
-		driveBase.curvatureDrive(power, Util.clampValue(-yaw * kSteeringGain, 1.0), false);
+		//driveBase.curvatureDrive(power, Util.clampValue(-yaw * kSteeringGain, 1.0), false);
+		double angularPower = power * Util.clampValue(-yaw * kSteeringGain, 1.0);
+
+		driveBase.tankDrive(power + angularPower, power - angularPower, false);
+
+		Util.consoleLog("lpwr=%.2f  rpwr=%.2f", -driveBase.getLeftPower(), driveBase.getRightPower());
 	}
 	
 	@Override

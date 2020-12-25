@@ -17,5 +17,5 @@
   "wpilib.skipTests": true,
   "editor.fontWeight": 800,
   "editor.fontSize": 13,
-  "wpilib.selectDefaultSimulateExtension": false
+  "wpilib.selectDefaultSimulateExtension": true
 }
