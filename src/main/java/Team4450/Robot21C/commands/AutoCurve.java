@@ -212,16 +212,10 @@ public class AutoCurve extends CommandBase
 	public boolean isFinished()
 	{
 		if (pid == Pid.on)							// pid controlled turn to within x degree of target.
-		{
 			return pidController.onTarget(kTolerance);
-		}
 		else if (heading == Heading.heading)		// Simple turn, full curve until target heading reached.
-		{
 			return Util.checkRange(yaw, 1.0);
-		}
 		else										// Simple turn, full curve until target yaw reached.
-		{
 			return Math.abs(yaw) >= Math.abs(target);
-		}		
 	}
 }

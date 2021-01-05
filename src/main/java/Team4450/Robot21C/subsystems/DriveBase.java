@@ -182,8 +182,9 @@ public class DriveBase extends SubsystemBase
 	{
 		Util.consoleLog();
 
-		leftDummyEncoder = new Encoder(4, 5);
-		rightDummyEncoder = new Encoder(6, 7);
+		// Dummy encoders have to have ports that are not allocated to anything else.
+		leftDummyEncoder = new Encoder(DUMMY_LEFT_ENCODER, DUMMY_LEFT_ENCODER + 1);
+		rightDummyEncoder = new Encoder(DUMMY_RIGHT_ENCODER, DUMMY_RIGHT_ENCODER + 1);
 		
 		double distancePerTickMeters = Math.PI * Units.inchesToMeters(DRIVE_WHEEL_DIAMETER) / SRXMagneticEncoderRelative.TICKS_PER_REVOLUTION;
 		
@@ -197,12 +198,13 @@ public class DriveBase extends SubsystemBase
 		rightEncoderSim = new EncoderSim(rightDummyEncoder);	
 
 		// Create the simulation model of our drivetrain.
+		// The MOI of 1.0 is needed to get the sim to behave like a real robot...
 		
 		driveSim = new DifferentialDrivetrainSim(
 			DCMotor.getCIM(2),       // 2 CIM motors on each side of the drivetrain.
 			7.29,                    // 7.29:1 gearing reduction.
-			7.5,                     // MOI of 7.5 kg m^2 (from CAD model).
-			125 * 0.453592,          // The mass of the robot is approx 60 kg.
+			1.0,                     // MOI of 7.5 kg m^2 (from CAD model).
+			125 * 0.453592,          // The mass of the robot is approx 60 kg or 125 lbs.
 			Units.inchesToMeters(DRIVE_WHEEL_DIAMETER / 2),	// Wheel radius.
 			Units.inchesToMeters(TRACK_WIDTH),              // Track width in meters.
 			null);
@@ -271,7 +273,7 @@ public class DriveBase extends SubsystemBase
 			
 			leftEncoderSim.setDistance(driveSim.getLeftPositionMeters()); // - leftEncoderLastReset);
 			leftEncoderSim.setRate(driveSim.getLeftVelocityMetersPerSecond());
-			
+
 			rightEncoderSim.setDistance(driveSim.getRightPositionMeters()); // - rightEncoderLastReset);
 			rightEncoderSim.setRate(driveSim.getRightVelocityMetersPerSecond());
 			
@@ -285,6 +287,8 @@ public class DriveBase extends SubsystemBase
 
 			Util.consoleLog("angle=%.2f  offset=%.2f  dshd=%.2f", dummyGyro.getAngle(), dummyGyro.getOffset(),
 							-driveSim.getHeading().getDegrees());
+
+			//fieldSim.setRobotPose(odometer.getPoseMeters());
 		}
 	}
 

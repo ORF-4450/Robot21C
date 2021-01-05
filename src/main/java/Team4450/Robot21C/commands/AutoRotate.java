@@ -14,8 +14,9 @@ public class AutoRotate extends CommandBase
 	private final DriveBase driveBase;
 
 	private double			yaw, elapsedTime = 0, power, target; 
-	private double			kP = .02, kI = 0.002, kD = 0, kTolerance = 1.0, kSteeringGain = .10;
-	//private boolean			usePid,	useHeading;
+	//private double			kP = .02, kI = 0.002, kD = 0, kTolerance = 1.0, kSteeringGain = .10;
+	// Following PID values work better in simulation.
+	private double			kP = .005, kI = 0.0005, kD = 0, kTolerance = 1.0, kSteeringGain = .10;
 	private Pid 			pid;
 	private Heading 		heading;
 	
