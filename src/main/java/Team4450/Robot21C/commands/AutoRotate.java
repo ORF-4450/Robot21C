@@ -67,7 +67,7 @@ public class AutoRotate extends CommandBase
 	public void initialize()
 	{
 		Util.consoleLog();
-		
+
 		// Try to prevent over rotation.
 		
 		driveBase.SetCANTalonBrakeMode(true);
@@ -184,6 +184,7 @@ public class AutoRotate extends CommandBase
 		//Util.consoleLog("moving=%b", Devices.navx.isRotating());
 		
 		Util.consoleLog("2  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
+		Util.consoleLog("end -------------------------------------------------------------------------");
 	}
 	
 	@Override

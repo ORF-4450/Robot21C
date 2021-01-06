@@ -245,8 +245,9 @@ public class DriveBase extends SubsystemBase
 
 		Pose2d pose = odometer.getPoseMeters();
 
-		Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftCount, cumulativeRightCount,
-						pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalYaw2d().getDegrees());
+		if (robot.isEnabled()) 
+			Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftCount, cumulativeRightCount,
+							pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalYaw2d().getDegrees());
 		
 		if (RobotBase.isSimulation()) fieldSim.setRobotPose(pose);
 	}
@@ -266,23 +267,23 @@ public class DriveBase extends SubsystemBase
 		
 			driveSim.update(0.02);
 
-			Util.consoleLog("ltg=%.2f  rcv=%.2f  ldspm=%.2f ldsvms=%.2f", -LRCanTalon.get(), RobotController.getInputVoltage(),
+			Util.consoleLog("ltg=%.2f  rcv=%.2f  ldspm=%.4f ldsvms=%.2f", -LRCanTalon.get(), RobotController.getInputVoltage(),
 							driveSim.getLeftPositionMeters(), driveSim.getLeftVelocityMetersPerSecond());
-			Util.consoleLog("rtg=%.2f  rcv=%.2f  rdspm=%.2f rdsvms=%.2f", RRCanTalon.get(), RobotController.getInputVoltage(),
-							driveSim.getRightPositionMeters(), driveSim.getLeftVelocityMetersPerSecond());
+			Util.consoleLog("rtg=%.2f  rcv=%.2f  rdspm=%.4f rdsvms=%.2f", RRCanTalon.get(), RobotController.getInputVoltage(),
+							driveSim.getRightPositionMeters(), driveSim.getRightVelocityMetersPerSecond());
 			
-			leftEncoderSim.setDistance(driveSim.getLeftPositionMeters()); // - leftEncoderLastReset);
+			leftEncoderSim.setDistance(driveSim.getLeftPositionMeters());
 			leftEncoderSim.setRate(driveSim.getLeftVelocityMetersPerSecond());
 
-			rightEncoderSim.setDistance(driveSim.getRightPositionMeters()); // - rightEncoderLastReset);
+			rightEncoderSim.setDistance(driveSim.getRightPositionMeters());
 			rightEncoderSim.setRate(driveSim.getRightVelocityMetersPerSecond());
 			
 			gyroSim.setAngle(-driveSim.getHeading().getDegrees());
 
-			Util.consoleLog("lcount=%d  ldist=%.2f  lget=%d ldist=%.2f", leftDummyEncoder.get(), 
+			Util.consoleLog("lcount=%d  ldist=%.4f  lget=%d ldist=%.4f", leftDummyEncoder.get(), 
 							leftDummyEncoder.getDistance(), leftEncoder.get(), leftEncoder.getDistance(DistanceUnit.Meters));
 
-			Util.consoleLog("rcount=%d  rdist=%.2f  rget=%d rdist=%.2f", rightDummyEncoder.get(), 
+			Util.consoleLog("rcount=%d  rdist=%.4f  rget=%d rdist=%.4f", rightDummyEncoder.get(), 
 							rightDummyEncoder.getDistance(), rightEncoder.get(), rightEncoder.getDistance(DistanceUnit.Meters));
 
 			Util.consoleLog("angle=%.2f  offset=%.2f  dshd=%.2f", dummyGyro.getAngle(), dummyGyro.getOffset(),
@@ -511,9 +512,6 @@ public class DriveBase extends SubsystemBase
 	{
 		Util.consoleLog();
 		
-		//leftEncoderLastReset = driveSim.getLeftPositionMeters();
-		//rightEncoderLastReset = driveSim.getRightPositionMeters();
-
 		Util.consoleLog("at encoder reset lget=%d  rget=%d", leftEncoder.get(), rightEncoder.get());
 		
 		// Set encoders to update every 100ms.

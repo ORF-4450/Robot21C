@@ -182,6 +182,7 @@ public class AutoDrive extends CommandBase
 		
 		Util.consoleLog("end: encoder counts=%d  actual count=%d  error=%.2f pct", encoderCounts, actualCount, 
 				((double) actualCount - encoderCounts) / (double) encoderCounts * 100.0);
+		Util.consoleLog("end -------------------------------------------------------------------------");
 	}
 	
 	@Override

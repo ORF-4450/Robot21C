@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class TestAuto1 extends CommandBase
 {
@@ -89,9 +90,13 @@ public class TestAuto1 extends CommandBase
 		
 		commands.addCommands(command);
 		
+		//command = new WaitCommand(10);
+
+		//commands.addCommands(command);
+		
 		// Next action is to rotate 180 degrees right.
 		
-		command = new AutoRotate(driveBase, .25, -180, AutoDrive.Pid.on, AutoDrive.Heading.angle);
+		command = new AutoRotate(driveBase, .25, -90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 		
 		commands.addCommands(command);
 		
@@ -107,15 +112,15 @@ public class TestAuto1 extends CommandBase
 
 		command = new AutoRotate(driveBase, .25, 90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 		
-		//commands.addCommands(command);
+		commands.addCommands(command);
 		
-		command = new AutoCurve(driveBase, .25, .25, 90,
+		command = new AutoCurve(driveBase, .25, .15, 90,
 								AutoDrive.StopMotors.stop,
 								AutoDrive.Brakes.on,
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		//commands.addCommands(command);
+		commands.addCommands(command);
 		
 		// Launch autonomous command sequence.
 		
@@ -144,6 +149,7 @@ public class TestAuto1 extends CommandBase
 		driveBase.stop();
 		
 		Util.consoleLog("final heading=%.2f  Radians=%.2f", RobotContainer.navx.getHeading(), RobotContainer.navx.getHeadingR());
+		Util.consoleLog("end -------------------------------------------------------------------------");
 	}
 	
 	/**

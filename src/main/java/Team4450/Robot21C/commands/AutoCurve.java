@@ -206,6 +206,7 @@ public class AutoCurve extends CommandBase
 		//Util.consoleLog("moving=%b", Devices.navx.isRotating());
 		
 		Util.consoleLog("end hdg=%.2f  yaw=%.2f ", RobotContainer.navx.getHeading(), yaw);
+		Util.consoleLog("end -------------------------------------------------------------------------");
 	}
 	
 	@Override
