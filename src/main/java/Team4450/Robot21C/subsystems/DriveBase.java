@@ -49,7 +49,6 @@ public class DriveBase extends SubsystemBase
 	private Encoder						leftDummyEncoder, rightDummyEncoder;
 	private AnalogGyroSim				gyroSim;
 	private AnalogGyro					dummyGyro;
-	private double						leftEncoderLastReset, rightEncoderLastReset;
 	
 	// The Field2d class simulates the field in the sim GUI. Note that we can have only one
   	// instance!
@@ -183,6 +182,7 @@ public class DriveBase extends SubsystemBase
 		Util.consoleLog();
 
 		// Dummy encoders have to have ports that are not allocated to anything else.
+		// Can be non-existent ports.
 		leftDummyEncoder = new Encoder(DUMMY_LEFT_ENCODER, DUMMY_LEFT_ENCODER + 1);
 		rightDummyEncoder = new Encoder(DUMMY_RIGHT_ENCODER, DUMMY_RIGHT_ENCODER + 1);
 		
@@ -191,24 +191,29 @@ public class DriveBase extends SubsystemBase
 		leftDummyEncoder.setDistancePerPulse(distancePerTickMeters);
 		rightDummyEncoder.setDistancePerPulse(distancePerTickMeters);
 
+		// Configure our SRXMagneticEncoderRelative instances to use the dummy encoders instead
+		// of actual CTRE magnetic encoders connected to TalonSRX controllers.
 		leftEncoder.setSimEncoder(leftDummyEncoder);
 		rightEncoder.setSimEncoder(rightDummyEncoder);
 
+		// Create the encoder simulation classes that wrap the dummy encoders.
 		leftEncoderSim = new EncoderSim(leftDummyEncoder);
 		rightEncoderSim = new EncoderSim(rightDummyEncoder);	
 
-		// Create the simulation model of our drivetrain.
+		// Create the simulation model of the drivetrain.
 		// The MOI of 1.0 is needed to get the sim to behave like a real robot...
 		
 		driveSim = new DifferentialDrivetrainSim(
 			DCMotor.getCIM(2),       // 2 CIM motors on each side of the drivetrain.
-			7.29,                    // 7.29:1 gearing reduction.
+			18.0,                    // 18:1 gearing reduction.
 			1.0,                     // MOI of 7.5 kg m^2 (from CAD model).
 			125 * 0.453592,          // The mass of the robot is approx 60 kg or 125 lbs.
 			Units.inchesToMeters(DRIVE_WHEEL_DIAMETER / 2),	// Wheel radius.
 			Units.inchesToMeters(TRACK_WIDTH),              // Track width in meters.
 			null);
 
+		// Create a dummy analog gyro which will be passed into our NavX wrapper class and will
+		// drive our class instead on an actual Navx (not sumulated at this time).
 		dummyGyro = new AnalogGyro(SIM_GYRO);
 
 		gyroSim = new AnalogGyroSim(dummyGyro);
@@ -216,7 +221,8 @@ public class DriveBase extends SubsystemBase
 		RobotContainer.navx.setSimGyro(dummyGyro);
 
 		// the Field2d class lets us visualize our robot in the simulation GUI. We have to
-		// add it to the dashboard.
+		// add it to the dashboard. Field2d is updated by the odometer class instance we
+		// use to track robot position.
 
 		fieldSim = new Field2d();
 			
@@ -249,6 +255,8 @@ public class DriveBase extends SubsystemBase
 			Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftCount, cumulativeRightCount,
 							pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalYaw2d().getDegrees());
 		
+		// Update the sim field display with the current pose, or position, of the robot after we
+		// updated it above.
 		if (RobotBase.isSimulation()) fieldSim.setRobotPose(pose);
 	}
 	
@@ -265,6 +273,7 @@ public class DriveBase extends SubsystemBase
 			driveSim.setInputs(-LRCanTalon.get() * RobotController.getInputVoltage(),
 							   RRCanTalon.get() * RobotController.getInputVoltage());
 		
+							   driveSim = null;
 			driveSim.update(0.02);
 
 			Util.consoleLog("ltg=%.2f  rcv=%.2f  ldspm=%.4f ldsvms=%.2f", -LRCanTalon.get(), RobotController.getInputVoltage(),
@@ -272,12 +281,18 @@ public class DriveBase extends SubsystemBase
 			Util.consoleLog("rtg=%.2f  rcv=%.2f  rdspm=%.4f rdsvms=%.2f", RRCanTalon.get(), RobotController.getInputVoltage(),
 							driveSim.getRightPositionMeters(), driveSim.getRightVelocityMetersPerSecond());
 			
+			SmartDashboard.putNumber("LeftDistance", driveSim.getLeftPositionMeters());
+			SmartDashboard.putNumber("RightDistance", driveSim.getRightPositionMeters());
+
+			// Drive the dummy encoders via EncoderSim instances, which in turn drive our SRXMagneticEncoder
+			// instances.
 			leftEncoderSim.setDistance(driveSim.getLeftPositionMeters());
 			leftEncoderSim.setRate(driveSim.getLeftVelocityMetersPerSecond());
 
 			rightEncoderSim.setDistance(driveSim.getRightPositionMeters());
 			rightEncoderSim.setRate(driveSim.getRightVelocityMetersPerSecond());
 			
+			// Update the dummy analog gyro with GyroSim instance, which in turn drives our NavX class instance.
 			gyroSim.setAngle(-driveSim.getHeading().getDegrees());
 
 			Util.consoleLog("lcount=%d  ldist=%.4f  lget=%d ldist=%.4f", leftDummyEncoder.get(), 
@@ -288,8 +303,6 @@ public class DriveBase extends SubsystemBase
 
 			Util.consoleLog("angle=%.2f  offset=%.2f  dshd=%.2f", dummyGyro.getAngle(), dummyGyro.getOffset(),
 							-driveSim.getHeading().getDegrees());
-
-			//fieldSim.setRobotPose(odometer.getPoseMeters());
 		}
 	}
 
@@ -529,7 +542,8 @@ public class DriveBase extends SubsystemBase
 		Util.consoleLog("after reset lget=%d  rget=%d  lerr=%d  rerr=%d", leftEncoder.get(), rightEncoder.get(),
 						leftError, rightError);
 		
-		Util.consoleLog("after reset ldget=%d  rdget=%d", leftDummyEncoder.get(), rightDummyEncoder.get());
+		if (RobotBase.isSimulation())
+			Util.consoleLog("after reset ldget=%d  rdget=%d", leftDummyEncoder.get(), rightDummyEncoder.get());
 	}
 	
 	/**

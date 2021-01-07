@@ -13,10 +13,8 @@ public class AutoRotate extends CommandBase
 {
 	private final DriveBase driveBase;
 
-	private double			yaw, elapsedTime = 0, power, target; 
-	//private double			kP = .02, kI = 0.002, kD = 0, kTolerance = 1.0, kSteeringGain = .10;
-	// Following PID values work better in simulation.
-	private double			kP = .005, kI = 0.0005, kD = 0, kTolerance = 1.0, kSteeringGain = .10;
+	private double			yaw, elapsedTime = 0, power, target, saveHeading; 
+	private double			kP = .02, kI = 0.002, kD = 0, kTolerance = 1.0;
 	private Pid 			pid;
 	private Heading 		heading;
 	
@@ -123,6 +121,8 @@ public class AutoRotate extends CommandBase
 	{
 		Util.consoleLog();
 		
+		saveHeading = RobotContainer.navx.getHeading();
+
 		if (pid == Pid.on)
 		{
 			if (heading == Heading.heading)
@@ -148,23 +148,23 @@ public class AutoRotate extends CommandBase
 			driveBase.curvatureDrive(0, power, true);
 			
 			Util.consoleLog("power=%.2f  hdg=%.2f  yaw=%.2f  err=%.2f  time=%f", power, 
-							 RobotContainer.navx.getHeading(), yaw, pidController.getError(), elapsedTime); 
+							 saveHeading, yaw, pidController.getError(), elapsedTime); 
 		}
 		else if (heading == Heading.heading)
 		{
 			driveBase.curvatureDrive(0, power, true);
 			
-			Util.consoleLog("power=%.2f  yaw=%.2f  hdg=%.2f", power, yaw, RobotContainer.navx.getHeading());
-			
 			yaw = RobotContainer.navx.getHeadingYaw();
+			
+			Util.consoleLog("power=%.2f  yaw=%.2f  hdg=%.2f", power, yaw,saveHeading);
 		}
 		else 
 		{
 			driveBase.curvatureDrive(0, power, true);
 			
-			Util.consoleLog("yaw=%.2f  hdg=%.2f", yaw, RobotContainer.navx.getHeading());
-			
 			yaw = RobotContainer.navx.getYaw();
+			
+			Util.consoleLog("yaw=%.2f  hdg=%.2f", yaw, saveHeading);
 		}
 	}
 	
@@ -175,7 +175,7 @@ public class AutoRotate extends CommandBase
 		
 		driveBase.stop();
 		
-		Util.consoleLog("after stop  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
+		Util.consoleLog("after stop  hdg=%.2f  yaw=%.2f", saveHeading, yaw);
 
 		// Wait for robot to stop moving.
 		Util.consoleLog("moving=%b", RobotContainer.navx.isRotating());
@@ -183,6 +183,11 @@ public class AutoRotate extends CommandBase
 		//while (RobotContainer.navx.isRotating()) {Timer.delay(.10);}
 		//Util.consoleLog("moving=%b", Devices.navx.isRotating());
 		
+		if (heading == Heading.heading)
+			yaw = RobotContainer.navx.getHeadingYaw();
+		else
+			yaw = RobotContainer.navx.getYaw();
+
 		Util.consoleLog("2  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
 		Util.consoleLog("end -------------------------------------------------------------------------");
 	}

@@ -12,7 +12,7 @@ public class AutoDrive extends CommandBase
 {
 	private final DriveBase driveBase;
 
-	private double			yaw, kSteeringGain = .10, elapsedTime = 0;
+	private double			yaw, kSteeringGain = .07, elapsedTime = 0;
 	private double			kP = .00005, kI = 0.00001, kD = 0.0;
 	private double			power; 
 	private int 			encoderCounts; 
@@ -90,12 +90,12 @@ public class AutoDrive extends CommandBase
 		
 		if (heading == Heading.angle)
 		{
-			Util.consoleLog("before reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
+			Util.consoleLog("yaw before reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
 			
 			RobotContainer.navx.resetYawWait(1, 500);
 			
 			// Note, under simulation this yaw will not show zero until next execution of DriveBase.simulationPeriodic.
-			Util.consoleLog("after reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
+			Util.consoleLog("yaw after reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
 		}
 		
 		// If using PID to control distance, configure the PID object.
@@ -161,12 +161,10 @@ public class AutoDrive extends CommandBase
 		// direction than it is currently going to correct it. So a + angle says robot is veering
 		// right so we set the turn value to - because - is a turn left which corrects our right
 		// drift. kSteeringGain controls how aggressively we turn to stay on course.
-		Util.consoleLog("lpwr=%.2f  rpwr=%.2f", -driveBase.getLeftPower(), driveBase.getRightPower());
 		
-		//driveBase.curvatureDrive(power, Util.clampValue(-yaw * kSteeringGain, 1.0), false);
-		double angularPower = power * Util.clampValue(-yaw * kSteeringGain, 1.0);
-
-		driveBase.tankDrive(power + angularPower, power - angularPower, false);
+		//Util.consoleLog("lpwr=%.2f  rpwr=%.2f", -driveBase.getLeftPower(), driveBase.getRightPower());
+		
+		driveBase.curvatureDrive(power, Util.clampValue(-yaw * kSteeringGain, 1.0), false);
 
 		Util.consoleLog("lpwr=%.2f  rpwr=%.2f", -driveBase.getLeftPower(), driveBase.getRightPower());
 	}

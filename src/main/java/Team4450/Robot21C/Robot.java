@@ -6,6 +6,7 @@ import Team4450.Lib.*;
 import Team4450.Robot21C.subsystems.ColorWheel;
 import static Team4450.Robot21C.Constants.*;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,7 +48,7 @@ public class Robot extends TimedRobot
 			  public void uncaughtException(Thread t, Throwable e)
 			  {
 				  Util.consoleLog("Uncaught exception from thread " + t);
-			      Util.logException(e);
+				  Util.logException(e);
 			   }
 		  });
 		
@@ -89,7 +90,7 @@ public class Robot extends TimedRobot
 		  
 		  SendableVersion.INSTANCE.removeSendable();
 	  }
-	  catch (Exception e) {Util.logException(e);}
+	  catch (Exception e) {Util.logException(e); this.endCompetition();}
   }
 
   /**
@@ -112,7 +113,17 @@ public class Robot extends TimedRobot
 	  // stop commands when disabled but not subsystems. It is possible to set Commands to run
 	  // when robot is disabled. This seems a bad idea...
 	  
-	  CommandScheduler.getInstance().run();
+	  // The try/catch will catch any exceptions thrown in the commands run by the scheduler
+	  // and record them in our log file then stops execution of this progra,\m.
+	  try {
+	  		CommandScheduler.getInstance().run();
+	  } 
+	  catch (Exception e) 
+	  {
+			Util.logException(e);
+			this.endCompetition();
+	  }
+	  
   }
 
   /**

@@ -59,7 +59,7 @@ public class TestAuto1 extends CommandBase
 	  	RobotContainer.navx.resetYaw();
 
 		// Set heading to initial angle (0 is robot pointed down the field) so
-		// NavX class can track which way the robot is pointed during the match.
+		// NavX class can track which way the robot is pointed all during the match.
 		RobotContainer.navx.setHeading(0);
 			
 		// Target heading should be the same.
@@ -108,11 +108,11 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		//commands.addCommands(command);
 
 		command = new AutoRotate(driveBase, .25, 90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		//commands.addCommands(command);
 		
 		command = new AutoCurve(driveBase, .25, .15, 90,
 								AutoDrive.StopMotors.stop,
@@ -120,7 +120,7 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		//commands.addCommands(command);
 		
 		// Launch autonomous command sequence.
 		
