@@ -65,10 +65,7 @@ public class AutoCurve extends CommandBase
 		this.pid = pid;
 		this.heading = heading;
 		
-		//kP = Math.abs(power) / curve;
-		//kI = kP / 100.0;
-		
-		Util.consoleLog("kP=%.5f  kI=%.5f", kP, kI);
+		Util.consoleLog("kP=%.3f  kI=%.3f", kP, kI);
 
 		addRequirements(this.driveBase);
 	}

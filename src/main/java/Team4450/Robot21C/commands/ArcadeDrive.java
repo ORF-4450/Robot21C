@@ -98,7 +98,6 @@ public class ArcadeDrive extends CommandBase
 	  LCD.printLine(LCD_8, "pose x=%.1fm  y=%.1fm  deg=%.1f  balleye=%b ", pose.getTranslation().getX(), pose.getTranslation().getY(),
 					pose.getRotation().getDegrees(), RobotContainer.pickup.getBallEye());
 	  
-	  
 	  driveBase.arcadeDrive(speed, rotation, true);
   }
   

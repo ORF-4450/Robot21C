@@ -13,7 +13,7 @@ public class AutoDrive extends CommandBase
 	private final DriveBase driveBase;
 
 	private double			yaw, kSteeringGain = .07, elapsedTime = 0;
-	private double			kP = .00005, kI = 0.00001, kD = 0.0;
+	private double			kP, kI, kD = 0;
 	private double			power; 
 	private int 			encoderCounts; 
 	private StopMotors 		stop;
@@ -57,7 +57,7 @@ public class AutoDrive extends CommandBase
 
 		Util.checkRange(power, 1.0);
 		
-		if (encoderCounts <= 0) throw new IllegalArgumentException("Encoder counts < 1");
+		if (encoderCounts < 1) throw new IllegalArgumentException("Encoder counts < 1");
 			  
 		this.power = power;
 		this.encoderCounts = encoderCounts;
@@ -66,10 +66,12 @@ public class AutoDrive extends CommandBase
 		this.pid = pid;
 		this.heading = heading;
 		
-		kP = Math.abs(power) / encoderCounts;
+		// This math computes an appropiate P value based on the magnitude of distance to travel. Again, may
+		// or may not work for every drive train configuration.
+		kP = Math.abs(power) / encoderCounts * 2;
 		kI = kP / 10.0 * 2.0;
 		
-		Util.consoleLog("kP=%.5f  kI=%.5f", kP, kI);
+		Util.consoleLog("kP=%.6f  kI=%.6f", kP, kI);
 		
 		addRequirements(this.driveBase);
 	}

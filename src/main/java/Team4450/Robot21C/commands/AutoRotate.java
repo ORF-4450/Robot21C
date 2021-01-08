@@ -49,14 +49,14 @@ public class AutoRotate extends CommandBase
 		
 		Util.consoleLog("pwr=%.2f  target=%.2f  pid=%s  hdg=%s", power, target, pid, heading);
 		
-		if (power <= 0) throw new IllegalArgumentException("power must be +");
+		if (power <= 0) throw new IllegalArgumentException("power must be + non-zero");
 			  
 		this.power = power;
 		this.target = target;
 		this.pid = pid;
 		this.heading = heading;
 		
-		Util.consoleLog("kP=%.5f  kI=%.5f", kP, kI);
+		Util.consoleLog("kP=%.3f  kI=%.3f", kP, kI);
 
 		addRequirements(this.driveBase);
 	}
