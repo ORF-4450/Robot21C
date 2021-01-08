@@ -144,11 +144,21 @@ public class DriveBase extends SubsystemBase
 		// that time. When it trips, the watchdog will print to the console some somewhat
 		// useful information to help determine where the time is being used. This 
 		// watchdog timeout cannot be set or turned off.
-   		
+		   
    		robotDrive.stopMotor();
    		robotDrive.setSafetyEnabled(false);	// Will be enabled by the Drive command.
-   		robotDrive.setExpiration(1.0);
+		robotDrive.setExpiration(1.0);
+		
+		// We do this because we use curvatureDrive in our auto routines for both straight and
+		// curved/rotation drivng. We use quickturn feature of curvatureDrive for rotation. If
+		// don't set this threshold to zero, curvatureDrive will compute a compensation factor
+		// during quickturn which it then applies to next call to curvatureDrive without quickturn.
+		// This causes that first call to curvatureDrive without quickturn to compute power values
+		// that are incompatible with what we are typically doing, which is to drive straight after
+		// a rotation.
 	
+		robotDrive.setQuickStopThreshold(0);
+
 		// Always start in low gear with braking enabled.
    		
    		SetCANTalonBrakeMode(true);
@@ -273,7 +283,6 @@ public class DriveBase extends SubsystemBase
 			driveSim.setInputs(-LRCanTalon.get() * RobotController.getInputVoltage(),
 							   RRCanTalon.get() * RobotController.getInputVoltage());
 		
-							   driveSim = null;
 			driveSim.update(0.02);
 
 			Util.consoleLog("ltg=%.2f  rcv=%.2f  ldspm=%.4f ldsvms=%.2f", -LRCanTalon.get(), RobotController.getInputVoltage(),
@@ -349,12 +358,23 @@ public class DriveBase extends SubsystemBase
 	/**
 	 * Curvature drive function. Drives at set speed with set curve.
 	 * @param speed Power setting -1.0 to +1.0.
-	 * @param curve Rotation rate -1.0 to +1.0. Clockwise us +.
+	 * @param rotation Rotation rate -1.0 to +1.0. Clockwise us +.
 	 * @param quickTurn True causes quick turn (turn in place).
 	 */
-	public void curvatureDrive(double speed, double curve, boolean quickTurn)
+	public void curvatureDrive(double speed, double rotation, boolean quickTurn)
 	{
-		robotDrive.curvatureDrive(speed, curve, quickTurn);
+		robotDrive.curvatureDrive(speed, rotation, quickTurn);
+	}
+
+	/**
+	 * Arcade drive function. Drives at set speed with set curve/rotation.
+	 * @param speed Power setting -1.0 to +1.0, positive is forward.
+	 * @param rotation Rotation rate -1.0 to +1.0, positive is clockwise.
+	 * @param squareInputs When set reduces sensitivity a low speeds.
+	 */
+	public void arcadeDrive(double speed, double rotation, boolean squareInputs)
+	{
+		robotDrive.arcadeDrive(speed, rotation, squareInputs);
 	}
 
 	// Initialize and Log status indication from CANTalon. If we see an exception

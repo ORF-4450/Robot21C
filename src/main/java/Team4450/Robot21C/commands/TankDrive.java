@@ -14,9 +14,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- * Driving command that feeds target speeds (% power) to the DriveBase.
+ * Driving command that feeds target left/right speeds (% power) to the DriveBase.
+ * Used for two stick tank style driving.
  */
-public class Drive extends CommandBase 
+public class TankDrive extends CommandBase 
 {
   private final DriveBase 		driveBase;
   
@@ -25,13 +26,13 @@ public class Drive extends CommandBase
   private boolean				altDriveMode, steeringAssistMode;
 
   /**
-   * Creates a new Drive command.
+   * Creates a new TankDrive command.
    *
    * @param subsystem The subsystem used by this command.
    * @param leftSpeed The speed as % power -1.0 to +1.0.
    * @param rightSpeed The speed as % power -1.0 to +1.0.
    */
-  public Drive(DriveBase subsystem, DoubleSupplier leftSpeed, DoubleSupplier rightSpeed) 
+  public TankDrive(DriveBase subsystem, DoubleSupplier leftSpeed, DoubleSupplier rightSpeed) 
   {
 	  Util.consoleLog();
 	  

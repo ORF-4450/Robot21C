@@ -49,6 +49,7 @@ public class Robot extends TimedRobot
 			  {
 				  Util.consoleLog("Uncaught exception from thread " + t);
 				  Util.logException(e);
+				  robot.endCompetition();
 			   }
 		  });
 		
@@ -91,6 +92,8 @@ public class Robot extends TimedRobot
 		  SendableVersion.INSTANCE.removeSendable();
 	  }
 	  catch (Exception e) {Util.logException(e); this.endCompetition();}
+
+	  Util.consoleLog("end -------------------------------------------------------------------------");
   }
 
   /**
@@ -115,6 +118,7 @@ public class Robot extends TimedRobot
 	  
 	  // The try/catch will catch any exceptions thrown in the commands run by the scheduler
 	  // and record them in our log file then stops execution of this progra,\m.
+	  
 	  try {
 	  		CommandScheduler.getInstance().run();
 	  } 
@@ -174,7 +178,7 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit() 
   {
-	  Util.consoleLog();
+	  Util.consoleLog("-------------------------------------------------------------------------");
 	  
 	  LCD.clearAll();
       
@@ -213,7 +217,7 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit()
   {
-	  Util.consoleLog();
+	  Util.consoleLog("-------------------------------------------------------------------------");
 	  
 	  robotContainer.getMatchInformation();
       

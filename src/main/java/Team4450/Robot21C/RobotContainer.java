@@ -25,9 +25,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import Team4450.Robot21C.commands.ArcadeDrive;
 import Team4450.Robot21C.commands.Climb;
-import Team4450.Robot21C.commands.Drive;
+import Team4450.Robot21C.commands.TankDrive;
 import Team4450.Robot21C.commands.NotifierCommand;
 import Team4450.Robot21C.commands.ShiftGears;
 import Team4450.Robot21C.commands.TestAuto;
@@ -53,8 +53,9 @@ public class RobotContainer
 	public static Pickup		pickup;
 	private final ColorWheel	colorWheel;
 	private final Climber		climber;
-	private final Drive			driveCommand;
-	
+	//private final TankDrive		driveCommand;
+	private final ArcadeDrive	driveCommand;
+
 	// Persistent Commands.
 	
 	private final TurnWheelCounting		turnWheelCounting;
@@ -194,9 +195,11 @@ public class RobotContainer
 		// code does not have to know anything about the JoySticks (or any other source) but can still
 		// read them.
 	  
-		driveBase.setDefaultCommand(driveCommand = new Drive(driveBase, () -> leftStick.GetY(), () -> rightStick.GetY()));
+		//driveBase.setDefaultCommand(driveCommand = new TankDrive(driveBase, () -> leftStick.GetY(), () -> rightStick.GetY()));
 
-   		// Start the battery, compressor, PDP and camera feed monitoring Tasks.
+		driveBase.setDefaultCommand(driveCommand = new ArcadeDrive(driveBase, () -> rightStick.GetY(), () -> rightStick.GetX()));
+		   
+		// Start the battery, compressor, PDP and camera feed monitoring Tasks.
 
    		monitorBatteryThread = MonitorBattery.getInstance();
    		monitorBatteryThread.start();
