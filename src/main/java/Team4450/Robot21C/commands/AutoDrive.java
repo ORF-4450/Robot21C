@@ -13,7 +13,7 @@ public class AutoDrive extends CommandBase
 	private final DriveBase driveBase;
 
 	private double			yaw, kSteeringGain = .07, elapsedTime = 0;
-	private double			kP, kI, kD = 0;
+	private double			kP = .0001, kI = .00005, kD = 0;
 	private double			power; 
 	private int 			encoderCounts; 
 	private StopMotors 		stop;
@@ -68,8 +68,8 @@ public class AutoDrive extends CommandBase
 		
 		// This math computes an appropiate P value based on the magnitude of distance to travel. Again, may
 		// or may not work for every drive train configuration.
-		kP = Math.abs(power) / encoderCounts * 2;
-		kI = kP / 10.0 * 2.0;
+		//kP = Math.abs(power) / encoderCounts * 2;
+		//kI = kP / 10.0 * 2.0;
 		
 		Util.consoleLog("kP=%.6f  kI=%.6f", kP, kI);
 		

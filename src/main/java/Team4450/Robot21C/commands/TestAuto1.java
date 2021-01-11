@@ -94,27 +94,31 @@ public class TestAuto1 extends CommandBase
 
 		//commands.addCommands(command);
 		
-		// Next action is to rotate 180 degrees right.
+		// Next action is to rotate 180 degrees left.
 		
-		command = new AutoRotate(driveBase, .25, -90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
+		//command = new AutoRotate(driveBase, .25, -90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 		
+		command = new AutoRotateProfiled(driveBase,-90);
+
 		commands.addCommands(command);
 		
 		// Next action is to drive back same encoder counts and stop with brakes on.
 		
-		command = new AutoDrive(driveBase, .50, 20000, 
+		command = new AutoDrive(driveBase, .50, 10000, 
 								AutoDrive.StopMotors.stop,
 								AutoDrive.Brakes.on,
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		//commands.addCommands(command);
+		commands.addCommands(command);
 
-		command = new AutoRotate(driveBase, .25, 90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
+		//command = new AutoRotate(driveBase, .25, 90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
+				
+		command = new AutoRotateHdgProfiled(driveBase, 170);
+
+		commands.addCommands(command);
 		
-		//commands.addCommands(command);
-		
-		command = new AutoCurve(driveBase, .25, .15, 90,
+		command = new AutoCurve(driveBase, .30, .20, 90,
 								AutoDrive.StopMotors.stop,
 								AutoDrive.Brakes.on,
 								AutoDrive.Pid.on,

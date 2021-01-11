@@ -14,7 +14,7 @@ public class AutoRotate extends CommandBase
 	private final DriveBase driveBase;
 
 	private double			yaw, elapsedTime = 0, power, target, saveHeading; 
-	private double			kP = .02, kI = 0.002, kD = 0, kTolerance = 1.0;
+	private double			kP = .005, kI = 0.0009, kD = 0, kTolerance = 1.0;
 	private Pid 			pid;
 	private Heading 		heading;
 	

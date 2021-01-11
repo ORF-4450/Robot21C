@@ -21,6 +21,8 @@ public class ArcadeDrive extends CommandBase
   private final DriveBase 		driveBase;
   
   private final DoubleSupplier	speedSupplier, rotationSupplier;
+
+  private final double        steeringGain = .7;
   
   /**
    * Creates a new ArcadeDrive command.
@@ -98,7 +100,7 @@ public class ArcadeDrive extends CommandBase
 	  LCD.printLine(LCD_8, "pose x=%.1fm  y=%.1fm  deg=%.1f  balleye=%b ", pose.getTranslation().getX(), pose.getTranslation().getY(),
 					pose.getRotation().getDegrees(), RobotContainer.pickup.getBallEye());
 	  
-	  driveBase.arcadeDrive(speed, rotation, true);
+	  driveBase.arcadeDrive(speed, rotation * steeringGain, true);
   }
   
   /**
