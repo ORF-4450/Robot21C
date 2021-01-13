@@ -310,8 +310,8 @@ public class DriveBase extends SubsystemBase
 			Util.consoleLog("rcount=%d  rdist=%.4f  rget=%d rdist=%.4f", rightDummyEncoder.get(), 
 							rightDummyEncoder.getDistance(), rightEncoder.get(), rightEncoder.getDistance(DistanceUnit.Meters));
 
-			Util.consoleLog("angle=%.2f  offset=%.2f  dshd=%.2f", dummyGyro.getAngle(), dummyGyro.getOffset(),
-							-driveSim.getHeading().getDegrees());
+			Util.consoleLog("angle=%.2f  offset=%.2f  dshd=%.2f  hdng=%.2f", dummyGyro.getAngle(), dummyGyro.getOffset(),
+							-driveSim.getHeading().getDegrees(), RobotContainer.navx.getHeading());
 		}
 	}
 
@@ -630,7 +630,7 @@ public class DriveBase extends SubsystemBase
 	}
 	
 	/** 
-	 * Average left and right encoder counts to see how far robot has moved.
+	 * Average of left and right encoder counts to see how far robot has moved.
 	 * @return Average of left & right encoder counts.
 	 */
 	public int getAvgEncoder()
@@ -638,6 +638,15 @@ public class DriveBase extends SubsystemBase
 		return (leftEncoder.get() + rightEncoder.get()) / 2;
 	}
 	
+	/** 
+	 * Average of left and right encoder distance to see how far robot has moved.
+	 * @return Average of left & right encoder distances (meters).
+	 */
+	public double getAvgEncoderDist()
+	{
+		return  (leftEncoder.getDistance(DistanceUnit.Meters) + 
+				rightEncoder.getDistance(DistanceUnit.Meters)) / 2;
+	}	
 	/** 
 	 * Left encoder counts.
 	 * @return Left encoder counts.

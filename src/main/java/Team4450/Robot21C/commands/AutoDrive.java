@@ -94,7 +94,7 @@ public class AutoDrive extends CommandBase
 		{
 			Util.consoleLog("yaw before reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
 			
-			RobotContainer.navx.resetYawWait(1, 500);
+			RobotContainer.navx.resetYawWait(1, 1000);
 			
 			// Note, under simulation this yaw will not show zero until next execution of DriveBase.simulationPeriodic.
 			Util.consoleLog("yaw after reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());

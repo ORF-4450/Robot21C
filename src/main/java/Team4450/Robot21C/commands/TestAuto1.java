@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class TestAuto1 extends CommandBase
 {
@@ -88,17 +87,15 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		command = new AutoDriveProfiled(driveBase, 2.45, AutoDrive.StopMotors.stop, AutoDrive.Brakes.on);
 		
-		//command = new WaitCommand(10);
-
-		//commands.addCommands(command);
+		commands.addCommands(command);
 		
 		// Next action is to rotate 180 degrees left.
 		
 		//command = new AutoRotate(driveBase, .25, -90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 		
-		command = new AutoRotateProfiled(driveBase,-90);
+		command = new AutoRotateProfiled(driveBase, -90);
 
 		commands.addCommands(command);
 		
@@ -109,13 +106,26 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Brakes.on,
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
+
+		command = new AutoDriveProfiled(driveBase, 2.45, AutoDrive.StopMotors.stop, AutoDrive.Brakes.on);
 		
 		commands.addCommands(command);
 
 		//command = new AutoRotate(driveBase, .25, 90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 				
-		command = new AutoRotateHdgProfiled(driveBase, 170);
+		command = new AutoRotateHdgProfiled(driveBase, 0);
 
+		commands.addCommands(command);
+		
+		command = new AutoRotateProfiled(driveBase, 90);
+		commands.addCommands(command);
+		command = new AutoRotateProfiled(driveBase, 90);
+		commands.addCommands(command);
+		command = new AutoRotateProfiled(driveBase, 90);
+		commands.addCommands(command);
+		command = new AutoRotateProfiled(driveBase, 90);
+		commands.addCommands(command);
+		command = new AutoRotateProfiled(driveBase, 90);
 		commands.addCommands(command);
 		
 		command = new AutoCurve(driveBase, .30, .20, 90,

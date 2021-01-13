@@ -82,7 +82,7 @@ public class AutoRotate extends CommandBase
 		{
 			Util.checkRange(target, 180, "target");
 			
-			RobotContainer.navx.resetYawWait(1, 500);
+			RobotContainer.navx.resetYawWait(1, 1000);
 		}
 		
 		if (pid == Pid.on)
