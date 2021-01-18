@@ -14,8 +14,8 @@ public class AutoDrive extends CommandBase
 
 	private double			yaw, kSteeringGain = .07, elapsedTime = 0;
 	private double			kP = .0001, kI = .00005, kD = 0;
-	private double			power; 
-	private int 			encoderCounts; 
+	private double			power, startTime; 
+	private int 			encoderCounts, iterations; 
 	private StopMotors 		stop;
 	private Brakes 			brakes;
 	private Pid 			pid;
@@ -80,6 +80,8 @@ public class AutoDrive extends CommandBase
 	public void initialize()
 	{
 		Util.consoleLog();
+
+		startTime = Util.timeStamp();
 		
 		if (brakes == Brakes.on)
 			driveBase.SetCANTalonBrakeMode(true);
@@ -94,7 +96,7 @@ public class AutoDrive extends CommandBase
 		{
 			Util.consoleLog("yaw before reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
 			
-			RobotContainer.navx.resetYawWait(1, 1000);
+			RobotContainer.navx.resetYawWait(1, 5000);
 			
 			// Note, under simulation this yaw will not show zero until next execution of DriveBase.simulationPeriodic.
 			Util.consoleLog("yaw after reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
@@ -128,6 +130,8 @@ public class AutoDrive extends CommandBase
 	{
 		Util.consoleLog();
 		
+		startTime = Util.timeStamp();
+
 		LCD.printLine(LCD_4, "Auto wheel encoder avg=%d", driveBase.getAvgEncoder());
 
 		// Use PID to determine the power applied. Should reduce power as we get close
@@ -168,7 +172,9 @@ public class AutoDrive extends CommandBase
 		
 		driveBase.curvatureDrive(power, Util.clampValue(-yaw * kSteeringGain, 1.0), false);
 
-		Util.consoleLog("lpwr=%.2f  rpwr=%.2f", -driveBase.getLeftPower(), driveBase.getRightPower());
+		Util.consoleLog("lpwr=%.2f  rpwr=%.2f", driveBase.getLeftPower(), -driveBase.getRightPower());
+
+		iterations++;
 	}
 	
 	@Override
@@ -182,7 +188,10 @@ public class AutoDrive extends CommandBase
 		
 		Util.consoleLog("end: encoder counts=%d  actual count=%d  error=%.2f pct", encoderCounts, actualCount, 
 				((double) actualCount - encoderCounts) / (double) encoderCounts * 100.0);
-		Util.consoleLog("end -------------------------------------------------------------------------");
+
+		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
+
+		Util.consoleLog("end ---------------------------------------------------------------");
 	}
 	
 	@Override

@@ -14,8 +14,10 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 {
     private DriveBase     driveBase;
 
-    private static double kP = .2, kI = 0, kD = 0, toleranceDeg = .5, toleranceVelds = 10;
-    private static double kMaxRotationVelds = 90, kMaxRotationAcceldss = 90;
+    private static double kP = 1, kI = .02, kD = 0, toleranceDeg = .5, toleranceVelds = 1;
+    private static double kMaxRotationVelds = 270, kMaxRotationAcceldss = 270;
+    private double        targetAngle, startTime;
+    private int           iterations;
 
     /**
      * Turns to robot to the specified angle using a motion profile.
@@ -32,8 +34,9 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
             // Set target angle
             targetAngle,
             // Pipe output to turn robot
-            (output, setpoint) -> drive.arcadeDrive(0, output, false),
-            // Require the drive
+            (output, setpoint) -> drive.curvatureDrive(0, output, true),
+            //(output, setpoint) -> drive.arcadeDrive(0, output, false),
+            // Require the drive base
             drive);
 
         Util.checkRange(targetAngle, 180, "target angle");
@@ -41,13 +44,14 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
         Util.consoleLog("angle=%.2f  kP=%.3f  kI=%.3f", targetAngle, kP, kI);
 
         driveBase = drive;
+        this.targetAngle = targetAngle;
 
         // Set the controller to be continuous (because it is an angle controller)
         getController().enableContinuousInput(-180, 180);
 
         // Set the controller tolerance - the velocity tolerance ensures the robot is stationary at the
         // setpoint before it is considered as having reached the reference
-        getController().setTolerance(toleranceDeg, toleranceVelds);
+        getController().setTolerance(toleranceDeg); //, toleranceVelds);
     }
         
     @Override
@@ -55,11 +59,13 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     {
         Util.consoleLog();
 
+        startTime = Util.timeStamp();
+
         // Try to prevent over rotation.
         driveBase.SetCANTalonBrakeMode(true);
         
-        // Reset gyro yaw to zero.
-        RobotContainer.navx.resetYawWait(1, 1000);
+        // Reset gyro yaw to zero, wait up to 5 sec for navx to return zero yaw.
+        RobotContainer.navx.resetYawWait(1, 5000);
     }
 
     @Override
@@ -67,8 +73,15 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     {
         super.execute();
 
-        Util.consoleLog("yaw=%.2f  hdng=%.2f  lpwr=%.2f  rpwr=%.2f", RobotContainer.navx.getYaw(), 
-                        RobotContainer.navx.getHeading(), -driveBase.getLeftPower(), driveBase.getRightPower());
+        Util.consoleLog("target=%.2f  yaw=%.3f  hdng=%.2f  lpwr=%.2f  rpwr=%.2f", targetAngle,
+                        RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading(),
+                        driveBase.getLeftPower(), -driveBase.getRightPower());
+
+        Util.consoleLog("goal=%.2f  sp=%.3f  m=%.3f  err=%.3f", getController().getGoal().position,
+                        getController().getSetpoint().position, m_measurement.getAsDouble(),
+                        getController().getPositionError());
+
+        iterations++;
     }
 
     @Override
@@ -95,6 +108,9 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 		//Util.consoleLog("moving=%b", Devices.navx.isRotating());
 		
 		Util.consoleLog("2  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), RobotContainer.navx.getYaw());
-		Util.consoleLog("end -------------------------------------------------------------------------");
+        
+		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
+
+        Util.consoleLog("end ----------------------------------------------------------");
 	}
 }

@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class TestAuto1 extends CommandBase
+public class TestAuto2 extends CommandBase
 {
 	private final DriveBase driveBase;
 	
@@ -27,7 +27,7 @@ public class TestAuto1 extends CommandBase
 	 *
 	 * @param driveBase DriveBase subsystem used by this command to drive the robot.
 	 */
-	public TestAuto1(DriveBase driveBase) 
+	public TestAuto2(DriveBase driveBase) 
 	{
 		Util.consoleLog();
 		
@@ -79,39 +79,31 @@ public class TestAuto1 extends CommandBase
 		
 		commands = new SequentialCommandGroup();
 		
-		// First action is to drive forward some encoder counts and stop with brakes on.
-		
-		command = new AutoDrive(driveBase, .50, 20000, 
-								AutoDrive.StopMotors.stop,
-								AutoDrive.Brakes.on,
-								AutoDrive.Pid.on,
-								AutoDrive.Heading.angle);
+		// First action is to drive forward somedistance and stop with brakes on.
+				
+		command = new AutoDriveProfiled(driveBase, 2.45, AutoDrive.StopMotors.stop, AutoDrive.Brakes.on);
 		
 		commands.addCommands(command);
 		
-		// Next action is to rotate 180 degrees left.
+		// Next action is to rotate left 90.
 		
-		command = new AutoRotate(driveBase, .30, -180, AutoDrive.Pid.on, AutoDrive.Heading.angle);
+		command = new AutoRotateProfiled(driveBase, -90);
 
 		commands.addCommands(command);
 		
-		// Next action is to drive same encoder counts and stop with brakes on.
+		// Next action is to drive distance and stop with brakes on.
 		
-		command = new AutoDrive(driveBase, .50, 10000, 
-								AutoDrive.StopMotors.stop,
-								AutoDrive.Brakes.on,
-								AutoDrive.Pid.on,
-								AutoDrive.Heading.angle);
+		command = new AutoDriveProfiled(driveBase, 2.45, AutoDrive.StopMotors.stop, AutoDrive.Brakes.on);
 		
-		commands.addCommands(command);
+		//commands.addCommands(command);
 
-		// Next rotate right 90.
+        // Now rotate to heading 0.
 
-		command = new AutoRotate(driveBase, .25, 90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
+		command = new AutoRotateHdgProfiled(driveBase, 0);
 
 		//commands.addCommands(command);
-		
-		// Now drive a curve to 90 degrees right.
+        
+        // Now drive a curve to 90 deg right.
 
 		command = new AutoCurve(driveBase, .30, .20, 90,
 								AutoDrive.StopMotors.stop,

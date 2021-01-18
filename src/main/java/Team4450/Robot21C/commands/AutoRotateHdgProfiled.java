@@ -2,8 +2,6 @@ package Team4450.Robot21C.commands;
 
 import Team4450.Robot21C.subsystems.DriveBase;
 
-import java.util.function.DoubleSupplier;
-
 import Team4450.Lib.Util;
 import Team4450.Robot21C.RobotContainer;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
@@ -18,7 +16,8 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
   private DriveBase     driveBase;
 
   private static double kP = .005, kI = .01, kD = 0, kToleranceDeg = 1, kToleranceVelds = 10;
-  private static double kMaxRotationVelds = 90, kMaxRotationAcceldss = 90;
+  private static double kMaxRotationVelds = 90, kMaxRotationAcceldss = 90, startTime;
+  private int           iterations;
   
   /**
    * Turns to robot to the specified angle using a motion profile.
@@ -58,6 +57,8 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
   {
     Util.consoleLog();
 
+    startTime = Util.timeStamp();
+
     // Try to prevent over rotation.
     driveBase.SetCANTalonBrakeMode(true);
 
@@ -74,42 +75,46 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
   {
       super.execute();
 
-      Util.consoleLog("yaw=%.2f  hdngyaw=%.2f  hdng=%.2f  lpwr=%.2f  rpwr=%.2f", RobotContainer.navx.getYaw(), 
+      Util.consoleLog("yaw=%.2f hdngyaw=%.2f hdng=%.2f lpwr=%.2f rpwr=%.2f", RobotContainer.navx.getYaw(), 
                       RobotContainer.navx.getHeadingYaw(), RobotContainer.navx.getHeading(), 
-                      -driveBase.getLeftPower(), driveBase.getRightPower());
+                      driveBase.getLeftPower(), -driveBase.getRightPower());
 
       //Util.consoleLog("goal=%.2f  sp=%.5f  m=%.3f  err=%.3f", getController().getGoal().position,
       //                getController().getSetpoint().position, m_measurement.getAsDouble(),
       //                getController().getPositionError());
+
+      iterations++;
   }
 
 
   @Override
   public boolean isFinished() 
   {
-    // End when the controller is at the reference.
-    return getController().atGoal();
+      // End when the controller is at the reference.
+      return getController().atGoal();
   }
       
   @Override
   public void end(boolean interrupted) 
   {
     Util.consoleLog("interrupted=%b", interrupted);
-    
+
     driveBase.stop();
 
     Util.consoleLog("after stop  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), 
-                     RobotContainer.navx.getHeadingYaw());
+                        RobotContainer.navx.getHeadingYaw());
 
     // Wait for robot to stop moving.
     Util.consoleLog("moving=%b", RobotContainer.navx.isRotating());
-    
+
     //while (RobotContainer.navx.isRotating()) {Timer.delay(.10);}
     //Util.consoleLog("moving=%b", Devices.navx.isRotating());
-    
+
     Util.consoleLog("2  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), 
                     RobotContainer.navx.getHeadingYaw());
 
-    Util.consoleLog("end -------------------------------------------------------------------------");
+    Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
+
+    Util.consoleLog("end -----------------------------------------------------");
   }
 }

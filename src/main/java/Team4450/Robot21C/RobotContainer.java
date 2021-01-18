@@ -32,6 +32,7 @@ import Team4450.Robot21C.commands.NotifierCommand;
 import Team4450.Robot21C.commands.ShiftGears;
 import Team4450.Robot21C.commands.TestAuto;
 import Team4450.Robot21C.commands.TestAuto1;
+import Team4450.Robot21C.commands.TestAuto2;
 import Team4450.Robot21C.commands.TurnWheelCounting;
 import Team4450.Robot21C.commands.TurnWheelToColor;
 import Team4450.Robot21C.subsystems.Climber;
@@ -107,7 +108,8 @@ public class RobotContainer
 	{
 		NoProgram,
 		TestAuto,
-		TestAuto1
+		TestAuto1,
+		TestAuto2
 	}
 
 	private static SendableChooser<AutoProgram>	autoChooser;
@@ -197,7 +199,12 @@ public class RobotContainer
 	  
 		//driveBase.setDefaultCommand(driveCommand = new TankDrive(driveBase, () -> leftStick.GetY(), () -> rightStick.GetY()));
 
-		driveBase.setDefaultCommand(driveCommand = new ArcadeDrive(driveBase, () -> rightStick.GetY(), () -> rightStick.GetX()));
+		leftStick.deadZoneX(.30);
+
+		driveBase.setDefaultCommand(driveCommand = new ArcadeDrive(driveBase, 
+																	() -> rightStick.GetY(), 
+																	() -> rightStick.GetX(),
+																	() -> leftStick.GetX()));
 		   
 		// Start the battery, compressor, PDP and camera feed monitoring Tasks.
 
@@ -361,6 +368,10 @@ public class RobotContainer
 			case TestAuto1:
 				autoCommand = new TestAuto1(driveBase);
 				break;
+
+			case TestAuto2:
+				autoCommand = new TestAuto2(driveBase);
+				break;
 		}
 
 		// The command to be run in autonomous.
@@ -396,7 +407,8 @@ public class RobotContainer
 		SendableRegistry.add(autoChooser, "Auto Program");
 		autoChooser.setDefaultOption("No Program", AutoProgram.NoProgram);
 		autoChooser.addOption("Test Auto No Action", AutoProgram.TestAuto);		
-		autoChooser.addOption("Test Auto Program", AutoProgram.TestAuto1);		
+		autoChooser.addOption("Test Auto Program 1", AutoProgram.TestAuto1);		
+		autoChooser.addOption("Test Auto Program 2", AutoProgram.TestAuto2);		
 				
 		SmartDashboard.putData(autoChooser);
 	}

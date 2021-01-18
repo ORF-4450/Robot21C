@@ -13,7 +13,8 @@ public class AutoCurve extends CommandBase
 	private final DriveBase driveBase;
 
 	private double			kP = .04, kI = 0.004, kD = 0.0, kTolerance= 1.0;
-	private double			elapsedTime, yaw = 0, originalCurve, power, curve, target;
+	private double			elapsedTime, yaw = 0, originalCurve, power, curve, target, startTime;
+	private int				iterations;
 	private StopMotors 		stop;
 	private Brakes 			brakes;
 	private Pid 			pid;
@@ -74,6 +75,8 @@ public class AutoCurve extends CommandBase
 	public void initialize()
 	{
 		Util.consoleLog();
+
+		startTime = Util.timeStamp();
 		
 		if (brakes == Brakes.on)
 			driveBase.SetCANTalonBrakeMode(true);
@@ -182,7 +185,9 @@ public class AutoCurve extends CommandBase
 							RobotContainer.navx.getHeading(), curve);
 			
 			yaw = RobotContainer.navx.getYaw();
-		}		
+		}
+		
+		iterations++;
 	}
 	
 	@Override
@@ -203,7 +208,10 @@ public class AutoCurve extends CommandBase
 		//Util.consoleLog("moving=%b", Devices.navx.isRotating());
 		
 		Util.consoleLog("end hdg=%.2f  yaw=%.2f ", RobotContainer.navx.getHeading(), yaw);
-		Util.consoleLog("end -------------------------------------------------------------------------");
+		
+		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
+
+		Util.consoleLog("end ----------------------------------------------------------");
 	}
 	
 	@Override

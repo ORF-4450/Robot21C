@@ -77,11 +77,6 @@ public class DriveBase extends SubsystemBase
 		RFCanTalon = new WPI_TalonSRX(RF_TALON);	
 		RRCanTalon = new WPI_TalonSRX(RR_TALON);	
 
-		// LFCanTalon = new PWMTalonSRX(LF_TALON);
-		// LRCanTalon = new PWMTalonSRX(LR_TALON);
-		// RFCanTalon = new PWMTalonSRX(RF_TALON);	
-		// RRCanTalon = new PWMTalonSRX(RR_TALON);	
-		
 		// Initialize CAN Talons and write status to log so we can verify
 		// all the Talons are connected.
 		InitializeCANTalon(LFCanTalon);
@@ -163,6 +158,8 @@ public class DriveBase extends SubsystemBase
    		
    		SetCANTalonBrakeMode(true);
 		
+		// Always start with gearbox set to low speed.
+
 		lowSpeed();
 		
 		// Create an odometer object to track the robot's movements.
@@ -261,9 +258,9 @@ public class DriveBase extends SubsystemBase
 
 		Pose2d pose = odometer.getPoseMeters();
 
-		if (robot.isEnabled()) 
-			Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftCount, cumulativeRightCount,
-							pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalYaw2d().getDegrees());
+		//if (robot.isEnabled()) 
+		//	Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftCount, cumulativeRightCount,
+		//					pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalYaw2d().getDegrees());
 		
 		// Update the sim field display with the current pose, or position, of the robot after we
 		// updated it above.
@@ -280,14 +277,14 @@ public class DriveBase extends SubsystemBase
 			// simulation, and write the simulated positions and velocities to our
 			// simulated encoder and gyro. We negate the left side so that positive
 			// voltages make the left side move forward.
-			driveSim.setInputs(-LRCanTalon.get() * RobotController.getInputVoltage(),
-							   RRCanTalon.get() * RobotController.getInputVoltage());
+			driveSim.setInputs(LRCanTalon.get() * RobotController.getInputVoltage(),
+							   -RRCanTalon.get() * RobotController.getInputVoltage());
 		
 			driveSim.update(0.02);
 
-			Util.consoleLog("ltg=%.2f  rcv=%.2f  ldspm=%.4f ldsvms=%.2f", -LRCanTalon.get(), RobotController.getInputVoltage(),
+			Util.consoleLog("ltg=%.2f  rcv=%.2f  ldspm=%.4f ldsvms=%.2f", LRCanTalon.get(), RobotController.getInputVoltage(),
 							driveSim.getLeftPositionMeters(), driveSim.getLeftVelocityMetersPerSecond());
-			Util.consoleLog("rtg=%.2f  rcv=%.2f  rdspm=%.4f rdsvms=%.2f", RRCanTalon.get(), RobotController.getInputVoltage(),
+			Util.consoleLog("rtg=%.2f  rcv=%.2f  rdspm=%.4f rdsvms=%.2f",-RRCanTalon.get(), RobotController.getInputVoltage(),
 							driveSim.getRightPositionMeters(), driveSim.getRightVelocityMetersPerSecond());
 			
 			SmartDashboard.putNumber("LeftDistance", driveSim.getLeftPositionMeters());

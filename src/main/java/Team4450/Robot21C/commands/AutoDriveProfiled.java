@@ -8,6 +8,7 @@ import static Team4450.Robot21C.Constants.*;
 import Team4450.Robot21C.RobotContainer;
 import Team4450.Robot21C.commands.AutoDrive.Brakes;
 import Team4450.Robot21C.commands.AutoDrive.StopMotors;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
@@ -21,9 +22,10 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
 {
     private DriveBase     driveBase;
 
-    private static double kP = .75, kI = 0, kD = 0, toleranceMeters = .05;
-    private static double kMaxVelms = 3, kMaxAccelmss = 10, curve;
-    private double        distance, kSteeringGain = .07;
+    private static double kP = .7, kI = .07, kD = 0, toleranceMeters = .05;
+    private static double kMaxVelms = 1.5, kMaxAccelmss = 1, curve;
+    private double        distance, kSteeringGain = .05, startTime;
+    private int           iterations;
     private StopMotors    stop;
     private Brakes        brakes;
     
@@ -42,7 +44,7 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
             // Closed loop on encoder distance via reference so pid controller can call it on each execute() call.
             drive::getAvgEncoderDist,
             // Set target distance.
-            (double) distance,
+            distance,
             // Pipe output to drive robot
             (output, setpoint) -> drive.arcadeDrive(output, curve, false),
             // Require the drive
@@ -66,6 +68,8 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
     {
         Util.consoleLog();
 
+        startTime = Util.timeStamp();
+
         if (brakes == Brakes.on)
             driveBase.SetCANTalonBrakeMode(true);
         else
@@ -73,7 +77,7 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
         
         driveBase.resetEncodersWithDelay();
         
-        RobotContainer.navx.resetYaw();
+        RobotContainer.navx.resetYawWait(1, 5000);
     }
     
     public void execute() 
@@ -89,8 +93,14 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
         LCD.printLine(LCD_4, "Auto wheel encoder avg=%d  dist=%.3f", driveBase.getAvgEncoder(), 
                       driveBase.getAvgEncoderDist());
 
-        Util.consoleLog("target=%.3f  avgdist=%.3f  error=%.3f  yaw=%.2f  curve=%.2f", getController().getGoal().position, 
-                        driveBase.getAvgEncoderDist(), getController().getPositionError(), yaw, curve);
+        Util.consoleLog("tg=%.3f  avdist=%.3f  sp=%.3f err=%.3f  yaw=%.2f curve=%.2f", 
+                        getController().getGoal().position, driveBase.getAvgEncoderDist(), 
+                        getController().getSetpoint().position, getController().getPositionError(), yaw, curve);
+
+        if (RobotBase.isReal())
+            Util.consoleLog("lpwr=%.2f  rpwr=%.2f", driveBase.getLeftPower(), driveBase.getRightPower());
+
+        iterations++;
     }
 
     @Override
@@ -104,14 +114,17 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
 	public void end(boolean interrupted) 
 	{
 		Util.consoleLog("interrupted=%b", interrupted);
-		
+        
 		if (stop == StopMotors.stop) driveBase.stop();
 		
 		double actualDist = Math.abs(driveBase.getAvgEncoderDist());
 		
-		Util.consoleLog("end: target=%.3f  actual=%.3f  error=%.2f pct  hdng=%.2f", Math.abs(distance), actualDist, 
-                (actualDist - Math.abs(distance)) / Math.abs(distance) * 100.0, RobotContainer.navx.getHeading());
-                
+        Util.consoleLog("end: target=%.3f  actual=%.3f  error=%.2f pct  yaw=%.2f hdng=%.2f", 
+                Math.abs(distance), actualDist, (actualDist - Math.abs(distance)) / Math.abs(distance) * 100.0, 
+                RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
+        
+		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
+        
 		Util.consoleLog("end -------------------------------------------------------------------------");
 	}
 }

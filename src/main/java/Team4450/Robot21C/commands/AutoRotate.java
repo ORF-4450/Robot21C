@@ -14,7 +14,8 @@ public class AutoRotate extends CommandBase
 	private final DriveBase driveBase;
 
 	private double			yaw, elapsedTime = 0, power, target, saveHeading; 
-	private double			kP = .005, kI = 0.0009, kD = 0, kTolerance = 1.0;
+	private double			kP = .02, kI = 0.02, kD = 0, kTolerance = .5, startTime;
+	private int				iterations;
 	private Pid 			pid;
 	private Heading 		heading;
 	
@@ -65,6 +66,8 @@ public class AutoRotate extends CommandBase
 	public void initialize()
 	{
 		Util.consoleLog();
+
+		startTime = Util.timeStamp();
 
 		// Try to prevent over rotation.
 		
@@ -119,6 +122,8 @@ public class AutoRotate extends CommandBase
 	@Override
 	public void execute() 
 	{
+		double	curve = 0;
+
 		Util.consoleLog();
 		
 		saveHeading = RobotContainer.navx.getHeading();
@@ -139,33 +144,35 @@ public class AutoRotate extends CommandBase
 			// it does, the PID controller will reverse power and turn it back.
 			// This continues until the error is within tolerance.
 			
-			power = pidController.calculate(yaw, elapsedTime);
+			curve = pidController.calculate(yaw, elapsedTime);
 			
 			// When quick turn is true, first parameter is not used, power is fed to the
 			// rate of turn parameter. PID controller takes care of the sign, that 
 			// is the left/right direction of the turn.
 			
-			driveBase.curvatureDrive(0, power, true);
+			driveBase.curvatureDrive(0, curve, true);
 			
-			Util.consoleLog("power=%.2f  hdg=%.2f  yaw=%.2f  err=%.2f  time=%f", power, 
+			Util.consoleLog("curve=%.2f  hdg=%.2f  yaw=%.2f  err=%.2f  time=%f", curve, 
 							 saveHeading, yaw, pidController.getError(), elapsedTime); 
 		}
 		else if (heading == Heading.heading)
 		{
-			driveBase.curvatureDrive(0, power, true);
+			driveBase.curvatureDrive(0, curve, true);
 			
 			yaw = RobotContainer.navx.getHeadingYaw();
 			
-			Util.consoleLog("power=%.2f  yaw=%.2f  hdg=%.2f", power, yaw,saveHeading);
+			Util.consoleLog("curver=%.2f  yaw=%.2f  hdg=%.2f", curve, yaw,saveHeading);
 		}
 		else 
 		{
-			driveBase.curvatureDrive(0, power, true);
+			driveBase.curvatureDrive(0, curve, true);
 			
 			yaw = RobotContainer.navx.getYaw();
 			
 			Util.consoleLog("yaw=%.2f  hdg=%.2f", yaw, saveHeading);
 		}
+
+		iterations++;
 	}
 	
 	@Override
@@ -189,7 +196,10 @@ public class AutoRotate extends CommandBase
 			yaw = RobotContainer.navx.getYaw();
 
 		Util.consoleLog("2  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
-		Util.consoleLog("end -------------------------------------------------------------------------");
+		
+		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
+
+		Util.consoleLog("end ----------------------------------------------------------");
 	}
 	
 	@Override
