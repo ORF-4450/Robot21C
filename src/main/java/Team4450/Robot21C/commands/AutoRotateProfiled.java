@@ -14,8 +14,8 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 {
     private DriveBase     driveBase;
 
-    private static double kP = 1, kI = .02, kD = 0, toleranceDeg = .5, toleranceVelds = 1;
-    private static double kMaxRotationVelds = 270, kMaxRotationAcceldss = 270;
+    private static double kP = .2, kI = .02, kD = 0, toleranceDeg = .5, toleranceVelds = 1;
+    private static double kMaxRotationVelds = 20, kMaxRotationAcceldss = 20;
     private double        targetAngle, startTime;
     private int           iterations;
 
@@ -51,7 +51,7 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 
         // Set the controller tolerance - the velocity tolerance ensures the robot is stationary at the
         // setpoint before it is considered as having reached the reference
-        getController().setTolerance(toleranceDeg); //, toleranceVelds);
+        getController().setTolerance(toleranceDeg, toleranceVelds);
     }
         
     @Override
@@ -73,13 +73,12 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     {
         super.execute();
 
-        Util.consoleLog("target=%.2f  yaw=%.3f  hdng=%.2f  lpwr=%.2f  rpwr=%.2f", targetAngle,
-                        RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading(),
-                        driveBase.getLeftPower(), -driveBase.getRightPower());
-
         Util.consoleLog("goal=%.2f  sp=%.3f  m=%.3f  err=%.3f", getController().getGoal().position,
                         getController().getSetpoint().position, m_measurement.getAsDouble(),
                         getController().getPositionError());
+
+        Util.consoleLog("yaw=%.3f  hdng=%.2f  lpwr=%.2f  rpwr=%.2f", RobotContainer.navx.getYaw(),
+                        RobotContainer.navx.getHeading(), driveBase.getLeftPower(), -driveBase.getRightPower());
 
         iterations++;
     }

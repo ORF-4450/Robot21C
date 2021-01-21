@@ -6,8 +6,7 @@ import Team4450.Lib.*;
 import Team4450.Robot21C.subsystems.ColorWheel;
 import static Team4450.Robot21C.Constants.*;
 
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.TimedRobot;
+//import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot 
+public class Robot extends Team4450.Robot21C.wpilib.TimedRobot 
 {
   private RobotContainer	robotContainer;
   
@@ -39,8 +38,31 @@ public class Robot extends TimedRobot
 
 	   	  // Set up our custom logger.
 
-	   	  Util.CustomLogger.setup();
-			
+          Util.CustomLogger.setup();
+             
+          // The wpilib classes that underlie this class generate a lot of warning messages
+          // that flood the Riolog and make it almost unusable. The warnings are about our
+          // code in the robotPeriodic() function taking longer than .02 sec to execute.
+          // It's very hard to stay under this limit. So...copied classes from the wpilib
+          // name space to inside this project and modified them to allow us to control these
+          // warnings and log some of them to our log file. The warnings from IterativeRobotBase
+          // can be turned on/off and the timeout set. Any warnings from that class will go to
+          // our log file. The CommandScheduler also generates essentially the same warnings
+          // but copying that is getting beyond what we should be doing, so we just set its
+          // internal timeout (because it allows us to) to a longer value to turn off its
+          // warnings. It does therefore log to our log file. These warnings can be turned
+          // on at times to check if we are having significant overruns but turned off if
+          // things look ok. This is a major hack, the downside of which is that with each
+          // release of Wpilib the copied files would have ot be recopied and remodified.
+          // IterativeRobotBase and Watchdog have been modified.
+          // Note that the periodic function is called very .02 sec. If our code runs too
+          // long that can lead to various control problems. But, it has proven hard to
+          // do anything useful and not exceed the .02 sec watchdogs.
+
+          enableWatchDogWarning(false);
+          enableWatchDogFlush(false);
+          CommandScheduler.getInstance().setPeriod(1.0);
+
 		  // Set Java to catch any uncaught exceptions and record them in our log file. 
 			
 		  Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() 
@@ -106,6 +128,7 @@ public class Robot extends TimedRobot
   @Override
   public void robotPeriodic() 
   {
+      // This function is called approx every .02 second.
 	  // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
 	  // commands, running already-scheduled commands, removing finished or interrupted commands,
 	  // and running subsystem periodic() methods. This must be called from the robot's periodic
@@ -117,7 +140,7 @@ public class Robot extends TimedRobot
 	  // when robot is disabled. This seems a bad idea...
 	  
 	  // The try/catch will catch any exceptions thrown in the commands run by the scheduler
-	  // and record them in our log file then stops execution of this progra,\m.
+	  // and record them in our log file then stops execution of this program.
 	  
 	  try {
 	  		CommandScheduler.getInstance().run();

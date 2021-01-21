@@ -12,7 +12,7 @@ public class AutoDrive extends CommandBase
 {
 	private final DriveBase driveBase;
 
-	private double			yaw, kSteeringGain = .07, elapsedTime = 0;
+	private double			yaw, kSteeringGain = .10, elapsedTime = 0;
 	private double			kP = .0001, kI = .00005, kD = 0;
 	private double			power, startTime; 
 	private int 			encoderCounts, iterations; 
@@ -129,8 +129,6 @@ public class AutoDrive extends CommandBase
 	public void execute() 
 	{
 		Util.consoleLog();
-		
-		startTime = Util.timeStamp();
 
 		LCD.printLine(LCD_4, "Auto wheel encoder avg=%d", driveBase.getAvgEncoder());
 
@@ -186,7 +184,7 @@ public class AutoDrive extends CommandBase
 		
 		int actualCount = Math.abs(driveBase.getAvgEncoder());
 		
-		Util.consoleLog("end: encoder counts=%d  actual count=%d  error=%.2f pct", encoderCounts, actualCount, 
+		Util.consoleLog("encoder counts=%d  actual count=%d  error=%.2f pct", encoderCounts, actualCount, 
 				((double) actualCount - encoderCounts) / (double) encoderCounts * 100.0);
 
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));

@@ -3,6 +3,8 @@ package Team4450.Robot21C;
 
 import static Team4450.Robot21C.Constants.*;
 
+import java.util.function.DoubleSupplier;
+
 import Team4450.Lib.CameraFeed;
 import Team4450.Lib.JoyStick;
 import Team4450.Lib.LaunchPad;
@@ -198,13 +200,11 @@ public class RobotContainer
 		// read them.
 	  
 		//driveBase.setDefaultCommand(driveCommand = new TankDrive(driveBase, () -> leftStick.GetY(), () -> rightStick.GetY()));
-
-		leftStick.deadZoneX(.30);
-
+       
 		driveBase.setDefaultCommand(driveCommand = new ArcadeDrive(driveBase, 
 																	() -> rightStick.GetY(), 
-																	() -> rightStick.GetX(),
-																	() -> leftStick.GetX()));
+                                                                    () -> rightStick.GetX(),
+                                                                    () -> rightStick.getJoyStick().getTrigger()));
 		   
 		// Start the battery, compressor, PDP and camera feed monitoring Tasks.
 

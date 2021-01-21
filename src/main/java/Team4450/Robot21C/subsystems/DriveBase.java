@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -36,8 +37,8 @@ public class DriveBase extends SubsystemBase
 	private WPI_TalonSRX		LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon;
 	//private PWMTalonSRX		LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon;
 
-	private DifferentialDrive	robotDrive;
-
+    private DifferentialDrive	robotDrive;
+    
 	private DifferentialDriveOdometry	odometer;
   
 	// SRX magnetic encoder plugged into a CAN Talon.
@@ -323,57 +324,77 @@ public class DriveBase extends SubsystemBase
 	}
 	
 	/**
-	 * Tank drive function. Passes left/right speed values to the robot drive.
+	 * Tank drive function. Passes left/right power values to the robot drive.
 	 * Should be called every scheduler run by the Drive command.
-	 * @param leftSpeed Left power setting -1.0 to +1.0.
-	 * @param rightSpeed RIght power setting -1.0 to +1.0.
-	 * @param squaredInputs True reduces sensitivity at low speeds.
+	 * @param leftPower Left power setting -1.0 to +1.0.
+	 * @param rightPower Right power setting -1.0 to +1.0.
+	 * @param squareInputs True reduces sensitivity at low speeds.
 	 */
-	public void tankDrive(double leftSpeed, double rightSpeed, boolean squaredInputs)
+	public void tankDrive(double leftPower, double rightPower, boolean squareInputs)
 	{
-		robotDrive.tankDrive(leftSpeed, rightSpeed, squaredInputs);
+		robotDrive.tankDrive(leftPower, rightPower, squareInputs);
 		
 		//Util.consoleLog("l=%.2f m=%.2f  r=%.2f m=%.2f", leftSpeed, LRCanTalon.get(), rightSpeed, RRCanTalon.get());
 	}
 	
 	/**
-	 * Tank drive function. Passes left/right speed values to the robot drive.
+	 * Tank drive function. Passes left/right power values to the robot drive.
 	 * Should be called every scheduler run by the Drive command. Uses SlewRateLimiter
 	 * filter to modulate inputs to smooth out power delivery. Testing did not show any
-	 * advantage over squared inputs but will keep this routine for now.
+	 * advantage over square inputs but will keep this routine for now.
 	 * @param leftSpeed Left power setting -1.0 to +1.0.
-	 * @param rightSpeed RIght power setting -1.0 to +1.0.
+	 * @param rightSpeed Right power setting -1.0 to +1.0.
 	 */
-	public void tankDriveLimited(double leftSpeed, double rightSpeed)
+	public void tankDriveLimited(double leftPower, double rightPower)
 	{
-		robotDrive.tankDrive(leftLimiter.calculate(leftSpeed), rightLimiter.calculate(rightSpeed), false);
+		robotDrive.tankDrive(leftLimiter.calculate(leftPower), rightLimiter.calculate(rightPower), false);
 		
-		//Util.consoleLog("l=%.2f m=%.2f  r=%.2f m=%.2f", leftSpeed, LRCanTalon.get(), rightSpeed, RRCanTalon.get());
+		//Util.consoleLog("l=%.2f m=%.2f  r=%.2f m=%.2f", leftPower, LRCanTalon.get(), rightPower, RRCanTalon.get());
 	}
 
-	
 	/**
 	 * Curvature drive function. Drives at set speed with set curve.
-	 * @param speed Power setting -1.0 to +1.0.
+	 * @param power Power setting -1.0 to +1.0.
 	 * @param rotation Rotation rate -1.0 to +1.0. Clockwise us +.
 	 * @param quickTurn True causes quick turn (turn in place).
 	 */
-	public void curvatureDrive(double speed, double rotation, boolean quickTurn)
+	public void curvatureDrive(double power, double rotation, boolean quickTurn)
 	{
-		robotDrive.curvatureDrive(speed, rotation, quickTurn);
+		robotDrive.curvatureDrive(power, rotation, quickTurn);
 	}
 
 	/**
-	 * Arcade drive function. Drives at set speed with set curve/rotation.
-	 * @param speed Power setting -1.0 to +1.0, positive is forward.
+	 * Arcade drive function. Drives at set power with set curve/rotation.
+	 * @param power Power setting -1.0 to +1.0, positive is forward.
 	 * @param rotation Rotation rate -1.0 to +1.0, positive is clockwise.
 	 * @param squareInputs When set reduces sensitivity a low speeds.
 	 */
-	public void arcadeDrive(double speed, double rotation, boolean squareInputs)
+	public void arcadeDrive(double power, double rotation, boolean squareInputs)
 	{
-		robotDrive.arcadeDrive(speed, rotation, squareInputs);
-	}
-
+		robotDrive.arcadeDrive(power, rotation, squareInputs);
+    }
+    
+    /**
+     * Set left/right motor power level directly.
+     * @param leftPower     % power -1 to +1, + is forward.
+     * @param rightPower    % power -1 to +1, + is forward.
+     */
+    public void setPower(double leftPower, double rightPower)
+    {
+        LRCanTalon.set(leftPower);
+        RRCanTalon.set(rightPower);
+    }
+    
+    /**
+     * Set left/right motor voltage level directly.
+     * @param leftVolts     % power -12 to +12, + is forward.
+     * @param rightVolts    % power -12 to +12, + is forward.
+     */
+    public void setVoltage(double leftVolts, double rightVolts)
+    {
+        LRCanTalon.setVoltage(leftVolts);
+        RRCanTalon.setVoltage(rightVolts);
+    }
 	// Initialize and Log status indication from CANTalon. If we see an exception
 	// or a talon has low voltage value, it did not get recognized by the RR on start up.
 	  

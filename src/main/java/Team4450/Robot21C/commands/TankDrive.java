@@ -21,7 +21,7 @@ public class TankDrive extends CommandBase
 {
   private final DriveBase 		driveBase;
   
-  private final DoubleSupplier	leftSpeed, rightSpeed;
+  private final DoubleSupplier	leftPower, rightPower;
   
   private boolean				altDriveMode, steeringAssistMode;
 
@@ -32,7 +32,7 @@ public class TankDrive extends CommandBase
    * @param leftSpeed The speed as % power -1.0 to +1.0.
    * @param rightSpeed The speed as % power -1.0 to +1.0.
    */
-  public TankDrive(DriveBase subsystem, DoubleSupplier leftSpeed, DoubleSupplier rightSpeed) 
+  public TankDrive(DriveBase subsystem, DoubleSupplier leftPower, DoubleSupplier rightPower) 
   {
 	  Util.consoleLog();
 	  
@@ -45,8 +45,8 @@ public class TankDrive extends CommandBase
 	  // Save references to DoubleSupplier objects so we can read them later in the
 	  // execute method.
 	  
-	  this.leftSpeed = leftSpeed;
-	  this.rightSpeed = rightSpeed;
+	  this.leftPower = leftPower;
+	  this.rightPower = rightPower;
   }
 
   /**
@@ -85,7 +85,7 @@ public class TankDrive extends CommandBase
   @Override
   public void execute() 
   {
-	  double leftY = leftSpeed.getAsDouble(), rightY = rightSpeed.getAsDouble(), angle;
+	  double leftY = leftPower.getAsDouble(), rightY = rightPower.getAsDouble(), angle;
 	  
 	  LCD.printLine(LCD_2, "leftenc=%d  rightenc=%d", driveBase.getLeftEncoder(), driveBase.getRightEncoder());			
 

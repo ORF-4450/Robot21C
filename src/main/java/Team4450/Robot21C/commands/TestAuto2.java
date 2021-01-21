@@ -81,7 +81,7 @@ public class TestAuto2 extends CommandBase
 		
 		// First action is to drive forward somedistance and stop with brakes on.
 				
-		command = new AutoDriveProfiled(driveBase, 2.45, AutoDrive.StopMotors.stop, AutoDrive.Brakes.on);
+		command = new AutoDriveProfiled(driveBase, 1, AutoDrive.StopMotors.stop, AutoDrive.Brakes.on);
 		
 		commands.addCommands(command);
 		
