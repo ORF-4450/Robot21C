@@ -4,6 +4,7 @@ import Team4450.Robot21C.subsystems.DriveBase;
 import Team4450.Lib.Util;
 import Team4450.Robot21C.RobotContainer;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
@@ -12,12 +13,18 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
  */
 public class AutoRotateProfiled extends ProfiledPIDCommand 
 {
-    private DriveBase     driveBase;
+    private DriveBase    driveBase;
 
-    private static double kP = .2, kI = .02, kD = 0, toleranceDeg = .5, toleranceVelds = 1;
-    private static double kMaxRotationVelds = 20, kMaxRotationAcceldss = 20;
+    private static AutoRotateProfiled    thisInstance;
+
+    private static double kP = .1, kI = .15, kD = 0, toleranceDeg = .5, toleranceVelds = 1;
+    private static double kMaxRotationVelds = 70, kMaxRotationAcceldss = 70;
     private double        targetAngle, startTime;
     private int           iterations;
+
+    // Estimate feed forward gains as 12v / max velocity.
+    private SimpleMotorFeedforward  feedForward = new SimpleMotorFeedforward(12 / kMaxRotationVelds, 
+                                                                             12 / kMaxRotationVelds);
 
     /**
      * Turns to robot to the specified angle using a motion profile.
@@ -34,8 +41,7 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
             // Set target angle
             targetAngle,
             // Pipe output to turn robot
-            (output, setpoint) -> drive.curvatureDrive(0, output, true),
-            //(output, setpoint) -> drive.arcadeDrive(0, output, false),
+            (output, setpoint) -> thisInstance.driveWithFeedForward(output, setpoint),
             // Require the drive base
             drive);
 
@@ -45,20 +51,38 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 
         driveBase = drive;
         this.targetAngle = targetAngle;
+        thisInstance = this;
 
         // Set the controller to be continuous (because it is an angle controller)
-        getController().enableContinuousInput(-180, 180);
+        //getController().enableContinuousInput(-180, 180);
 
         // Set the controller tolerance - the velocity tolerance ensures the robot is stationary at the
         // setpoint before it is considered as having reached the reference
-        getController().setTolerance(toleranceDeg, toleranceVelds);
+        getController().setTolerance(toleranceDeg); //, toleranceVelds);
     }
-        
+
+    // Drive combining feed forward with PID output (angle error). The set point computed
+    // by the motion profile feeds the feed forward calculation. So the profile drives both
+    // the feed forward (base power setting in volts) and we add in a factor from the PID
+    // based on the error between angle setpoint and measured angle.
+    private void driveWithFeedForward(double power, TrapezoidProfile.State setPoint)
+    {
+        double ff = feedForward.calculate(setPoint.velocity);
+
+        Util.consoleLog("ff=%.3fv", ff);
+
+        // Feed forward is in volts so we convert the PID output (degrees) to
+        // voltage so it combines with ff and then we set motors with voltage.
+        power = power * 12 + ff;
+
+        driveBase.setVoltage(power, power);
+    }
+
     @Override
     public void initialize()
     {
         Util.consoleLog();
-
+        
         startTime = Util.timeStamp();
 
         // Try to prevent over rotation.

@@ -297,6 +297,8 @@ public abstract class IterativeRobotBase extends RobotBase {
       NetworkTableInstance.getDefault().flush();
     }
 
+    // Code below this point modified/added by 4450 to suppress watchdog messages.
+    
     // Warn on loop time overruns
     if (m_watchdog_flush && m_watchdog.isExpired()) {
       //m_watchdog.printEpochs();

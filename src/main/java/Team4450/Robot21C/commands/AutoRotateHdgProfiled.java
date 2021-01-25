@@ -16,7 +16,7 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
   private DriveBase     driveBase;
 
   private static double kP = .005, kI = .01, kD = 0, kToleranceDeg = 1, kToleranceVelds = 10;
-  private static double kMaxRotationVelds = 90, kMaxRotationAcceldss = 90, startTime;
+  private static double kMaxRotationVelds = 70, kMaxRotationAcceldss = 70, startTime;
   private int           iterations;
   
   /**
@@ -62,11 +62,11 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
     // Try to prevent over rotation.
     driveBase.SetCANTalonBrakeMode(true);
 
-    // Do not reset navx in this routine. It will foul up first call to getHeading().
+    // Do not reset navx yaw in this routine. It will foul up first call to getHeading().
 
     Util.consoleLog("start hdng=%.2f", RobotContainer.navx.getHeading());
 
-    // Set profile controller initial position.
+    // Set profile controller initial heading.
     getController().reset(RobotContainer.navx.getHeading());
   }
 

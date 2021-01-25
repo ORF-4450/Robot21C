@@ -35,6 +35,7 @@ import Team4450.Robot21C.commands.ShiftGears;
 import Team4450.Robot21C.commands.TestAuto;
 import Team4450.Robot21C.commands.TestAuto1;
 import Team4450.Robot21C.commands.TestAuto2;
+import Team4450.Robot21C.commands.TestAuto3;
 import Team4450.Robot21C.commands.TurnWheelCounting;
 import Team4450.Robot21C.commands.TurnWheelToColor;
 import Team4450.Robot21C.subsystems.Climber;
@@ -111,7 +112,8 @@ public class RobotContainer
 		NoProgram,
 		TestAuto,
 		TestAuto1,
-		TestAuto2
+        TestAuto2,
+        TestAuto3
 	}
 
 	private static SendableChooser<AutoProgram>	autoChooser;
@@ -372,6 +374,10 @@ public class RobotContainer
 			case TestAuto2:
 				autoCommand = new TestAuto2(driveBase);
 				break;
+
+            case TestAuto3:
+				autoCommand = new TestAuto3(driveBase);
+				break;
 		}
 
 		// The command to be run in autonomous.
@@ -409,6 +415,7 @@ public class RobotContainer
 		autoChooser.addOption("Test Auto No Action", AutoProgram.TestAuto);		
 		autoChooser.addOption("Test Auto Program 1", AutoProgram.TestAuto1);		
 		autoChooser.addOption("Test Auto Program 2", AutoProgram.TestAuto2);		
+		autoChooser.addOption("Test Auto Program 3", AutoProgram.TestAuto3);		
 				
 		SmartDashboard.putData(autoChooser);
 	}

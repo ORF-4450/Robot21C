@@ -61,7 +61,7 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 
           enableWatchDogWarning(false);
           enableWatchDogFlush(false);
-          CommandScheduler.getInstance().setPeriod(1.0);
+          //CommandScheduler.getInstance().setPeriod(1.0);
 
 		  // Set Java to catch any uncaught exceptions and record them in our log file. 
 			
@@ -145,8 +145,7 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 	  try {
 	  		CommandScheduler.getInstance().run();
 	  } 
-	  catch (Exception e) 
-	  {
+	  catch (Exception e) {
 			Util.logException(e);
 			this.endCompetition();
 	  }
@@ -219,9 +218,14 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 	  Command autonomousCommand = robotContainer.getAutonomousCommand();
 
 	  // schedule the autonomous command (example)
-	  
-	  if (autonomousCommand != null) autonomousCommand.schedule();
-	  
+      
+      try {
+	        if (autonomousCommand != null) autonomousCommand.schedule();
+      } catch (Exception e) {
+            Util.logException(e);
+            this.endCompetition();
+      }
+        
 	  Util.consoleLog("end -------------------------------------------------------------------------");
   }
 

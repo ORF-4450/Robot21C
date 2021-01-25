@@ -4,16 +4,24 @@ import Team4450.Lib.LCD;
 import Team4450.Lib.Util;
 
 import static Team4450.Robot21C.Constants.*;
+
+import java.util.List;
+
 import Team4450.Robot21C.RobotContainer;
 import Team4450.Robot21C.subsystems.DriveBase;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class TestAuto2 extends CommandBase
+public class TestAuto3 extends CommandBase
 {
 	private final DriveBase driveBase;
 	
@@ -27,7 +35,7 @@ public class TestAuto2 extends CommandBase
 	 *
 	 * @param driveBase DriveBase subsystem used by this command to drive the robot.
 	 */
-	public TestAuto2(DriveBase driveBase) 
+	public TestAuto3(DriveBase driveBase) 
 	{
 		Util.consoleLog();
 		
@@ -79,41 +87,31 @@ public class TestAuto2 extends CommandBase
 		
 		commands = new SequentialCommandGroup();
 		
-		// First action is to drive forward somedistance and stop with brakes on.
-				
-		command = new AutoDriveProfiled(driveBase, 1, AutoDrive.StopMotors.stop, AutoDrive.Brakes.on);
-		
-		commands.addCommands(command);
-		
-		// Next action is to rotate left 90.
-		
-		command = new AutoRotateProfiled(driveBase, 90);
+		// We will create a trajectory and set the robot to follow it.
+    
+        DifferentialDriveVoltageConstraint constraint = AutoDriveTrajectory.getVoltageConstraint();
 
-		commands.addCommands(command);
-		
-		// Next action is to drive distance and stop with brakes on.
-		
-		command = new AutoDriveProfiled(driveBase, 2.45, AutoDrive.StopMotors.stop, AutoDrive.Brakes.on);
-		
-		//commands.addCommands(command);
+        TrajectoryConfig config = AutoDriveTrajectory.getTrajectoryConfig(constraint);
 
-        // Now rotate to heading 0.
+        Pose2d startPose = driveBase.getOdometerPose();
 
-		command = new AutoRotateHdgProfiled(driveBase, 0);
-
-		//commands.addCommands(command);
+        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+                                        // Start at the origin set above
+                                        startPose,
+                                        // Pass through these two interior waypoints, making an 's' curve path
+                                        List.of(
+                                            new Translation2d(2, startPose.getY()),
+                                            new Translation2d(3, startPose.getY())
+                                        ),
+                                        // End 4 meters straight ahead of where we started, facing forward
+                                        new Pose2d(4, startPose.getY(), startPose.getRotation()),
+                                        // Pass config
+                                        config
+        );		
         
-        // Now drive a curve to 90 deg right.
-
-		command = new AutoCurve(driveBase, .30, .20, 90,
-								AutoDrive.StopMotors.stop,
-								AutoDrive.Brakes.on,
-								AutoDrive.Pid.on,
-								AutoDrive.Heading.angle);
+		command = new AutoDriveTrajectory(driveBase, exampleTrajectory);
 		
-		//commands.addCommands(command);
-		
-		// Launch autonomous command sequence.
+		commands.addCommands(command);
 		
 		commands.schedule();
 	}
@@ -140,7 +138,7 @@ public class TestAuto2 extends CommandBase
 		driveBase.stop();
 		
 		Util.consoleLog("final heading=%.2f  Radians=%.2f", RobotContainer.navx.getHeading(), RobotContainer.navx.getHeadingR());
-		Util.consoleLog("end -------------------------------------------------------------------------");
+		Util.consoleLog("end -----------------------------------------------------");
 	}
 	
 	/**
@@ -156,4 +154,3 @@ public class TestAuto2 extends CommandBase
 		return !commands.isScheduled();
 	}
 }
-
