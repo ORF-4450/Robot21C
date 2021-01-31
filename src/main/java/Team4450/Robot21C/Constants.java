@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC21C-01.21.21-1";
+	public static String		PROGRAM_NAME = "RAC21C-01.30.21-1";
 
 	public static Robot			robot;
 
@@ -58,7 +58,7 @@ public final class Constants
 	public static final DriverStation	ds = DriverStation.getInstance();
 
 	public static final double	TALON_RAMP_RATE = 1.0;			// Takes 1 sec for full power to applied.
-	public static final double  DRIVE_WHEEL_DIAMETER = 6.25;	// Inches.
+	public static final double  DRIVE_WHEEL_DIAMETER = 6.20;	// Inches.
 	public static final double	COLORWHEEL_SPEED = .25;
 	public static final int		COLORWHEEL_ROTATIONS = 3;
 	public static final double	STEERING_ASSIST_GAIN = .05;

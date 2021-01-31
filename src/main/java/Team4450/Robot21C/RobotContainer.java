@@ -57,8 +57,8 @@ public class RobotContainer
 	public static Pickup		pickup;
 	private final ColorWheel	colorWheel;
 	private final Climber		climber;
-	//private final TankDrive		driveCommand;
-	private final ArcadeDrive	driveCommand;
+	private final TankDrive		driveCommand;
+	//private final ArcadeDrive	driveCommand;
 
 	// Persistent Commands.
 	
@@ -201,12 +201,12 @@ public class RobotContainer
 		// code does not have to know anything about the JoySticks (or any other source) but can still
 		// read them.
 	  
-		//driveBase.setDefaultCommand(driveCommand = new TankDrive(driveBase, () -> leftStick.GetY(), () -> rightStick.GetY()));
+		driveBase.setDefaultCommand(driveCommand = new TankDrive(driveBase, () -> leftStick.GetY(), () -> rightStick.GetY()));
        
-		driveBase.setDefaultCommand(driveCommand = new ArcadeDrive(driveBase, 
-																	() -> rightStick.GetY(), 
-                                                                    () -> rightStick.GetX(),
-                                                                    () -> rightStick.getJoyStick().getTrigger()));
+		// driveBase.setDefaultCommand(driveCommand = new ArcadeDrive(driveBase, 
+		// 															() -> rightStick.GetY(), 
+        //                                                             () -> rightStick.GetX(),
+        //                                                             () -> rightStick.getJoyStick().getTrigger()));
 		   
 		// Start the battery, compressor, PDP and camera feed monitoring Tasks.
 
@@ -294,8 +294,12 @@ public class RobotContainer
 		
 		// Because the launch pad buttons are wired backwards, we use whenReleased to 
 		// react on button press instead of whenPressed.
-		
-		// Reset encoders.
+        
+        // Reset odometer.
+		new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_GREEN.value)
+    		.whenReleased(new InstantCommand(driveBase::zeroOdometer));
+
+    	// Reset encoders.
 		new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_RED.value)
     		.whenReleased(new InstantCommand(driveBase::resetEncoders));
 		

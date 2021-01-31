@@ -67,7 +67,7 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
     Util.consoleLog("start hdng=%.2f", RobotContainer.navx.getHeading());
 
     // Set profile controller initial heading.
-    getController().reset(RobotContainer.navx.getHeading());
+    getController().reset(RobotContainer.navx.getHeadingR());
   }
 
   @Override
@@ -75,13 +75,13 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
   {
       super.execute();
 
+      Util.consoleLog("goal=%.2f  sp=%.5f  m=%.3f  err=%.3f", getController().getGoal().position,
+                     getController().getSetpoint().position, m_measurement.getAsDouble(),
+                     getController().getPositionError());
+
       Util.consoleLog("yaw=%.2f hdngyaw=%.2f hdng=%.2f lpwr=%.2f rpwr=%.2f", RobotContainer.navx.getYaw(), 
                       RobotContainer.navx.getHeadingYaw(), RobotContainer.navx.getHeading(), 
                       driveBase.getLeftPower(), -driveBase.getRightPower());
-
-      //Util.consoleLog("goal=%.2f  sp=%.5f  m=%.3f  err=%.3f", getController().getGoal().position,
-      //                getController().getSetpoint().position, m_measurement.getAsDouble(),
-      //                getController().getPositionError());
 
       iterations++;
   }
@@ -102,7 +102,7 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
     driveBase.stop();
 
     Util.consoleLog("after stop  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), 
-                        RobotContainer.navx.getHeadingYaw());
+                    RobotContainer.navx.getHeadingYaw());
 
     // Wait for robot to stop moving.
     Util.consoleLog("moving=%b", RobotContainer.navx.isRotating());

@@ -19,6 +19,9 @@ public class TestAuto1 extends CommandBase
 	
 	private SequentialCommandGroup	commands = null;
 	private Command					command = null;
+    
+    // These constants define the starting pose for this auto program. Defaults to the base starting pose.
+    private double                  kInitialX = INITIAL_X, kInitialY = INITIAL_Y, kInitialHeading = INITIAL_HEADING;
 
 	/**
 	 * Creates a new TestAuto1 autonomous command. This command demonstrates one
@@ -55,14 +58,14 @@ public class TestAuto1 extends CommandBase
 	  	driveBase.resetEncodersWithDelay();
 	  	
 	  	// Set NavX yaw tracking to 0.
-	  	RobotContainer.navx.resetYaw();
+        RobotContainer.navx.resetYaw();   
 
 		// Set heading to initial angle (0 is robot pointed down the field) so
 		// NavX class can track which way the robot is pointed all during the match.
-		RobotContainer.navx.setHeading(0);
+		RobotContainer.navx.setHeading(kInitialHeading);
 			
 		// Target heading should be the same.
-		RobotContainer.navx.setTargetHeading(0);
+		RobotContainer.navx.setTargetHeading(kInitialHeading);
 			
 		// Set Talon ramp rate for smooth acceleration from stop. Determine by observation.
 		driveBase.SetCANTalonRampRate(1.0);
@@ -70,7 +73,7 @@ public class TestAuto1 extends CommandBase
 		// Reset odometry tracking with initial x,y position and heading (set above) specific to this 
 		// auto routine. Robot must be placed in same starting location each time for pose tracking
 		// to work. The settings below are the starting point default for 2021 field.
-		driveBase.resetOdometer(new Pose2d(INITIAL_X, INITIAL_Y, new Rotation2d()), RobotContainer.navx.getHeading());
+		driveBase.resetOdometer(new Pose2d(kInitialX, kInitialY, new Rotation2d()), RobotContainer.navx.getHeading());
 		
 		// Since a typical autonomous program consists of multiple actions, which are commands
 		// in this style of programming, we will create a list of commands for the actions to

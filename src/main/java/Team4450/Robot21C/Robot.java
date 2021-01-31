@@ -211,7 +211,7 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 	  
 	  robotContainer.getMatchInformation();
 	  
-	  robotContainer.resetFaults();
+      robotContainer.resetFaults();
 
 	  // RobotContainer figures out which auto command is selected to run.
 	  

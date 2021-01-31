@@ -79,6 +79,7 @@ TO_RIGHT				Manual channel ball toward pickup.
 LaunchPad
 Button Name				Function
 -----------------------------------------------------------------------------------
+BUTTON_GREEN            Reset Odometer.
 BUTTON_RED				Reset wheel encoders in teleop.
 BUTTON_BLUE				Manual color wheel operation.
 BUTTON_BLUE_RIGHT		Color wheel auto 3 turns.

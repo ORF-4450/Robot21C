@@ -61,11 +61,11 @@ public class AutoDriveTrajectory extends RamseteCommand
         // Synchronize driveBase odometer with trajectory initial pose.
         Pose2d pose = trajectory.getInitialPose();
 
-        Util.consoleLog("initial poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), -pose.getRotation().getDegrees());
+        Util.consoleLog("initial traj poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
         
         pose = driveBase.getOdometerPose();
 
-        Util.consoleLog("robot poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), -pose.getRotation().getDegrees());
+        Util.consoleLog("initial robot poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
 
         //driveBase.resetOdometer(pose, pose.getRotation().getDegrees());
     }
@@ -76,6 +76,10 @@ public class AutoDriveTrajectory extends RamseteCommand
         Util.consoleLog();
 
         super.execute();
+        
+        Pose2d pose = driveBase.getOdometerPose();
+
+        Util.consoleLog("robot poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
 
         iterations++;
     }
@@ -93,7 +97,7 @@ public class AutoDriveTrajectory extends RamseteCommand
 		Util.consoleLog("interrupted=%b", interrupted);
         
         super.end(interrupted);
-        
+
         driveBase.stop();
                 
         Pose2d pose = driveBase.getOdometerPose();

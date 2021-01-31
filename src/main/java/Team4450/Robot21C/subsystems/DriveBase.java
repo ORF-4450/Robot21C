@@ -61,8 +61,8 @@ public class DriveBase extends SubsystemBase
 
 	private boolean				talonBrakeMode, lowSpeed, highSpeed;
 	
-	private double				cumulativeLeftCount = 0, cumulativeRightCount = 0;
-	private double				lastLeftCount = 0, lastRightCount = 0;
+	private double				cumulativeLeftDist = 0, cumulativeRightDist = 0;
+	private double				lastLeftDist = 0, lastRightDist = 0;
 	
 	private SlewRateLimiter		leftLimiter = new SlewRateLimiter(0.5);
 	private SlewRateLimiter		rightLimiter = new SlewRateLimiter(0.5);
@@ -251,26 +251,26 @@ public class DriveBase extends SubsystemBase
 		double left = leftEncoder.getDistance(DistanceUnit.Meters);
 		double right = rightEncoder.getDistance(DistanceUnit.Meters);
 		
-		cumulativeLeftCount += left - lastLeftCount;
-		cumulativeRightCount += right - lastRightCount;
+		cumulativeLeftDist += left - lastLeftDist;
+		cumulativeRightDist += right - lastRightDist;
 		
-		lastLeftCount = left;
-		lastRightCount = right;
+		lastLeftDist = left;
+		lastRightDist = right;
 		
-		odometer.update(RobotContainer.navx.getTotalYaw2d(), cumulativeLeftCount, cumulativeRightCount);
+    	odometer.update(RobotContainer.navx.getTotalYaw2d(), cumulativeLeftDist, cumulativeRightDist);
 
 		Pose2d pose = odometer.getPoseMeters();
 
-		//if (robot.isEnabled()) 
-		//	Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftCount, cumulativeRightCount,
-		//					pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalYaw2d().getDegrees());
+		if (robot.isEnabled()) 
+			Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftDist, cumulativeRightDist,
+							pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalYaw2d().getDegrees());
 		
 		// Update the sim field display with the current pose, or position, of the robot after we
 		// updated it above.
 		if (RobotBase.isSimulation()) fieldSim.setRobotPose(pose);
 	}
 	
-	// Updates simulation data prior to each periodic() call.
+	// Updates simulation data prior to each periodic() call when under simulation.
 	@Override
   	public void simulationPeriodic() 
   	{
@@ -301,7 +301,9 @@ public class DriveBase extends SubsystemBase
 			rightEncoderSim.setDistance(driveSim.getRightPositionMeters());
 			rightEncoderSim.setRate(driveSim.getRightVelocityMetersPerSecond());
 			
-			// Update the dummy analog gyro with GyroSim instance, which in turn drives our NavX class instance.
+            // Update the dummy analog gyro with GyroSim instance, which in turn drives our NavX class instance.
+            // We change the sign because the sign convention of Rotation2d is opposite of our convention used
+            // in the Navx class.
 			gyroSim.setAngle(-driveSim.getHeading().getDegrees());
 
 			Util.consoleLog("lcount=%d  ldist=%.4f  lget=%d ldist=%.4f", leftDummyEncoder.get(), 
@@ -547,9 +549,10 @@ public class DriveBase extends SubsystemBase
 		leftEncoder.reset();
 		rightEncoder.reset();
 
-		lastLeftCount = lastRightCount = 0;
+		lastLeftDist = lastRightDist = 0;
 
-		if (driveSim != null) driveSim.setPose(odometer.getPoseMeters());
+        // This has the effect of resetting encoder tracking in the driveSim.
+		if (driveSim != null) driveSim.setPose(driveSim.getPose());   //odometer.getPoseMeters());
 	}
 	
 	/**
@@ -575,9 +578,9 @@ public class DriveBase extends SubsystemBase
 		int rightError = rightEncoder.reset(2);
 		int leftError = leftEncoder.reset(110);
 
-		lastLeftCount = lastRightCount = 0;
+		lastLeftDist = lastRightDist = 0;
 
-		if (RobotBase.isSimulation()) driveSim.setPose(odometer.getPoseMeters());
+		if (RobotBase.isSimulation()) driveSim.setPose(driveSim.getPose());   //odometer.getPoseMeters());
 		
 		Util.consoleLog("after reset lget=%d  rget=%d  lerr=%d  rerr=%d", leftEncoder.get(), rightEncoder.get(),
 						leftError, rightError);
@@ -633,7 +636,7 @@ public class DriveBase extends SubsystemBase
 	 * Reset odometer to new position and cumulative angle. Pose x,y distances
 	 * in meters, as described in getOdometerPose() doc.
 	 * @param pose New starting pose.
-	 * @param heading Heading of robot (cumulative angle).
+	 * @param heading Heading of robot (cumulative angle) in degrees.
 	 */
 	public void resetOdometer(Pose2d pose, double heading)
 	{
@@ -645,9 +648,18 @@ public class DriveBase extends SubsystemBase
 
 		if (driveSim != null) driveSim.setPose(newPose);
 
-		cumulativeLeftCount = lastLeftCount = 0;
-		cumulativeRightCount = lastRightCount = 0;
-	}
+		cumulativeLeftDist = lastLeftDist = 0;
+		cumulativeRightDist = lastRightDist = 0;
+    }
+    
+    /**
+     * Zero the odometer pose. Typically used to reset odo during testing to measure
+     * distances.
+     */
+    public void zeroOdometer()
+    {
+        resetOdometer(new Pose2d(0, 0, new Rotation2d()), 0);
+    }
 	
 	/** 
 	 * Average of left and right encoder counts to see how far robot has moved.

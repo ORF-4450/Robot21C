@@ -24,7 +24,7 @@ public class ArcadeDrive extends CommandBase
   private final DoubleSupplier	powerSupplier, rotationSupplier;
   private final BooleanSupplier turnInPlaceSupplier;
 
-  private final double          steeringGain = .5;
+  private final double          steeringGain = .4;
   
   /**
    * Creates a new ArcadeDrive command.
@@ -88,12 +88,12 @@ public class ArcadeDrive extends CommandBase
   public void execute() 
   {
     double power = powerSupplier.getAsDouble(), rotation = rotationSupplier.getAsDouble();
-    double adj = power + .22;
+
     boolean turnInPlace = turnInPlaceSupplier.getAsBoolean();
 	  
 	LCD.printLine(LCD_2, "leftenc=%d  rightenc=%d", driveBase.getLeftEncoder(), driveBase.getRightEncoder());			
 
-    LCD.printLine(LCD_3, "power=%.3f adj=%.3f  rot=%.3f tip=%b  (lpwr=%.3f) (rpwr=%.3f)   ", power, adj, rotation,
+    LCD.printLine(LCD_3, "power=%.3f  rot=%.3f tip=%b  (lpwr=%.3f) (rpwr=%.3f)   ", power, rotation,
         turnInPlace, driveBase.getLeftPower(), driveBase.getRightPower());
 
 	LCD.printLine(LCD_7, "Lrpm=%d - Rrpm=%d  Lmax vel=%.3f - Rmax vel=%.3f", driveBase.leftEncoder.getRPM(),
@@ -102,7 +102,7 @@ public class ArcadeDrive extends CommandBase
 	  
 	Pose2d pose = driveBase.getOdometerPose();
 	  
-	LCD.printLine(LCD_8, "pose x=%.1fm  y=%.1fm  deg=%.1f  balleye=%b ", pose.getTranslation().getX(), pose.getTranslation().getY(),
+	LCD.printLine(LCD_8, "pose x=%.1fm  y=%.1fm  deg=%.1f  balleye=%b ", pose.getX(), pose.getY(),
 		pose.getRotation().getDegrees(), RobotContainer.pickup.getBallEye());
     
     if (turnInPlace)

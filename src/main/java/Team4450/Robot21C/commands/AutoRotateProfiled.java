@@ -15,16 +15,21 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 {
     private DriveBase    driveBase;
 
-    private static AutoRotateProfiled    thisInstance;
+    private static AutoRotateProfiled   thisInstance;
 
-    private static double kP = .1, kI = .15, kD = 0, toleranceDeg = .5, toleranceVelds = 1;
-    private static double kMaxRotationVelds = 70, kMaxRotationAcceldss = 70;
+    private static double kP = 2.0, kI = .20, kD = 0, toleranceRad = 1.0, toleranceVelrs = 1.0;
     private double        targetAngle, startTime;
     private int           iterations;
 
-    // Estimate feed forward gains as 12v / max velocity.
-    private SimpleMotorFeedforward  feedForward = new SimpleMotorFeedforward(12 / kMaxRotationVelds, 
-                                                                             12 / kMaxRotationVelds);
+    // We work in degrees but the profile works in radians, so we convert. 70 d/s is an eyeball
+    // estimate of rotational vel and acceleration is a guess.
+    private static double kMaxRotationVelrs = Math.toRadians(70);       // 70 degrees per second.
+    private static double kMaxRotationAccelrss = Math.toRadians(20);    // 20 degrees per second per second.
+
+    // Estimate both feed forward gains as 12v / max velocity. Feed forward does not seem to work
+    // but can't say for sure until we get the bot characterized and get the measured gains.
+    private SimpleMotorFeedforward  feedForward = new SimpleMotorFeedforward(12 / kMaxRotationVelrs, 
+                                                                             12 / kMaxRotationVelrs);
 
     /**
      * Turns to robot to the specified angle using a motion profile.
@@ -35,13 +40,15 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     public AutoRotateProfiled(DriveBase drive, double targetAngle) 
     {
         super(
-            new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(kMaxRotationVelds, kMaxRotationAcceldss)),
+            new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(kMaxRotationVelrs, 
+                                                                                   kMaxRotationAccelrss)),
             // Closed loop on yaw via reference so pid controller can call it on each execute() call.
-            RobotContainer.navx::getYaw,
+            RobotContainer.navx::getYawR,
             // Set target angle
-            targetAngle,
+            Math.toRadians(targetAngle),
             // Pipe output to turn robot
-            (output, setpoint) -> thisInstance.driveWithFeedForward(output, setpoint),
+            //(output, setpoint) -> thisInstance.driveWithFeedForward(output, setpoint),
+            (output, setpoint) -> drive.curvatureDrive(0, output, true),
             // Require the drive base
             drive);
 
@@ -58,7 +65,7 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 
         // Set the controller tolerance - the velocity tolerance ensures the robot is stationary at the
         // setpoint before it is considered as having reached the reference
-        getController().setTolerance(toleranceDeg); //, toleranceVelds);
+        getController().setTolerance(toleranceRad); //, toleranceVelrs);
     }
 
     // Drive combining feed forward with PID output (angle error). The set point computed
@@ -67,11 +74,11 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     // based on the error between angle setpoint and measured angle.
     private void driveWithFeedForward(double power, TrapezoidProfile.State setPoint)
     {
-        double ff = feedForward.calculate(setPoint.velocity);
+        double ff = feedForward.calculate(setPoint.position, setPoint.velocity);
 
         Util.consoleLog("ff=%.3fv", ff);
 
-        // Feed forward is in volts so we convert the PID output (degrees) to
+        // Feed forward is in volts so we convert the PID output (radians) to
         // voltage so it combines with ff and then we set motors with voltage.
         power = power * 12 + ff;
 
@@ -97,7 +104,7 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     {
         super.execute();
 
-        Util.consoleLog("goal=%.2f  sp=%.3f  m=%.3f  err=%.3f", getController().getGoal().position,
+        Util.consoleLog("goal=%.2fr  sp=%.3fr  m=%.3fr  err=%.3f", getController().getGoal().position,
                         getController().getSetpoint().position, m_measurement.getAsDouble(),
                         getController().getPositionError());
 

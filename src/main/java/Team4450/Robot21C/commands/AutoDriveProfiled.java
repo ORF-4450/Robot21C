@@ -22,7 +22,7 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
 {
     private DriveBase     driveBase;
 
-    private static double kP = .7, kI = .07, kD = 0, toleranceMeters = .05;
+    private static double kP = 1.5, kI = .15, kD = 0, toleranceMeters = .05;
     private static double kMaxVelms = 1.5, kMaxAccelmss = 1, curve;
     private double        distance, kSteeringGain = .05, startTime;
     private int           iterations;

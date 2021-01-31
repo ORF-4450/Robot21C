@@ -24,6 +24,7 @@ public class TankDrive extends CommandBase
   private final DoubleSupplier	leftPower, rightPower;
   
   private boolean				altDriveMode, steeringAssistMode;
+  private double                kPowerGain = 1.0;
 
   /**
    * Creates a new TankDrive command.
@@ -85,7 +86,7 @@ public class TankDrive extends CommandBase
   @Override
   public void execute() 
   {
-	  double leftY = leftPower.getAsDouble(), rightY = rightPower.getAsDouble(), angle;
+	  double leftY = leftPower.getAsDouble() * kPowerGain, rightY = rightPower.getAsDouble() * kPowerGain, angle;
 	  
 	  LCD.printLine(LCD_2, "leftenc=%d  rightenc=%d", driveBase.getLeftEncoder(), driveBase.getRightEncoder());			
 
@@ -98,7 +99,8 @@ public class TankDrive extends CommandBase
 	  
 	  Pose2d pose = driveBase.getOdometerPose();
 	  
-	  LCD.printLine(LCD_8, "pose x=%.1fm  y=%.1fm  deg=%.1f  balleye=%b ", pose.getTranslation().getX(), pose.getTranslation().getY(),
+      LCD.printLine(LCD_8, "pose x=%.1fm (lrot=%.2f)  y=%.1fm  deg=%.1f  balleye=%b ", pose.getX(), 
+                    driveBase.leftEncoder.getRotations(), pose.getY(),
 					pose.getRotation().getDegrees(), RobotContainer.pickup.getBallEye());
 	  
 	  if (altDriveMode)

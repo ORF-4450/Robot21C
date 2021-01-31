@@ -152,7 +152,7 @@ public class AutoRotate extends CommandBase
 			
 			driveBase.curvatureDrive(0, curve, true);
 			
-			Util.consoleLog("curve=%.2f  hdg=%.2f  yaw=%.2f  err=%.2f  time=%f", curve, 
+			Util.consoleLog("curve=%.2f  hdg=%.2f  yaw=%.2f  err=%.2f  time=%.3f", curve, 
 							 saveHeading, yaw, pidController.getError(), elapsedTime); 
 		}
 		else if (heading == Heading.heading)
