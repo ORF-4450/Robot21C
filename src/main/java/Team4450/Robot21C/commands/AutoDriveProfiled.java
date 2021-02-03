@@ -125,6 +125,6 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
         
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
         
-		Util.consoleLog("end -------------------------------------------------------------------------");
+		Util.consoleLog("end ---------------------------------------------------------------");
 	}
 }

@@ -40,6 +40,8 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
      */
     public AutoRotateProfiled(DriveBase drive, double targetAngle) 
     {
+        // Since we are extending ProfiledPIDCommand, we will call the underlying constructor
+        // to instantiate the components of ProfiledPIDCommand.
         super(
             new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(kMaxRotationVelrs, 
                                                                                    kMaxRotationAccelrss)),
@@ -100,6 +102,8 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     @Override
     public void execute()
     {
+        // Run the underlying ProfiledPIDCommand which calls ProfiledPIDController to compute
+        // the motor outputs and send them to the consumer we defined above (curvatureDrive).
         super.execute();
 
         Util.consoleLog("goal=%.2fr  sp=%.3fr  m=%.3fr  err=%.3f", getController().getGoal().position,

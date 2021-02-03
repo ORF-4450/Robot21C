@@ -1,6 +1,7 @@
 package Team4450.Robot21C.commands;
 
 import Team4450.Lib.LCD;
+import Team4450.Lib.SRXMagneticEncoderRelative;
 import Team4450.Lib.SynchronousPID;
 import Team4450.Lib.Util;
 import static Team4450.Robot21C.Constants.*;
@@ -38,8 +39,8 @@ public class AutoDrive extends CommandBase
 	 * @param heading Heading is measure steering yaw from last set navx target heading, angle is measure yaw
 	 * from direction robot is pointing when driving starts.
 	 * 
-	 * Note: This routine is designed for tank drive and the P,I,D,steering gain values will likely need adjusting for each
-	 * new drive base as gear ratios and wheel configuration may require different values to stop smoothly
+	 * Note: This routine is designed for tank drive and the P,I,D,steering gain values will likely need adjusting 
+     * for each new drive base as gear ratios and wheel configuration may require different values to stop smoothly
 	 * and accurately.
 	 */
 	public AutoDrive(DriveBase driveBase, 
@@ -75,7 +76,39 @@ public class AutoDrive extends CommandBase
 		
 		addRequirements(this.driveBase);
 	}
-	
+
+    /**
+	 * Creates a new AutoDrive command.
+	 * 
+	 * Auto drive straight in set direction and power for specified encoder count. Stops
+	 * with or without brakes on CAN bus drive system. Uses NavX yaw to drive straight.
+	 *
+	 * @param driveBase The DriveBase subsystem used by this command to drive the robot.
+	 * @param power Power applied, + is forward.
+	 * @param distane Target distance to move in inches, always +.
+	 * @param stop Stop stops motors at end of move, dontStop leaves power on to flow into next move.
+	 * @param brakes Brakes on or off.
+	 * @param pid On is use PID to control movement, off is simple drive.
+	 * @param heading Heading is measure steering yaw from last set navx target heading, angle is measure yaw
+	 * from direction robot is pointing when driving starts.
+	 * 
+	 * Note: This routine is designed for tank drive and the P,I,D,steering gain values will likely need adjusting 
+     * for each new drive base as gear ratios and wheel configuration may require different values to stop smoothly
+	 * and accurately.
+	 */
+    
+    public AutoDrive(DriveBase driveBase, 
+					 double power, 
+					 double distance, 
+					 StopMotors stop, 
+					 Brakes brakes, 
+					 Pid pid, 
+					 Heading heading) 
+	{
+        this(driveBase, power, SRXMagneticEncoderRelative.getTicksForDistance(distance, DRIVE_WHEEL_DIAMETER),
+                  stop, brakes, pid, heading);
+    }
+
 	@Override
 	public void initialize()
 	{
@@ -189,7 +222,7 @@ public class AutoDrive extends CommandBase
 
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
 
-		Util.consoleLog("end ---------------------------------------------------------------");
+		Util.consoleLog("end -----------------------------------------------------");
 	}
 	
 	@Override

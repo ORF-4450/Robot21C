@@ -2,10 +2,13 @@ package Team4450.Robot21C.commands;
 
 import Team4450.Robot21C.subsystems.DriveBase;
 
+import java.util.function.DoubleSupplier;
+
 import Team4450.Lib.Util;
 import Team4450.Robot21C.RobotContainer;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
 /**
@@ -17,7 +20,7 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
   private DriveBase     driveBase;
 
   //private static double kP = .005, kI = .01, kD = 0, kToleranceDeg = 1, kToleranceVelds = 10;
-  private static double kP = 2.0, kI = .20, kD = 0, kToleranceRad = 1.0, kToleranceVelrs = 1.0;
+  private static double kP = 2.0, kI = .20, kD = 0, kToleranceRad = 1.0, kToleranceVelrs = 1.0, goal;
   private double        startTime, targetHeading;
   private int           iterations;
 
@@ -37,9 +40,9 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
     super(
       new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(kMaxRotationVelrs, kMaxRotationAccelrss)),
       // Closed loop on heading via reference so pid controller can call it on each execute() call.
-      RobotContainer.navx::getHeadingYawR,
-      // Set target heading.
-      Math.toRadians(0),
+      RobotContainer.navx::getYawR,
+      // Set target yaw by wrapping goal variable as DoubleSupplier. Will set goal in initialize() below.
+      () -> goal,
       // Pipe output to turn robot
       (output, setpoint) -> drive.curvatureDrive(0, output, true),
       // Require the drive
@@ -53,7 +56,7 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
     targetHeading = heading;
     
     // Set the controller to be continuous (because it is an angle controller)
-    getController().enableContinuousInput(-180, 180);
+    //getController().enableContinuousInput(-180, 180);
 
     // Set the controller tolerance - the velocity tolerance ensures the robot is stationary at the
     // setpoint before it is considered as having reached the reference
@@ -70,14 +73,17 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
     // Try to prevent over rotation.
     driveBase.SetCANTalonBrakeMode(true);
 
-    // Do not reset navx yaw in this routine. It will foul up first call to getHeading().
-
-    Util.consoleLog("start hdng=%.2f", RobotContainer.navx.getHeading());
+    // Set target heading then get heading yaw in raidans and save in goal variable.
 
     RobotContainer.navx.setTargetHeading(targetHeading);
 
-    // Set profile controller initial heading.
-   //getController().reset(RobotContainer.navx.getHeadingR());
+    goal = RobotContainer.navx.getHeadingYawR();
+
+    Util.consoleLog("start hdng=%.2f  tgt=%.2f  yaw=%.2f yawR=%.2f", RobotContainer.navx.getHeading(), targetHeading,
+                    RobotContainer.navx.getHeadingYaw(), RobotContainer.navx.getHeadingYawR());
+         
+    // Reset gyro yaw to zero, wait up to 5 sec for navx to return zero yaw.
+    RobotContainer.navx.resetYawWait(1, 5000);
   }
 
   @Override
@@ -85,9 +91,9 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
   {
       super.execute();
 
-      Util.consoleLog("goal=%.2f  sp=%.5f  m=%.3f  err=%.3f", getController().getGoal().position,
+      Util.consoleLog("goal=%.2fr  sp=%.5fr  m=%.3fr  err=%.3f goal=%.2f", getController().getGoal().position,
                      getController().getSetpoint().position, m_measurement.getAsDouble(),
-                     getController().getPositionError());
+                     getController().getPositionError(), goal);
 
       Util.consoleLog("yaw=%.2f hdngyaw=%.2f hdng=%.2f lpwr=%.2f rpwr=%.2f", RobotContainer.navx.getYaw(), 
                       RobotContainer.navx.getHeadingYaw(), RobotContainer.navx.getHeading(), 

@@ -103,13 +103,13 @@ public class TestAuto2 extends CommandBase
 		
 		command = new AutoDriveProfiled(driveBase, 2, AutoDrive.StopMotors.stop, AutoDrive.Brakes.on);
 		
-		//commands.addCommands(command);
+		commands.addCommands(command);
 
         // Now rotate to heading 0.
 
-		command = new AutoRotateHdgProfiled(driveBase, 0);
+		command = new AutoRotateHdgProfiled(driveBase, 180);
 
-		//commands.addCommands(command);
+		commands.addCommands(command);
         
         // Now drive a curve to 90 deg right.
 
