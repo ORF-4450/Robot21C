@@ -21,6 +21,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
+/**
+ * This is an example autonomous command based on 4450 customized version of
+ * Wpilib Trajetory following commands.
+ */
 public class TestAuto3 extends CommandBase
 {
 	private final DriveBase driveBase;

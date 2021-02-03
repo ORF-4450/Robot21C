@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
 /**
- * A command that will turn the robot to the specified angle using a motion profile.
+ * A command that will turn the robot to the specified angle using a motion profiled
+ * PID command.
  */
 public class AutoRotateProfiled extends ProfiledPIDCommand 
 {
@@ -60,12 +61,9 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
         this.targetAngle = targetAngle;
         thisInstance = this;
 
-        // Set the controller to be continuous (because it is an angle controller)
-        //getController().enableContinuousInput(-180, 180);
-
         // Set the controller tolerance - the velocity tolerance ensures the robot is stationary at the
         // setpoint before it is considered as having reached the reference
-        getController().setTolerance(toleranceRad); //, toleranceVelrs);
+        getController().setTolerance(toleranceRad, toleranceVelrs);
     }
 
     // Drive combining feed forward with PID output (angle error). The set point computed

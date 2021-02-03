@@ -13,6 +13,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
+/**
+ * This is an example autonomous command using 4450 written auto driving
+ * commands which are customized versions of the Wpilib motion profile 
+ * based PID commands.
+ */
 public class TestAuto2 extends CommandBase
 {
 	private final DriveBase driveBase;
@@ -98,13 +103,13 @@ public class TestAuto2 extends CommandBase
 		
 		command = new AutoDriveProfiled(driveBase, 2, AutoDrive.StopMotors.stop, AutoDrive.Brakes.on);
 		
-		commands.addCommands(command);
+		//commands.addCommands(command);
 
         // Now rotate to heading 0.
 
-		command = new AutoRotateHdgProfiled(driveBase, 100);
+		command = new AutoRotateHdgProfiled(driveBase, 0);
 
-		commands.addCommands(command);
+		//commands.addCommands(command);
         
         // Now drive a curve to 90 deg right.
 
@@ -143,7 +148,7 @@ public class TestAuto2 extends CommandBase
 		driveBase.stop();
 		
 		Util.consoleLog("final heading=%.2f  Radians=%.2f", RobotContainer.navx.getHeading(), RobotContainer.navx.getHeadingR());
-		Util.consoleLog("end -------------------------------------------------------------------------");
+		Util.consoleLog("end ---------------------------------------------------------------");
 	}
 	
 	/**

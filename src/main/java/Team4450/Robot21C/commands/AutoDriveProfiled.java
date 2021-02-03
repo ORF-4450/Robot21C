@@ -15,14 +15,14 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
 /**
- * A command that will drive the robot to the specified distance using a motion profile and
- * steering correction.
+ * A command that will drive the robot to the specified distance using a motion profiled
+ * PID command and steering correction.
  */
 public class AutoDriveProfiled extends ProfiledPIDCommand 
 {
     private DriveBase     driveBase;
 
-    private static double kP = 1.5, kI = .15, kD = 0, toleranceMeters = .05;
+    private static double kP = 1.2, kI = .15, kD = 0, toleranceMeters = .05;
     private static double kMaxVelms = 1.5, kMaxAccelmss = 1, curve;
     private double        distance, kSteeringGain = .05, startTime;
     private int           iterations;

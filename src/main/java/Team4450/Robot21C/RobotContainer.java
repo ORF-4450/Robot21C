@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,7 +31,6 @@ import Team4450.Robot21C.commands.Climb;
 import Team4450.Robot21C.commands.TankDrive;
 import Team4450.Robot21C.commands.NotifierCommand;
 import Team4450.Robot21C.commands.ShiftGears;
-import Team4450.Robot21C.commands.TestAuto;
 import Team4450.Robot21C.commands.TestAuto1;
 import Team4450.Robot21C.commands.TestAuto2;
 import Team4450.Robot21C.commands.TestAuto3;
@@ -106,11 +104,11 @@ public class RobotContainer
 	private MonitorCompressor	monitorCompressorThread;
 	private CameraFeed			cameraFeed;
 
-	// List of autonomous programs.
+    // List of autonomous programs. Any change here must be reflected in getAutonomousCommand()
+    // and setAutoChoices() which appear later in this class.
 	private enum AutoProgram
 	{
 		NoProgram,
-		TestAuto,
 		TestAuto1,
         TestAuto2,
         TestAuto3
@@ -367,10 +365,6 @@ public class RobotContainer
 				autoCommand = null;
 				break;
 				
-			case TestAuto:
-				autoCommand = new TestAuto(driveBase);
-				break;
-				
 			case TestAuto1:
 				autoCommand = new TestAuto1(driveBase);
 				break;
@@ -389,6 +383,24 @@ public class RobotContainer
 		return autoCommand;
 	}
   
+    // Configure SendableChooser (drop down list) with auto program choices and
+	// send them to SmartDashboard/ShuffleBoard.
+	
+	private static void setAutoChoices()
+	{
+		Util.consoleLog();
+		
+		autoChooser = new SendableChooser<AutoProgram>();
+		
+		SendableRegistry.add(autoChooser, "Auto Program");
+		autoChooser.setDefaultOption("No Program", AutoProgram.NoProgram);
+		autoChooser.addOption("Test Auto Program 1", AutoProgram.TestAuto1);		
+		autoChooser.addOption("Test Auto Program 2", AutoProgram.TestAuto2);		
+		autoChooser.addOption("Test Auto Program 3", AutoProgram.TestAuto3);		
+				
+		SmartDashboard.putData(autoChooser);
+	}
+
 	/**
 	 *  Get and log information about the current match from the FMS or DS.
 	 */
@@ -405,25 +417,6 @@ public class RobotContainer
     		  		   gameMessage);
 	}
 		
-	// Configure SendableChooser (drop down list) with auto program choices and
-	// send them to SmartDashboard/ShuffleBoard.
-	
-	private static void setAutoChoices()
-	{
-		Util.consoleLog();
-		
-		autoChooser = new SendableChooser<AutoProgram>();
-		
-		SendableRegistry.add(autoChooser, "Auto Program");
-		autoChooser.setDefaultOption("No Program", AutoProgram.NoProgram);
-		autoChooser.addOption("Test Auto No Action", AutoProgram.TestAuto);		
-		autoChooser.addOption("Test Auto Program 1", AutoProgram.TestAuto1);		
-		autoChooser.addOption("Test Auto Program 2", AutoProgram.TestAuto2);		
-		autoChooser.addOption("Test Auto Program 3", AutoProgram.TestAuto3);		
-				
-		SmartDashboard.putData(autoChooser);
-	}
-
 	/**
 	 * Reset sticky faults in PDP and PCM and turn compressor on/off as
 	 * set by switch on DS.

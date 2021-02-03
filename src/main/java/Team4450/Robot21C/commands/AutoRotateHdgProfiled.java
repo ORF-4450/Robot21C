@@ -9,16 +9,23 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
 /**
- * A command that will turn the robot to the specified angle using a motion profile.
+ * A command that will turn the robot to the specified angle using a motion profiled
+ * PID command.
  */
 public class AutoRotateHdgProfiled extends ProfiledPIDCommand 
 {
   private DriveBase     driveBase;
 
-  private static double kP = .005, kI = .01, kD = 0, kToleranceDeg = 1, kToleranceVelds = 10;
-  private static double kMaxRotationVelds = 70, kMaxRotationAcceldss = 70, startTime;
+  //private static double kP = .005, kI = .01, kD = 0, kToleranceDeg = 1, kToleranceVelds = 10;
+  private static double kP = 2.0, kI = .20, kD = 0, kToleranceRad = 1.0, kToleranceVelrs = 1.0;
+  private double        startTime, targetHeading;
   private int           iterations;
-  
+
+  // We work in degrees but the profile works in radians, so we convert. 70 d/s is an eyeball
+  // estimate of rotational vel and acceleration is a guess.
+  private static double kMaxRotationVelrs = Math.toRadians(70);       // 70 degrees per second.
+  private static double kMaxRotationAccelrss = Math.toRadians(20);    // 20 degrees per second per second.
+
   /**
    * Turns to robot to the specified angle using a motion profile.
    *
@@ -28,13 +35,13 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
   public AutoRotateHdgProfiled(DriveBase drive, double heading) 
   {
     super(
-      new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(kMaxRotationVelds, kMaxRotationAcceldss)),
+      new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(kMaxRotationVelrs, kMaxRotationAccelrss)),
       // Closed loop on heading via reference so pid controller can call it on each execute() call.
-      RobotContainer.navx::getHeading,
+      RobotContainer.navx::getHeadingYawR,
       // Set target heading.
-      heading,
+      Math.toRadians(0),
       // Pipe output to turn robot
-      (output, setpoint) -> drive.arcadeDrive(0, output, false),
+      (output, setpoint) -> drive.curvatureDrive(0, output, true),
       // Require the drive
       drive);
 
@@ -43,13 +50,14 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
     Util.consoleLog("heading=%.1f  kP=%.3f  kI=%.3f", heading, kP, kI);
 
     driveBase = drive;
+    targetHeading = heading;
     
     // Set the controller to be continuous (because it is an angle controller)
     getController().enableContinuousInput(-180, 180);
 
     // Set the controller tolerance - the velocity tolerance ensures the robot is stationary at the
     // setpoint before it is considered as having reached the reference
-    getController().setTolerance(kToleranceDeg);//, kToleranceVelds);
+    getController().setTolerance(kToleranceRad, kToleranceVelrs);
   }
   
   @Override
@@ -66,8 +74,10 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
 
     Util.consoleLog("start hdng=%.2f", RobotContainer.navx.getHeading());
 
+    RobotContainer.navx.setTargetHeading(targetHeading);
+
     // Set profile controller initial heading.
-    getController().reset(RobotContainer.navx.getHeadingR());
+   //getController().reset(RobotContainer.navx.getHeadingR());
   }
 
   @Override

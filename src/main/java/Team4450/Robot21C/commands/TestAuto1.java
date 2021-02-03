@@ -13,6 +13,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
+/**
+ * This is an example autonomous command using 4450 written library of auto driving
+ * support commands.
+ */
 public class TestAuto1 extends CommandBase
 {
 	private final DriveBase driveBase;
@@ -94,7 +98,7 @@ public class TestAuto1 extends CommandBase
 		
 		// Next action is to rotate 180 degrees left.
 		
-		command = new AutoRotate(driveBase, .30, -180, AutoDrive.Pid.on, AutoDrive.Heading.angle);
+		command = new AutoRotate(driveBase, .30, -90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 
 		commands.addCommands(command);
 		
@@ -106,7 +110,7 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		//commands.addCommands(command);
 
 		// Next rotate right 90.
 
@@ -151,7 +155,7 @@ public class TestAuto1 extends CommandBase
 		driveBase.stop();
 		
 		Util.consoleLog("final heading=%.2f  Radians=%.2f", RobotContainer.navx.getHeading(), RobotContainer.navx.getHeadingR());
-		Util.consoleLog("end -------------------------------------------------------------------------");
+		Util.consoleLog("end ---------------------------------------------------------------");
 	}
 	
 	/**
