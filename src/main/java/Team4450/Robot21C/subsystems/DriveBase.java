@@ -257,9 +257,9 @@ public class DriveBase extends SubsystemBase
 		lastLeftDist = left;
 		lastRightDist = right;
 		
-    	odometer.update(RobotContainer.navx.getTotalYaw2d(), cumulativeLeftDist, cumulativeRightDist);
+    	Pose2d pose = odometer.update(RobotContainer.navx.getTotalYaw2d(), cumulativeLeftDist, cumulativeRightDist);
 
-		Pose2d pose = odometer.getPoseMeters();
+		//Pose2d pose = odometer.getPoseMeters();
 
 		if (robot.isEnabled()) 
 			Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftDist, cumulativeRightDist,
@@ -278,8 +278,8 @@ public class DriveBase extends SubsystemBase
 		{
 			// To update our simulation, we set motor voltage inputs, update the
 			// simulation, and write the simulated positions and velocities to our
-			// simulated encoder and gyro. We negate the left side so that positive
-			// voltages make the left side move forward.
+			// simulated encoder and gyro. We negate the right side so that negaive
+			// voltages make the right side move forward.
 			driveSim.setInputs(LRCanTalon.get() * RobotController.getInputVoltage(),
 							   -RRCanTalon.get() * RobotController.getInputVoltage());
 		
@@ -397,7 +397,7 @@ public class DriveBase extends SubsystemBase
     public void setVoltage(double leftVolts, double rightVolts)
     {
         LRCanTalon.setVoltage(leftVolts);
-        RRCanTalon.setVoltage(rightVolts);
+        RRCanTalon.setVoltage(-rightVolts);
     }
 	// Initialize and Log status indication from CANTalon. If we see an exception
 	// or a talon has low voltage value, it did not get recognized by the RR on start up.
@@ -638,7 +638,7 @@ public class DriveBase extends SubsystemBase
 	 * @param pose New starting pose.
 	 * @param heading Heading of robot (cumulative angle) in degrees.
 	 */
-	public void resetOdometer(Pose2d pose, double heading)
+	public Pose2d resetOdometer(Pose2d pose, double heading)
 	{
 		odometer.resetPosition(pose, Rotation2d.fromDegrees(heading));
 		
@@ -649,7 +649,9 @@ public class DriveBase extends SubsystemBase
 		if (driveSim != null) driveSim.setPose(newPose);
 
 		cumulativeLeftDist = lastLeftDist = 0;
-		cumulativeRightDist = lastRightDist = 0;
+        cumulativeRightDist = lastRightDist = 0;
+        
+        return newPose;
     }
     
     /**
@@ -710,7 +712,7 @@ public class DriveBase extends SubsystemBase
     /**
      * Returns the current wheel speeds of the robot.
      *
-     * @return The current wheel speeds.
+     * @return The current wheel speeds (meters per second).
      */
     public DifferentialDriveWheelSpeeds getWheelSpeeds() 
     {

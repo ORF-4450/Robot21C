@@ -8,6 +8,8 @@ import static Team4450.Robot21C.Constants.*;
 import java.util.List;
 
 import Team4450.Robot21C.RobotContainer;
+import Team4450.Robot21C.commands.AutoDrive.Brakes;
+import Team4450.Robot21C.commands.AutoDrive.StopMotors;
 import Team4450.Robot21C.subsystems.DriveBase;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -63,7 +65,7 @@ public class TestAuto3 extends CommandBase
 		
 		driveBase.setMotorSafety(false);  // Turn off watchdog.
 		
-	  	LCD.printLine(LCD_1, "Mode: Auto - TestAuto1 - All=%s, Location=%d, FMS=%b, msg=%s", alliance.name(), location, 
+	  	LCD.printLine(LCD_1, "Mode: Auto - TestAuto3 - All=%s, Location=%d, FMS=%b, msg=%s", alliance.name(), location, 
 				ds.isFMSAttached(), gameMessage);
 		
 		// Reset wheel encoders.	  	
@@ -85,7 +87,7 @@ public class TestAuto3 extends CommandBase
 		// Reset odometry tracking with initial x,y position and heading (set above) specific to this 
 		// auto routine. Robot must be placed in same starting location each time for pose tracking
 		// to work. The settings below are the starting point default for 2021 field.
-		driveBase.resetOdometer(new Pose2d(kInitialX, kInitialY, new Rotation2d()), RobotContainer.navx.getHeading());
+		Pose2d startPose = driveBase.resetOdometer(new Pose2d(kInitialX, kInitialY, new Rotation2d()), RobotContainer.navx.getHeading());
 		
 		// Since a typical autonomous program consists of multiple actions, which are commands
 		// in this style of programming, we will create a list of commands for the actions to
@@ -100,23 +102,22 @@ public class TestAuto3 extends CommandBase
 
         TrajectoryConfig config = AutoDriveTrajectory.getTrajectoryConfig(constraint);
 
-        Pose2d startPose = driveBase.getOdometerPose();
+        //2Pose2d startPose = driveBase.getOdometerPose();
 
         Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
                                         // Start at the origin set above
                                         startPose,
                                         // Pass through these two interior waypoints, making an 's' curve path
                                         List.of(
-                                            new Translation2d(2, startPose.getY()),
-                                            new Translation2d(3, startPose.getY())
+                                            new Translation2d(startPose.getX() + 3, startPose.getY() + 1),
+                                            new Translation2d(startPose.getX() + 6, startPose.getY() + 1)
                                         ),
                                         // End 4 meters straight ahead of where we started, facing forward
-                                        new Pose2d(4, startPose.getY(), startPose.getRotation()),
+                                        new Pose2d(startPose.getX() + 9, startPose.getY(), startPose.getRotation()),
                                         // Pass config
-                                        config
-        );		
+                                        config);		
         
-		command = new AutoDriveTrajectory(driveBase, exampleTrajectory);
+		command = new AutoDriveTrajectory(driveBase, exampleTrajectory, StopMotors.stop, Brakes.on);
 		
 		commands.addCommands(command);
 		

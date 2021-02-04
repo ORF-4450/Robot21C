@@ -1,10 +1,10 @@
 package Team4450.Robot21C.commands;
 
+import Team4450.Robot21C.commands.AutoDrive.Brakes;
+import Team4450.Robot21C.commands.AutoDrive.StopMotors;
 import Team4450.Robot21C.subsystems.DriveBase;
 import Team4450.Lib.Util;
 import static Team4450.Robot21C.Constants.*;
-import Team4450.Robot21C.RobotContainer;
-
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -15,6 +15,11 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
+/**
+ * A command that will follow a trajectory using a Ramsete controller. All of the parameters
+ * below are a guess. Need to characterize the robot to get good numbers. Works so-so with
+ * the guesses.
+ */
 public class AutoDriveTrajectory extends RamseteCommand
 {
     private static double   kP = 12 / MAX_WHEEL_SPEED_MS, kI = kP / 100, kD = 0, startTime;
@@ -22,6 +27,8 @@ public class AutoDriveTrajectory extends RamseteCommand
 
     private DriveBase       driveBase;
     private Trajectory      trajectory;
+    private StopMotors      stop;
+    private Brakes          brakes;
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     private static double   kRamseteB = 2, kRamseteZeta = .7;
@@ -31,7 +38,14 @@ public class AutoDriveTrajectory extends RamseteCommand
     private static double   ksVolts = .2, kvVoltSecondsPerMeter = 2;
     private static double   kaVoltSecondsSquaredPerMeter = .2;
 
-    AutoDriveTrajectory(DriveBase driveBase, Trajectory trajectory)
+    /**
+     * Auto drive the given trajectory.
+     * @param driveBase     Drive base to use.
+     * @param trajectory    Trajectory to follow.
+     * @param stop          Set stop or not at trajectory end.
+     * @param brakes        If stopping, set if brakes on or off.
+     */
+    AutoDriveTrajectory(DriveBase driveBase, Trajectory trajectory, StopMotors stop, Brakes brakes)
     {
         super(trajectory,
                 driveBase::getOdometerPose,
@@ -39,14 +53,16 @@ public class AutoDriveTrajectory extends RamseteCommand
                 new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter),
                 new DifferentialDriveKinematics(Util.inchesToMeters(TRACK_WIDTH)),
                 driveBase::getWheelSpeeds,
-                new PIDController(kP, kI, kD),
-                new PIDController(kP, kI, kD),
-                // RamseteCommand passes volts to the callback
+                new PIDController(kP, kI, kD),  // left motor PID controller.
+                new PIDController(kP, kI, kD),  // Right motor PID controller.
+                // RamseteCommand passes left/right volts to the drive base callback.
                 driveBase::setVoltage,
                 driveBase);
 
         this.driveBase = driveBase;
         this.trajectory = trajectory;
+        this.stop = stop;
+        this.brakes = brakes;
     }
     
     @Override
@@ -58,7 +74,11 @@ public class AutoDriveTrajectory extends RamseteCommand
 
         super.initialize();
 
-        // Synchronize driveBase odometer with trajectory initial pose.
+        if (brakes == Brakes.on)
+            driveBase.SetCANTalonBrakeMode(true);
+        else
+            driveBase.SetCANTalonBrakeMode(false);
+
         Pose2d pose = trajectory.getInitialPose();
 
         Util.consoleLog("initial traj poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
@@ -66,8 +86,6 @@ public class AutoDriveTrajectory extends RamseteCommand
         pose = driveBase.getOdometerPose();
 
         Util.consoleLog("initial robot poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
-
-        //driveBase.resetOdometer(pose, pose.getRotation().getDegrees());
     }
 
     @Override
@@ -79,7 +97,7 @@ public class AutoDriveTrajectory extends RamseteCommand
         
         Pose2d pose = driveBase.getOdometerPose();
 
-        Util.consoleLog("robot poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
+        Util.consoleLog("robot poseX=%.2f  poseY=%.2f  poseAng=%.2f", pose.getX(), pose.getY(), -pose.getRotation().getDegrees());
 
         iterations++;
     }
@@ -98,11 +116,11 @@ public class AutoDriveTrajectory extends RamseteCommand
         
         super.end(interrupted);
 
-        driveBase.stop();
+        if (stop == StopMotors.stop) driveBase.stop();
                 
         Pose2d pose = driveBase.getOdometerPose();
 
-        Util.consoleLog("poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), -pose.getRotation().getDegrees());
+        Util.consoleLog("poseX=%.2f  poseY=%.2f  poseAng=%.2f", pose.getX(), pose.getY(), -pose.getRotation().getDegrees());
 
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
 

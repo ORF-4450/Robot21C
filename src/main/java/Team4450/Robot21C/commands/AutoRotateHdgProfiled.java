@@ -8,12 +8,12 @@ import Team4450.Lib.Util;
 import Team4450.Robot21C.RobotContainer;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
 /**
  * A command that will turn the robot to the specified angle using a motion profiled
- * PID command.
+ * PID command. Velocity and accelleration are a guess, need to characterize the robot 
+ * for good numbers.
  */
 public class AutoRotateHdgProfiled extends ProfiledPIDCommand 
 {

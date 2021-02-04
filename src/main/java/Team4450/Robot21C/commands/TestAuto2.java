@@ -56,7 +56,7 @@ public class TestAuto2 extends CommandBase
 		
 		driveBase.setMotorSafety(false);  // Turn off watchdog.
 		
-	  	LCD.printLine(LCD_1, "Mode: Auto - TestAuto1 - All=%s, Location=%d, FMS=%b, msg=%s", alliance.name(), location, 
+	  	LCD.printLine(LCD_1, "Mode: Auto - TestAuto2 - All=%s, Location=%d, FMS=%b, msg=%s", alliance.name(), location, 
 				ds.isFMSAttached(), gameMessage);
 		
 		// Reset wheel encoders.	  	

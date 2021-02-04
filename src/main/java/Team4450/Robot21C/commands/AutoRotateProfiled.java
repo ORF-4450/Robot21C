@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
 /**
  * A command that will turn the robot to the specified angle using a motion profiled
- * PID command.
+ * PID command. Velocity and accelleration are a guess, need to characterize the robot 
+ * for good numbers. With characterized gains, we can try the feed forward...it does 
+ * not work well with the esitmated/guessed gains.
  */
 public class AutoRotateProfiled extends ProfiledPIDCommand 
 {
