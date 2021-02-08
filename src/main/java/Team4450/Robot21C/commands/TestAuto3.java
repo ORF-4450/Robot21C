@@ -5,19 +5,22 @@ import Team4450.Lib.Util;
 
 import static Team4450.Robot21C.Constants.*;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import Team4450.Robot21C.RobotContainer;
 import Team4450.Robot21C.commands.AutoDrive.Brakes;
 import Team4450.Robot21C.commands.AutoDrive.StopMotors;
 import Team4450.Robot21C.subsystems.DriveBase;
-
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -104,19 +107,34 @@ public class TestAuto3 extends CommandBase
 
         //2Pose2d startPose = driveBase.getOdometerPose();
 
+        // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        //                                 // Start at the origin set above
+        //                                 startPose,
+        //                                 // Pass through these two interior waypoints, making an 's' curve path
+        //                                 List.of(
+        //                                     new Translation2d(startPose.getX() + 3, startPose.getY() + 1),
+        //                                     new Translation2d(startPose.getX() + 6, startPose.getY() + 1)
+        //                                 ),
+        //                                 // End 4 meters straight ahead of where we started, facing forward
+        //                                 new Pose2d(startPose.getX() + 9, startPose.getY(), startPose.getRotation()),
+        //                                 // Pass config
+        //                                 config);		
+        
+        //loadTrajectoryFile("myfile.json");
+
         Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
                                         // Start at the origin set above
                                         startPose,
                                         // Pass through these two interior waypoints, making an 's' curve path
                                         List.of(
-                                            new Translation2d(startPose.getX() + 3, startPose.getY() + 1),
-                                            new Translation2d(startPose.getX() + 6, startPose.getY() + 1)
+                                            new Translation2d(startPose.getX() + 1, startPose.getY()),
+                                            new Translation2d(startPose.getX() + 2, startPose.getY())
                                         ),
                                         // End 4 meters straight ahead of where we started, facing forward
-                                        new Pose2d(startPose.getX() + 9, startPose.getY(), startPose.getRotation()),
+                                        new Pose2d(startPose.getX() + 3, startPose.getY(), startPose.getRotation()),
                                         // Pass config
                                         config);		
-        
+
 		command = new AutoDriveTrajectory(driveBase, exampleTrajectory, StopMotors.stop, Brakes.on);
 		
 		commands.addCommands(command);
@@ -160,5 +178,26 @@ public class TestAuto3 extends CommandBase
 		// due to how FIRST coded the SquentialCommandGroup class. 
 		
 		return !commands.isScheduled();
-	}
+    }
+    
+    /**
+     * Loads a Pathweaver path file into a trajectory.
+     * @param fileName Name of file. Will automatically look in deploy directory.
+     * @return The path's trajectory.
+     */
+    private Trajectory loadTrajectoryFile(String fileName)
+    {
+        Trajectory trajectory;
+        
+        try 
+        {
+          Path trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve(fileName);
+          
+          trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryFilePath);
+        } catch (IOException ex) {
+          throw new RuntimeException("Unable to open trajectory: " + ex.toString());
+        }
+
+        return trajectory;
+    }
 }

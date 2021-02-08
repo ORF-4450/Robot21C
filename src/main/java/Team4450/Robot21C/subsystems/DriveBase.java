@@ -397,8 +397,23 @@ public class DriveBase extends SubsystemBase
     public void setVoltage(double leftVolts, double rightVolts)
     {
         LRCanTalon.setVoltage(leftVolts);
-        RRCanTalon.setVoltage(-rightVolts);
+        RRCanTalon.setVoltage(rightVolts);
     }
+    
+    /**
+     * It is not clear which of these two methods is correct. The above
+     * method should work because we globally reverse motors to make
+     * robot drive forward with + power or voltages. However, negation
+     * of right side voltage appears to be necessary for trajectory
+     * following with voltages. So this method is provided to make
+     * the trajectory following Command work. More investigation
+     * needed...
+     */
+    public void setVoltage2(double leftVolts, double rightVolts)
+    {
+        setVoltage(leftVolts, -rightVolts);
+    }
+
 	// Initialize and Log status indication from CANTalon. If we see an exception
 	// or a talon has low voltage value, it did not get recognized by the RR on start up.
 	  

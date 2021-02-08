@@ -20,7 +20,7 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 
     private static AutoRotateProfiled   thisInstance;
 
-    private static double kP = 2.0, kI = .20, kD = 0, toleranceRad = 1.0, toleranceVelrs = 1.0;
+    private static double kP = 2.5, kI = .20, kD = 0, toleranceRad = 1.0, toleranceVelrs = 1.0;
     private double        targetAngle, startTime;
     private int           iterations;
 
@@ -73,18 +73,22 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     // Drive combining feed forward with PID output (angle error). The set point computed
     // by the motion profile feeds the feed forward calculation. So the profile drives both
     // the feed forward (base power setting in volts) and we add in a factor from the PID
-    // based on the error between angle setpoint and measured angle.
+    // based on the error between angle setpoint and measured angle. 
+    // Update: this code does not work at all. Not sure why but will wait to experiment with
+    // this after characterization. It may be that the kP value used with FF is quite a bit
+    // different than the 2.0 used without FF. However, the FF voltage is WAY off and that
+    // may be the result of guessing the FF gains.
     private void driveWithFeedForward(double power, TrapezoidProfile.State setPoint)
     {
         double ff = feedForward.calculate(setPoint.position, setPoint.velocity);
 
-        Util.consoleLog("ff=%.3fv", ff);
+        Util.consoleLog("pwr=%.3f pwr*12=%.3f  spp=%.3f spv=%.3f  ff=%.3fv", power, power * 12, setPoint.position, setPoint.velocity, ff);
 
         // Feed forward is in volts so we convert the PID output (radians) to
         // voltage so it combines with ff and then we set motors with voltage.
         power = power * 12 + ff;
-
-        driveBase.setVoltage(power, power);
+        
+        driveBase.curvatureDrive(0, power, true);
     }
 
     @Override

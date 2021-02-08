@@ -20,7 +20,7 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
   private DriveBase     driveBase;
 
   //private static double kP = .005, kI = .01, kD = 0, kToleranceDeg = 1, kToleranceVelds = 10;
-  private static double kP = 2.0, kI = .20, kD = 0, kToleranceRad = 1.0, kToleranceVelrs = 1.0, goal;
+  private static double kP = 2.5, kI = .20, kD = 0, kToleranceRad = 1.0, kToleranceVelrs = 1.0, goal;
   private double        startTime, targetHeading;
   private int           iterations;
 

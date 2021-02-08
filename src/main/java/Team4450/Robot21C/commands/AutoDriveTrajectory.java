@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
  */
 public class AutoDriveTrajectory extends RamseteCommand
 {
-    private static double   kP = 12 / MAX_WHEEL_SPEED_MS, kI = kP / 100, kD = 0, startTime;
+    private static double   kP = .1, kI = kP / 100, kD = 0, startTime;
     private int             iterations;
 
     private DriveBase       driveBase;
@@ -33,8 +33,7 @@ public class AutoDriveTrajectory extends RamseteCommand
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     private static double   kRamseteB = 2, kRamseteZeta = .7;
  
-    // Estimate feed forward gains as 12v / max velocity.
-    //private static double   ksVolts = 12 / MAX_WHEEL_SPEED_MS, kvVoltSecondsPerMeter = 12 / MAX_WHEEL_SPEED_MS;
+    // Estimate feed forward gains.
     private static double   ksVolts = .2, kvVoltSecondsPerMeter = 2;
     private static double   kaVoltSecondsSquaredPerMeter = .2;
 
@@ -56,7 +55,7 @@ public class AutoDriveTrajectory extends RamseteCommand
                 new PIDController(kP, kI, kD),  // left motor PID controller.
                 new PIDController(kP, kI, kD),  // Right motor PID controller.
                 // RamseteCommand passes left/right volts to the drive base callback.
-                driveBase::setVoltage,
+                driveBase::setVoltage2,
                 driveBase);
 
         this.driveBase = driveBase;
