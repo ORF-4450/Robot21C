@@ -82,9 +82,11 @@ public class AutoDriveTrajectory extends RamseteCommand
 
         Util.consoleLog("initial traj poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
         
-        pose = driveBase.getOdometerPose();
+        driveBase.resetOdometer(pose, pose.getRotation().getDegrees());
+        
+        //pose = driveBase.getOdometerPose();
 
-        Util.consoleLog("initial robot poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
+        //Util.consoleLog("initial robot poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
     }
 
     @Override

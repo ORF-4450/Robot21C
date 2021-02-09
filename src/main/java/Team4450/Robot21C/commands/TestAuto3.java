@@ -105,8 +105,6 @@ public class TestAuto3 extends CommandBase
 
         TrajectoryConfig config = AutoDriveTrajectory.getTrajectoryConfig(constraint);
 
-        //2Pose2d startPose = driveBase.getOdometerPose();
-
         // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
         //                                 // Start at the origin set above
         //                                 startPose,
@@ -119,8 +117,6 @@ public class TestAuto3 extends CommandBase
         //                                 new Pose2d(startPose.getX() + 9, startPose.getY(), startPose.getRotation()),
         //                                 // Pass config
         //                                 config);		
-        
-        //loadTrajectoryFile("myfile.json");
 
         Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
                                         // Start at the origin set above
@@ -134,6 +130,8 @@ public class TestAuto3 extends CommandBase
                                         new Pose2d(startPose.getX() + 3, startPose.getY(), startPose.getRotation()),
                                         // Pass config
                                         config);		
+        
+        exampleTrajectory = loadTrajectoryFile("Slalom-1.wpilib.json");
 
 		command = new AutoDriveTrajectory(driveBase, exampleTrajectory, StopMotors.stop, Brakes.on);
 		
@@ -187,16 +185,19 @@ public class TestAuto3 extends CommandBase
      */
     private Trajectory loadTrajectoryFile(String fileName)
     {
-        Trajectory trajectory;
-        
+        Trajectory  trajectory;
+        Path        trajectoryFilePath;
+
         try 
         {
-          Path trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve(fileName);
+          trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve("paths/" + fileName);
           
           trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryFilePath);
         } catch (IOException ex) {
           throw new RuntimeException("Unable to open trajectory: " + ex.toString());
         }
+
+        Util.consoleLog("trajectory loaded: %s", trajectoryFilePath);
 
         return trajectory;
     }
