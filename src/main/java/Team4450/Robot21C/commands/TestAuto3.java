@@ -89,7 +89,7 @@ public class TestAuto3 extends CommandBase
 			
 		// Reset odometry tracking with initial x,y position and heading (set above) specific to this 
 		// auto routine. Robot must be placed in same starting location each time for pose tracking
-		// to work. The settings below are the starting point default for 2021 field.
+		// to work.
 		Pose2d startPose = driveBase.resetOdometer(new Pose2d(kInitialX, kInitialY, new Rotation2d()), RobotContainer.navx.getHeading());
 		
 		// Since a typical autonomous program consists of multiple actions, which are commands

@@ -6,11 +6,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import Team4450.Lib.Util;
 import Team4450.Lib.ValveDA;
-import Team4450.Lib.LCD;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.InterruptHandlerFunction;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -23,7 +20,8 @@ public class Pickup extends SubsystemBase
 	private DigitalInput	ballEye = new DigitalInput(BALL_EYE);
 
 	private boolean			extended = false, pickupRunning = false;
-	static boolean balleye;
+    public static boolean   balleye = false;
+    
 	public Pickup ()
 	{
 		Util.consoleLog();

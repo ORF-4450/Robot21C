@@ -78,12 +78,16 @@ public class AutoDriveTrajectory extends RamseteCommand
         else
             driveBase.SetCANTalonBrakeMode(false);
 
+        // Set the current robot pose to match the starting pose of the trajectory. If all of your
+        // autonomouse moves are correctly coordinated the starting pose of the trajectory should
+        // match the physical pose of the robot.
+        
         Pose2d pose = trajectory.getInitialPose();
 
         Util.consoleLog("initial traj poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
         
         driveBase.resetOdometer(pose, pose.getRotation().getDegrees());
-        
+
         //pose = driveBase.getOdometerPose();
 
         //Util.consoleLog("initial robot poseX=%.2f  poseY=%.2f  poseHdg=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());

@@ -36,10 +36,12 @@ import Team4450.Robot21C.commands.TestAuto2;
 import Team4450.Robot21C.commands.TestAuto3;
 import Team4450.Robot21C.commands.TurnWheelCounting;
 import Team4450.Robot21C.commands.TurnWheelToColor;
+import Team4450.Robot21C.subsystems.Channel;
 import Team4450.Robot21C.subsystems.Climber;
 import Team4450.Robot21C.subsystems.ColorWheel;
 import Team4450.Robot21C.subsystems.DriveBase;
 import Team4450.Robot21C.subsystems.Pickup;
+import Team4450.Robot21C.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -54,7 +56,9 @@ public class RobotContainer
 	private final DriveBase 	driveBase;
 	public static Pickup		pickup;
 	private final ColorWheel	colorWheel;
-	private final Climber		climber;
+    private final Climber		climber;
+    public static Shooter       shooter;
+    private final Channel       channel;
 	private final TankDrive		driveCommand;
 	//private final ArcadeDrive	driveCommand;
 
@@ -174,7 +178,9 @@ public class RobotContainer
 		driveBase = new DriveBase();
 		pickup = new Pickup();
 		colorWheel = new ColorWheel();
-		climber = new Climber(() -> utilityStick.GetX());
+        climber = new Climber(() -> utilityStick.GetX());
+        shooter = new Shooter();
+        channel = new Channel();
 		
 		// Create any persistent commands.
 		
@@ -287,6 +293,15 @@ public class RobotContainer
         	//.whenPressed(new PickupDeploy(pickup));		
 			//.whenPressed(new InstantCommand(pickup::toggleDeploy, pickup));
 			.whenPressed(new NotifierCommand(pickup::toggleDeploy, 0.0, pickup));
+		
+        new JoystickButton(utilityStick.getJoyStick(), JoyStick.JoyStickButtonIDs.TOP_MIDDLE.value)
+			.whenPressed(new InstantCommand(shooter::toggleWheel, shooter));
+		
+        new JoystickButton(utilityStick.getJoyStick(), JoyStick.JoyStickButtonIDs.TOP_LEFT.value)
+			.whenPressed(new InstantCommand(channel::toggleBeltForward, channel));
+		
+        new JoystickButton(utilityStick.getJoyStick(), JoyStick.JoyStickButtonIDs.TOP_RIGHT.value)
+			.whenPressed(new InstantCommand(channel::toggleBeltBackward, channel));
 		
 		// -------- Launch pad buttons -------------
 		

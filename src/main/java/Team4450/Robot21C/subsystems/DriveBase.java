@@ -36,7 +36,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class DriveBase extends SubsystemBase 
 {
 	private WPI_TalonSRX		LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon;
-	//private PWMTalonSRX		LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon;
 
     private DifferentialDrive	robotDrive;
     
@@ -100,8 +99,12 @@ public class DriveBase extends SubsystemBase
 		
 		rightEncoder = new SRXMagneticEncoderRelative(RRCanTalon, DRIVE_WHEEL_DIAMETER);
 		leftEncoder = new SRXMagneticEncoderRelative(LRCanTalon, DRIVE_WHEEL_DIAMETER);
-		  
-		if (RobotBase.isReal()) leftEncoder.setInverted(true);
+          
+        // The real robot has to invert the left encoder so both encoder read increasing
+        // values going forward. This should be the same for simulation, but it did not 
+        // work right so no invert under sim. I am sure this is due to a mistake in how
+        // the simulation is coded, but going to live with it for now.
+        if (RobotBase.isReal()) leftEncoder.setInverted(true);
 		
 		// For 2020 robot, put rear talons into a differential drive object and set the
 	    // front talons to follow the rears.
@@ -140,7 +143,11 @@ public class DriveBase extends SubsystemBase
 		// code takes more than .02 sec to complete. It may be hard to stay under
 		// that time. When it trips, the watchdog will print to the console some somewhat
 		// useful information to help determine where the time is being used. This 
-		// watchdog timeout cannot be set or turned off.
+        // watchdog timeout cannot be set or turned off. Note it is currently "turned"
+        // off by copying the underlying Wpilib code into this project and modifying
+        // it to allow control of the watchdog displays. Trying this as under normal
+        // conditions the watchdog floods the Riolog with messages making it very 
+        // hard to use.
 		   
    		robotDrive.stopMotor();
    		robotDrive.setSafetyEnabled(false);	// Will be enabled by the Drive command.
