@@ -15,15 +15,13 @@ public class Channel extends SubsystemBase
 {
 	private boolean			beltRunning;
   	
-    private WPI_TalonSRX    beltTalon;
+    private WPI_TalonSRX    beltTalon = new WPI_TalonSRX(SHOOTER_TALON);
       
-    private double          defaultPower = .50;
+    private double          defaultPower = .25;
 
 	public Channel()
 	{
-		Util.consoleLog();
-
-        beltTalon = new WPI_TalonSRX(SHOOTER_TALON);
+		//Util.consoleLog();
 
 		Util.consoleLog("Channel created!");
 	}

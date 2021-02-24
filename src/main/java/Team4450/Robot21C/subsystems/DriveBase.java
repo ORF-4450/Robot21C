@@ -13,6 +13,7 @@ import Team4450.Lib.ValveDA;
 import Team4450.Lib.SRXMagneticEncoderRelative.DistanceUnit;
 import Team4450.Lib.SRXMagneticEncoderRelative.PIDRateType;
 import Team4450.Robot21C.RobotContainer;
+
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -265,14 +266,12 @@ public class DriveBase extends SubsystemBase
 		
     	Pose2d pose = odometer.update(RobotContainer.navx.getTotalYaw2d(), cumulativeLeftDist, cumulativeRightDist);
 
-		//Pose2d pose = odometer.getPoseMeters();
-
-		if (robot.isEnabled()) 
+		if (robot.isEnabled() && RobotBase.isSimulation()) 
 			Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftDist, cumulativeRightDist,
 							pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalYaw2d().getDegrees());
 		
 		// Update the sim field display with the current pose, or position, of the robot after we
-		// updated it above.
+		// updated that pose above.
 		if (RobotBase.isSimulation()) fieldSim.setRobotPose(pose);
 	}
 	

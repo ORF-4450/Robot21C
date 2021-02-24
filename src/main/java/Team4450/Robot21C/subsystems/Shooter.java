@@ -6,37 +6,49 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import Team4450.Lib.FXEncoder;
 import Team4450.Lib.Util;
+
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 /**
  * Shooter subsystem.
  */
-public class Shooter extends SubsystemBase
+public class Shooter extends PIDSubsystem
 {
 	private boolean			wheelRunning;
   	
-    private WPI_TalonFX     shooterTalon;
+    private WPI_TalonFX     shooterTalon = new WPI_TalonFX(SHOOTER_TALON);
       
-    private FXEncoder       encoder;
+    private FXEncoder       encoder = new FXEncoder(shooterTalon);
 
-    private double          defaultPower = .25;
+    private double          defaultPower = .25, maxRPM = 2000, targetRPM = 1500, toleranceRPM = 100;
+    private static double   kP = .0005, kI = kP / 100, kD = 0;
+    
+    private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(.05, 12 / maxRPM);
 
 	public Shooter()
 	{
-		Util.consoleLog();
-
-        shooterTalon = new WPI_TalonFX(SHOOTER_TALON);
+        super(new PIDController(kP, kI, kD));
+    
+        getController().setTolerance(toleranceRPM);
         
-        encoder = new FXEncoder(shooterTalon);
+        setSetpoint(targetRPM);
+		  
+        shooterTalon.setNeutralMode(NeutralMode.Coast);
 
-		Util.consoleLog("Shooter created!");
-	}
+        Util.consoleLog("Shooter created!");
+    }    
 	
 	// This method will be called once per scheduler run
 	@Override
 	public void periodic() 
 	{
+        // Call the base class periodic function so it can run the underlying
+        // PID control.
+        super.periodic();
 	}
 
 	private void updateDS()
@@ -67,7 +79,9 @@ public class Shooter extends SubsystemBase
 	public void startWheel(double power)
 	{
 		Util.consoleLog();
-		
+        
+        disable();  // Turn off underlying PID control. 
+
 		shooterTalon.set(power);
 		
 		wheelRunning = true;
@@ -130,5 +144,66 @@ public class Shooter extends SubsystemBase
     public double getMaxRPM()
     {
         return encoder.getMaxRPM();
+    }
+
+    // Called by underlying PID control with the output of the PID calculation
+    // each time the scheduler calls the periodic function.
+    @Override
+    protected void useOutput(double output, double setpoint) 
+    {
+        double ff = m_shooterFeedforward.calculate(setpoint);
+        double volts = (output * 12) + ff;
+
+        Util.consoleLog("out=%.3f  set=%.3f  ff=%.3f  v=%.3f", output, setpoint, ff, volts);
+
+        shooterTalon.setVoltage(volts);
+    }
+
+    // Called by underlying PID control to get the process measurement each time
+    // the scheduler calls the perodic function.
+    @Override
+    protected double getMeasurement() 
+    {
+        return getRPM();
+    }
+
+    /**
+     * Enable PID control to run shooter wheel at target RPM.
+     */
+    @Override
+    public void enable()
+    {
+        super.enable();
+
+        wheelRunning = true;
+		
+		updateDS();
+    }
+
+    /**
+     * Disable PID control of shooter wheel.
+     */
+    @Override
+    public void disable()
+    {
+        super.disable();
+
+        wheelRunning = false;
+		
+		updateDS();
+    }
+    
+    /**
+     * Toggles shooter wheel PID  control on/off.
+     * @return True if result is wheel on, false if off.
+     */
+    public boolean togglePID()
+    {
+        if (isRunning())
+           disable();
+        else
+           enable();
+
+        return isRunning();
     }
 }
