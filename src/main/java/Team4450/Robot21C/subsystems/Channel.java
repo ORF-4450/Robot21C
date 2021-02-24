@@ -73,35 +73,44 @@ public class Channel extends SubsystemBase
     /**
      * Toggles belt on/off.
      * @param power Power level to use when starting belt level -1.0 to 1.0.
-     */
-    public void toggleBelt(double power)
+      * @return True if result is belt on, false if off.
+    */
+    public boolean toggleBelt(double power)
     {
         if (isRunning())
             stopBelt();
         else
             startBelt(power);
+
+        return isRunning();
     }
     
     /**
      * Toggles belt on/off. Uses default + power level when turning on.
-     */
-    public void toggleBeltForward()
+     * @return True if result is belt on, false if off.
+    */
+    public boolean toggleBeltForward()
     {
         if (isRunning())
             stopBelt();
         else
             startBelt(defaultPower);
+
+        return isRunning();
     }
    
     /**
      * Toggles belt on/off. Uses default - power level when turning on.
+     * @return True if result is belt on, false if off.
      */
-    public void toggleBeltBackward()
+    public boolean toggleBeltBackward()
     {
         if (isRunning())
             stopBelt();
         else
             startBelt(-defaultPower);
+
+        return isRunning();
     }
 
 	/**

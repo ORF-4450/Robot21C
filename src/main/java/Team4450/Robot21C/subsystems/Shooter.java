@@ -20,7 +20,7 @@ public class Shooter extends SubsystemBase
       
     private FXEncoder       encoder;
 
-    private double          defaultPower = .50;
+    private double          defaultPower = .25;
 
 	public Shooter()
 	{
@@ -78,24 +78,30 @@ public class Shooter extends SubsystemBase
     /**
      * Toggles shooter wheel on/off.
      * @param power Power level to use when starting wheel level 0.0 to 1.0.
+     * @return True if result is wheel on, false if off.
      */
-    public void toggleWheel(double power)
+    public boolean toggleWheel(double power)
     {
         if (isRunning())
             stopWheel();
         else
             startWheel(power);
+
+        return isRunning();
     }
     
     /**
      * Toggles shooter wheel on/off. Uses default power level when turning on.
+     * @return True if result is wheel on, false if off.
      */
-    public void toggleWheel()
+    public boolean toggleWheel()
     {
         if (isRunning())
-            stopWheel();
+           stopWheel();
         else
-            startWheel(defaultPower);
+           startWheel(defaultPower);
+
+        return isRunning();
     }
 
 	/**
