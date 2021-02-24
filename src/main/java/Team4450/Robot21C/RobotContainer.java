@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import Team4450.Robot21C.commands.ArcadeDrive;
+import Team4450.Robot21C.commands.AutoSlalom;
 import Team4450.Robot21C.commands.Climb;
 import Team4450.Robot21C.commands.TankDrive;
 import Team4450.Robot21C.commands.NotifierCommand;
@@ -116,7 +117,8 @@ public class RobotContainer
 		NoProgram,
 		TestAuto1,
         TestAuto2,
-        TestAuto3
+        TestAuto3,
+        AutoSlalom
 	}
 
 	private static SendableChooser<AutoProgram>	autoChooser;
@@ -392,6 +394,10 @@ public class RobotContainer
             case TestAuto3:
 				autoCommand = new TestAuto3(driveBase);
 				break;
+
+            case AutoSlalom:
+				autoCommand = new AutoSlalom(driveBase);
+				break;
 		}
 
 		// The command to be run in autonomous.
@@ -413,6 +419,7 @@ public class RobotContainer
 		autoChooser.addOption("Test Auto Program 1", AutoProgram.TestAuto1);		
 		autoChooser.addOption("Test Auto Program 2", AutoProgram.TestAuto2);		
 		autoChooser.addOption("Test Auto Program 3", AutoProgram.TestAuto3);		
+		autoChooser.addOption("Slalom", AutoProgram.AutoSlalom);		
 				
 		SmartDashboard.putData(autoChooser);
 	}
