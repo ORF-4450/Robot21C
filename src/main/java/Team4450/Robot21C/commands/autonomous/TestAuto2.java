@@ -1,4 +1,4 @@
-package Team4450.Robot21C.commands;
+package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Lib.LCD;
 import Team4450.Lib.Util;
@@ -29,7 +29,7 @@ public class TestAuto2 extends CommandBase
     private double                  kInitialX = INITIAL_X, kInitialY = INITIAL_Y, kInitialHeading = INITIAL_HEADING;
 
 	/**
-	 * Creates a new TestAuto1 autonomous command. This command demonstrates one
+	 * Creates a new TestAuto2 autonomous command. This command demonstrates one
 	 * possible structure for an autonomous command and shows the use of the 
 	 * autonomous driving support commands.
 	 *

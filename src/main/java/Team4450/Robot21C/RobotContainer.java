@@ -28,14 +28,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import Team4450.Robot21C.commands.ArcadeDrive;
-import Team4450.Robot21C.commands.AutoSlalom;
+import Team4450.Robot21C.commands.autonomous.AutoSlalom;
+import Team4450.Robot21C.commands.AimTurret;
 import Team4450.Robot21C.commands.Climb;
 import Team4450.Robot21C.commands.TankDrive;
 import Team4450.Robot21C.commands.NotifierCommand;
 import Team4450.Robot21C.commands.ShiftGears;
-import Team4450.Robot21C.commands.TestAuto1;
-import Team4450.Robot21C.commands.TestAuto2;
-import Team4450.Robot21C.commands.TestAuto3;
+import Team4450.Robot21C.commands.autonomous.TestAuto1;
+import Team4450.Robot21C.commands.autonomous.TestAuto2;
+import Team4450.Robot21C.commands.autonomous.TestAuto3;
 import Team4450.Robot21C.commands.TurnWheelCounting;
 import Team4450.Robot21C.commands.TurnWheelToColor;
 import Team4450.Robot21C.subsystems.Channel;
@@ -44,6 +45,7 @@ import Team4450.Robot21C.subsystems.ColorWheel;
 import Team4450.Robot21C.subsystems.DriveBase;
 import Team4450.Robot21C.subsystems.Pickup;
 import Team4450.Robot21C.subsystems.Shooter;
+import Team4450.Robot21C.subsystems.Turret;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -61,6 +63,8 @@ public class RobotContainer
     private final Climber		climber;
     public static Shooter       shooter;
     private final Channel       channel;
+    private final Turret        turret;
+
 	private final TankDrive		driveCommand;
 	//private final ArcadeDrive	driveCommand;
 
@@ -181,9 +185,10 @@ public class RobotContainer
 		driveBase = new DriveBase();
 		pickup = new Pickup();
 		colorWheel = new ColorWheel();
-        climber = new Climber(() -> utilityStick.GetX());
+        climber = new Climber(() -> 0);   //() -> utilityStick.GetX());
         shooter = new Shooter();
         channel = new Channel();
+        turret = new Turret();
 		
 		// Create any persistent commands.
 		
@@ -196,6 +201,13 @@ public class RobotContainer
 		// DoubleProvider (see below).
 		
 		climber.setDefaultCommand(new Climb(climber, () -> utilityStick.GetY()));
+		
+		// Set the default turret aiming command. This command will be scheduled automatically to run
+		// every teleop period and so use the utility joy stick to control the turret rotation.
+		// We pass in function lambda so the command can read the stick generically as a
+		// DoubleProvider (see below).
+		
+		turret.setDefaultCommand(new AimTurret(turret, () -> utilityStick.GetX()));
 	  
 		// Set the default drive command. This command will be scheduled automatically to run
 		// every teleop period and so use the joy sticks to drive the robot. We pass in function
@@ -305,7 +317,10 @@ public class RobotContainer
 		
         new JoystickButton(utilityStick.getJoyStick(), JoyStick.JoyStickButtonIDs.TOP_RIGHT.value)
 			.whenPressed(new InstantCommand(channel::toggleBeltBackward, channel));
-		
+
+        new JoystickButton(utilityStick.getJoyStick(), JoyStick.JoyStickButtonIDs.TRIGGER.value)
+            .whenPressed(new NotifierCommand(turret::feedBall, 0.0));
+            
 		// -------- Launch pad buttons -------------
 		
 		// Because the launch pad buttons are wired backwards, we use whenReleased to 

@@ -15,7 +15,7 @@ public class Channel extends SubsystemBase
 {
 	private boolean			beltRunning;
   	
-    private WPI_TalonSRX    beltTalon = new WPI_TalonSRX(SHOOTER_TALON);
+    private WPI_TalonSRX    beltMotor = new WPI_TalonSRX(BELT_TALON);
       
     private double          defaultPower = .25;
 
@@ -46,7 +46,7 @@ public class Channel extends SubsystemBase
 	{
 		Util.consoleLog();
         
-        beltTalon.stopMotor();
+        beltMotor.stopMotor();
 		
 		beltRunning = false;
 		
@@ -61,7 +61,7 @@ public class Channel extends SubsystemBase
 	{
 		Util.consoleLog();
 		
-		beltTalon.set(power);
+		beltMotor.set(power);
 		
 		beltRunning = true;
 		
@@ -89,12 +89,7 @@ public class Channel extends SubsystemBase
     */
     public boolean toggleBeltForward()
     {
-        if (isRunning())
-            stopBelt();
-        else
-            startBelt(defaultPower);
-
-        return isRunning();
+        return toggleBelt(defaultPower);
     }
    
     /**
@@ -103,12 +98,7 @@ public class Channel extends SubsystemBase
      */
     public boolean toggleBeltBackward()
     {
-        if (isRunning())
-            stopBelt();
-        else
-            startBelt(-defaultPower);
-
-        return isRunning();
+        return toggleBelt(-defaultPower);
     }
 
 	/**

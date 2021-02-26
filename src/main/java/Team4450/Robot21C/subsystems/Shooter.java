@@ -20,9 +20,9 @@ public class Shooter extends PIDSubsystem
 {
 	private boolean			wheelRunning;
   	
-    private WPI_TalonFX     shooterTalon = new WPI_TalonFX(SHOOTER_TALON);
+    private WPI_TalonFX     shooterMotor = new WPI_TalonFX(SHOOTER_TALON);
       
-    private FXEncoder       encoder = new FXEncoder(shooterTalon);
+    private FXEncoder       encoder = new FXEncoder(shooterMotor);
 
     private double          defaultPower = .25, maxRPM = 2000, targetRPM = 1500, toleranceRPM = 100;
     private static double   kP = .0005, kI = kP / 100, kD = 0;
@@ -37,7 +37,7 @@ public class Shooter extends PIDSubsystem
         
         setSetpoint(targetRPM);
 		  
-        shooterTalon.setNeutralMode(NeutralMode.Coast);
+        shooterMotor.setNeutralMode(NeutralMode.Coast);
 
         Util.consoleLog("Shooter created!");
     }    
@@ -65,7 +65,7 @@ public class Shooter extends PIDSubsystem
 	{
 		Util.consoleLog();
         
-        shooterTalon.stopMotor();
+        shooterMotor.stopMotor();
 		
 		wheelRunning = false;
 		
@@ -82,7 +82,7 @@ public class Shooter extends PIDSubsystem
         
         disable();  // Turn off underlying PID control. 
 
-		shooterTalon.set(power);
+		shooterMotor.set(power);
 		
 		wheelRunning = true;
 		
@@ -110,12 +110,7 @@ public class Shooter extends PIDSubsystem
      */
     public boolean toggleWheel()
     {
-        if (isRunning())
-           stopWheel();
-        else
-           startWheel(defaultPower);
-
-        return isRunning();
+        return toggleWheel(defaultPower);
     }
 
 	/**
@@ -156,7 +151,7 @@ public class Shooter extends PIDSubsystem
 
         Util.consoleLog("out=%.3f  set=%.3f  ff=%.3f  v=%.3f", output, setpoint, ff, volts);
 
-        shooterTalon.setVoltage(volts);
+        shooterMotor.setVoltage(volts);
     }
 
     // Called by underlying PID control to get the process measurement each time

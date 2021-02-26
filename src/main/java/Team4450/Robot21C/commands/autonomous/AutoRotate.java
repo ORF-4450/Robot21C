@@ -1,11 +1,11 @@
-package Team4450.Robot21C.commands;
+package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Lib.SynchronousPID;
 import Team4450.Lib.Util;
 
 import Team4450.Robot21C.RobotContainer;
-import Team4450.Robot21C.commands.AutoDrive.Heading;
-import Team4450.Robot21C.commands.AutoDrive.Pid;
+import Team4450.Robot21C.commands.autonomous.AutoDrive.Heading;
+import Team4450.Robot21C.commands.autonomous.AutoDrive.Pid;
 import Team4450.Robot21C.subsystems.DriveBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 

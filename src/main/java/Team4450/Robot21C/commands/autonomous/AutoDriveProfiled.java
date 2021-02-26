@@ -1,4 +1,4 @@
-package Team4450.Robot21C.commands;
+package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Robot21C.subsystems.DriveBase;
 import Team4450.Lib.LCD;
@@ -6,8 +6,8 @@ import Team4450.Lib.Util;
 import static Team4450.Robot21C.Constants.*;
 
 import Team4450.Robot21C.RobotContainer;
-import Team4450.Robot21C.commands.AutoDrive.Brakes;
-import Team4450.Robot21C.commands.AutoDrive.StopMotors;
+import Team4450.Robot21C.commands.autonomous.AutoDrive.Brakes;
+import Team4450.Robot21C.commands.autonomous.AutoDrive.StopMotors;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 
