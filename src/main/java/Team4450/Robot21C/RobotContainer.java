@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import Team4450.Robot21C.commands.ArcadeDrive;
 import Team4450.Robot21C.commands.autonomous.AutoSlalom;
+import Team4450.Robot21C.commands.autonomous.AutoSlalom2;
 import Team4450.Robot21C.commands.AimTurret;
 import Team4450.Robot21C.commands.Climb;
 import Team4450.Robot21C.commands.TankDrive;
@@ -62,7 +63,7 @@ public class RobotContainer
 	private final ColorWheel	colorWheel =  null;
     private final Climber		climber;
     public static Shooter       shooter;
-    public static Channel       channel;
+    private final Channel       channel;
     private final Turret        turret;
 
 	private final TankDrive		driveCommand;
@@ -122,7 +123,8 @@ public class RobotContainer
 		TestAuto1,
         TestAuto2,
         TestAuto3,
-        AutoSlalom
+        AutoSlalom,
+        AutoSlalom2
 	}
 
 	private static SendableChooser<AutoProgram>	autoChooser;
@@ -188,7 +190,7 @@ public class RobotContainer
         climber = new Climber(() -> 0);   //() -> utilityStick.GetX());
         shooter = new Shooter();
         channel = new Channel();
-        turret = new Turret();
+        turret = new Turret(channel);
 		
 		// Create any persistent commands.
 		
@@ -416,6 +418,10 @@ public class RobotContainer
             case AutoSlalom:
 				autoCommand = new AutoSlalom(driveBase);
 				break;
+
+            case AutoSlalom2:
+				autoCommand = new AutoSlalom2(driveBase);
+				break;
 		}
 
 		// The command to be run in autonomous.
@@ -438,6 +444,8 @@ public class RobotContainer
 		autoChooser.addOption("Test Auto Program 2", AutoProgram.TestAuto2);		
 		autoChooser.addOption("Test Auto Program 3", AutoProgram.TestAuto3);		
 		autoChooser.addOption("Slalom", AutoProgram.AutoSlalom);		
+		//autoChooser.addOption("Slalom 2", AutoProgram.AutoSlalom2);		
+		autoChooser.setDefaultOption("Slalom 2", AutoProgram.AutoSlalom2);		
 				
 		SmartDashboard.putData(autoChooser);
 	}

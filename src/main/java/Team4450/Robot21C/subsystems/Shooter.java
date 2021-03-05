@@ -24,8 +24,9 @@ public class Shooter extends PIDSubsystem
       
     private FXEncoder       encoder = new FXEncoder(shooterMotor);
 
-    private double          defaultPower = .75, maxRPM = 2000, targetRPM = 1500, toleranceRPM = 100;
-    private static double   kP = .0005, kI = kP / 100, kD = 0;
+    private double          defaultPower = .75, maxRPM = 6200, targetRPM = 2000, toleranceRPM = 200;
+    private double          feedForwardPower = 1.0;
+    private static double   kP = .0002, kI = kP / 100, kD = 0;
     
     private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(.05, 12 / maxRPM);
 
@@ -67,6 +68,8 @@ public class Shooter extends PIDSubsystem
 	{
 		Util.consoleLog();
         
+        if (isRunning()) super.disable(); // Turn off PID if enabled.
+
         shooterMotor.stopMotor();
 		
 		wheelRunning = false;
@@ -89,7 +92,15 @@ public class Shooter extends PIDSubsystem
 		wheelRunning = true;
 		
 		updateDS();
-	}
+    }
+    
+    /**
+     * Start shooter wheel turning with default power.
+     */
+    public void startWheel()
+    {
+        startWheel(defaultPower);
+    }
     
     /**
      * Toggles shooter wheel on/off.
@@ -145,18 +156,26 @@ public class Shooter extends PIDSubsystem
 
     // Called by underlying PID control with the output of the PID calculation
     // each time the scheduler calls the periodic function.
+    // @Override
+    // protected void useOutput(double output, double setpoint) 
+    // {
+    //     double ff = m_shooterFeedforward.calculate(setpoint);
+    //     double volts = (output * 12) + ff;
+
+    //     Util.consoleLog("out=%.3f  set=%.3f  ff=%.3f  v=%.3f", output, setpoint, ff, volts);
+
+    //     shooterMotor.setVoltage(volts);
+    // }
     @Override
     protected void useOutput(double output, double setpoint) 
     {
-        double ff = m_shooterFeedforward.calculate(setpoint);
-        double volts = (output * 12) + ff;
+        Util.consoleLog("out=%.3f  set=%.3f  ff=%.3f  rpm=%.0f", output, setpoint, feedForwardPower, getRPM());
 
-        Util.consoleLog("out=%.3f  set=%.3f  ff=%.3f  v=%.3f", output, setpoint, ff, volts);
-
-        shooterMotor.setVoltage(volts);
+        // Set motor to feed forward power adjusted by PID result capped at +-1.0.
+        shooterMotor.set(Util.clampValue(output + feedForwardPower, 1.0));
     }
 
-    // Called by underlying PID control to get the process measurement each time
+    // Called by underlying PID control to get the process measurement value each time
     // the scheduler calls the perodic function.
     @Override
     protected double getMeasurement() 

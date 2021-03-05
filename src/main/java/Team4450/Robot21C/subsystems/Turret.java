@@ -22,10 +22,14 @@ public class Turret extends SubsystemBase
       
     private double          defaultFeedPower = .25, defaultRotatePower = .25;
 
-	public Turret()
+    private Channel         channel;
+
+	public Turret(Channel channel)
 	{
         //Util.consoleLog();
         
+        this.channel = channel;
+
         rotateMotor.setInverted(true);
         feedMotor.setInverted(true);
 
@@ -162,12 +166,12 @@ public class Turret extends SubsystemBase
 
         startFeed(defaultFeedPower);
 
-        RobotContainer.channel.startBelt();
+        channel.startBelt();
 
         Timer.delay(.50);   // set time so one ball is fed.
 
-        RobotContainer.channel.stopBelt();
-        
+        channel.stopBelt();
+
         stopFeed();
     }
 }
