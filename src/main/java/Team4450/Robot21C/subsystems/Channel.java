@@ -17,11 +17,13 @@ public class Channel extends SubsystemBase
   	
     private WPI_TalonSRX    beltMotor = new WPI_TalonSRX(BELT_TALON);
       
-    private double          defaultPower = .25;
+    private double          defaultPower = .30;
 
 	public Channel()
 	{
-		//Util.consoleLog();
+        //Util.consoleLog();
+        
+        beltMotor.setInverted(true);
 
 		Util.consoleLog("Channel created!");
 	}
@@ -55,7 +57,7 @@ public class Channel extends SubsystemBase
 
     /**
 	 * Start belt.
-	 * @param power Power level -1.0 to 1.0.
+	 * @param power Power level -1.0 to 1.0. + is ball IN.
 	 */
 	public void startBelt(double power)
 	{
@@ -66,12 +68,21 @@ public class Channel extends SubsystemBase
 		beltRunning = true;
 		
 		updateDS();
-	}
+    }
+    
+    /**
+     * Start belt in with default power.
+     */
+    public void startBelt()
+    {
+        startBelt(defaultPower);
+    }
     
     /**
      * Toggles belt on/off.
      * @param power Power level to use when starting belt level -1.0 to 1.0.
-      * @return True if result is belt on, false if off.
+     * + is ball IN.
+     * @return True if result is belt on, false if off.
     */
     public boolean toggleBelt(double power)
     {
@@ -84,7 +95,8 @@ public class Channel extends SubsystemBase
     }
     
     /**
-     * Toggles belt on/off. Uses default + power level when turning on.
+     * Toggles belt on/off. Uses default + power level when turning on. Forward
+     * is ball IN.
      * @return True if result is belt on, false if off.
     */
     public boolean toggleBeltForward()
@@ -93,7 +105,8 @@ public class Channel extends SubsystemBase
     }
    
     /**
-     * Toggles belt on/off. Uses default - power level when turning on.
+     * Toggles belt on/off. Uses default - power level when turning on. Backward
+     * is ball OUT.
      * @return True if result is belt on, false if off.
      */
     public boolean toggleBeltBackward()

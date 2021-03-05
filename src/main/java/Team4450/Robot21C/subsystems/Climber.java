@@ -42,17 +42,17 @@ public class Climber extends SubsystemBase
 		
 		winchFrontVictor = new WPI_VictorSPX(WINCH_FRONT_VICTOR);
 		winchBackVictor = new WPI_VictorSPX(WINCH_BACK_VICTOR);
-		hookVictor = new WPI_VictorSPX(HOOK_VICTOR);
+		//hookVictor = new WPI_VictorSPX(HOOK_VICTOR);
 	      
 		winchFrontVictor.setInverted(true);
 	      
 	    winchFrontVictor.setNeutralMode(NeutralMode.Brake);
 	    winchBackVictor.setNeutralMode(NeutralMode.Brake);
-	    hookVictor.setNeutralMode(NeutralMode.Brake);
+	    //hookVictor.setNeutralMode(NeutralMode.Brake);
 
 	    winchDrive = new SpeedControllerGroup(winchFrontVictor, winchBackVictor);
 	    
-	    traverseCommand = new Traverse(this, traversePower);
+	    //traverseCommand = new Traverse(this, traversePower);
 
 		winchEncoder.reset();
 		
@@ -95,7 +95,7 @@ public class Climber extends SubsystemBase
 		Util.consoleLog();
 		
 		winchDrive.stopMotor();
-		hookVictor.stopMotor();
+		//hookVictor.stopMotor();
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class Climber extends SubsystemBase
 		
 		// End traverse command and climb command resumes.
 		
-		traverseCommand.stop();
+		//traverseCommand.stop();
 		
 		climberBrake.SetB();
 		

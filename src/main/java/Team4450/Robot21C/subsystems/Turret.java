@@ -24,9 +24,12 @@ public class Turret extends SubsystemBase
 
 	public Turret()
 	{
-		//Util.consoleLog();
+        //Util.consoleLog();
+        
+        rotateMotor.setInverted(true);
+        feedMotor.setInverted(true);
 
-		Util.consoleLog("Turret created!");
+        Util.consoleLog("Turret created!");
 	}
 	
 	// This method will be called once per scheduler run
@@ -34,6 +37,14 @@ public class Turret extends SubsystemBase
 	public void periodic() 
 	{
 	}
+
+    public void stop()
+    {
+        Util.consoleLog();
+
+        feedMotor.stopMotor();
+        rotateMotor.stopMotor();
+    }
 
 	private void updateDS()
 	{
@@ -151,8 +162,12 @@ public class Turret extends SubsystemBase
 
         startFeed(defaultFeedPower);
 
-        Timer.delay(.25);   // set time so one ball is fed.
+        RobotContainer.channel.startBelt();
 
+        Timer.delay(.50);   // set time so one ball is fed.
+
+        RobotContainer.channel.stopBelt();
+        
         stopFeed();
     }
 }

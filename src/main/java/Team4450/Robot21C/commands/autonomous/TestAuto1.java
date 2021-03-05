@@ -96,7 +96,7 @@ public class TestAuto1 extends CommandBase
 		
 		commands.addCommands(command);
 		
-		// Next action is to rotate 180 degrees left.
+		// Next action is to rotate left.
 		
 		command = new AutoRotate(driveBase, .30, -90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 
@@ -110,13 +110,13 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		//commands.addCommands(command);
+		commands.addCommands(command);
 
-		// Next rotate right 90.
+		// Next rotate right.
 
-		command = new AutoRotate(driveBase, .25, 90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
+		command = new AutoRotate(driveBase, .30, 90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 
-		//commands.addCommands(command);
+		commands.addCommands(command);
 		
 		// Now drive a curve to 90 degrees right.
 
@@ -126,7 +126,7 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		//commands.addCommands(command);
+		commands.addCommands(command);
 		
 		// Launch autonomous command sequence.
 		

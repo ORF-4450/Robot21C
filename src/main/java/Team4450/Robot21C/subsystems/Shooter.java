@@ -24,7 +24,7 @@ public class Shooter extends PIDSubsystem
       
     private FXEncoder       encoder = new FXEncoder(shooterMotor);
 
-    private double          defaultPower = .25, maxRPM = 2000, targetRPM = 1500, toleranceRPM = 100;
+    private double          defaultPower = .75, maxRPM = 2000, targetRPM = 1500, toleranceRPM = 100;
     private static double   kP = .0005, kI = kP / 100, kD = 0;
     
     private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(.05, 12 / maxRPM);
@@ -32,6 +32,8 @@ public class Shooter extends PIDSubsystem
 	public Shooter()
 	{
         super(new PIDController(kP, kI, kD));
+
+        shooterMotor.setInverted(true);
     
         getController().setTolerance(toleranceRPM);
         

@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC21C-02.24.21-1";
+	public static String		PROGRAM_NAME = "RAC21C-03.04.21-1";
 
 	public static Robot			robot;
 
@@ -33,7 +33,7 @@ public final class Constants
 	// Other motor controller port assignments
 	public static final int		PICKUP_TALON = 6, BELT_TALON = 7, WINCH_FRONT_VICTOR = 8, WINCH_BACK_VICTOR = 9;
     public static final int		HOOK_VICTOR = 10, COLOR_WHEEL_VICTOR = 11, SHOOTER_TALON =  5;
-    public static final int     TURRET_ROTATE_VICTOR = 12, TURRET_FEED_VICTOR = 13;
+    public static final int     TURRET_ROTATE_VICTOR = 10, TURRET_FEED_VICTOR = 11;
 	
 	// Joystick port assignments.
 	public static final int		LEFT_STICK = 0, RIGHT_STICK = 1, UTILITY_STICK = 2, LAUNCH_PAD = 3;

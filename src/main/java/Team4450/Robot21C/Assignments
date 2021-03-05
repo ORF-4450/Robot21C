@@ -12,10 +12,8 @@ Port	Device			Description
 7		VictorSPX		Belt motor.
 8		VictorSPX		Winch front motor.
 9		VictorSPX		Winch back motor.
-10		VictorSPX		Hook motor.
-11		VictorSPX		Color wheel motor.
-12      unknown         Turret rotation motor.
-13      unknown         Turret feed motor.
+10		VictorSPX		Turret rotation motor. //Hook motor.
+11		VictorSPX		Turret feed motor. //Color wheel motor.
 
 
 PWM Ports
@@ -85,7 +83,7 @@ Button Name				Function
 BUTTON_GREEN            Reset Odometer.
 BUTTON_RED				Reset wheel encoders in teleop.
 BUTTON_BLUE				Manual color wheel operation.
-BUTTON_BLUE_RIGHT		Color wheel auto 3 turns.
+BUTTON_BLUE_RIGHT		Toggle Shooter PID.  //Color wheel auto 3 turns.
 BUTTON_YELLOW			Color wheel Game Color auto locate.
 BUTTON_RED_RIGHT		Climber brake toggle.
 

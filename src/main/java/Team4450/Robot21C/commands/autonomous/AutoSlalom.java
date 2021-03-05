@@ -153,12 +153,14 @@ public class AutoSlalom extends CommandBase
         {
           trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve("paths/" + fileName);
           
+          Util.consoleLog("loadinng trajectory: %s", trajectoryFilePath);
+          
           trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryFilePath);
         } catch (IOException ex) {
-          throw new RuntimeException("Unable to open trajectory: " + ex.toString());
+          throw new RuntimeException("Unable to load trajectory: " + ex.toString());
         }
 
-        Util.consoleLog("trajectory loaded: %s", trajectoryFilePath);
+        Util.consoleLog("trajectory load complete");
 
         return trajectory;
     }

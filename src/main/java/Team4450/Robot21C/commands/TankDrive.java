@@ -60,7 +60,11 @@ public class TankDrive extends CommandBase
    *  So it is important to realize that while this command class exists for
    *  the entire run of teleop, it stops when it is preempted by another
    *  command and then when rescheduled initialize will be called again and
-   *  then execute resumes being repeatedly called. All commands work like this.
+   *  then execute resumes being repeatedly called. When the robot is disabled
+   *  this command is interrupted but retained by the scheduler. When reenabled
+   *  scheduler will call initialize to restart running this command. Commands
+   *  only cease to exist (deleted by scheduler) when thier isFinished method
+   *  returns true. All commands work like this.
    */
   @Override
   public void initialize() 

@@ -41,14 +41,19 @@ public class Climb extends CommandBase
   }
 
   /**
-   *  Called when the command is initially scheduled.
+   *  Called when the command is initially scheduled or rescheduled.
    *  NOTE: This command is set as the default for the climber. That
    *  means it runs as long as no other command that uses the climber
    *  runs. If another command runs, this command will be interrupted 
-   *  and then rescheduled when that other command is finished. That 
-   *  reschedule means initialize() is called again. So it is important 
-   *  to realize this command does not "exist" for the entire run of teleop.
-   *  It comes and goes when it is preempted by another command. 
+   *  and then rescheduled when that other command is finished. If the
+   *  robot is disabled and then reenabled, this command has been retained
+   *  in memory and is rescheduled. This means this class persists in 
+   *  memory as long as the robot is turned on. It will be interrupted
+   *  and rescheduled as needed. Commands only cease to exist if they
+   *  return true when thier isFinished() method is called by the 
+   *  scheduler. You have to keep this in mind in terms of what reset
+   *  is needed by this command when the robot is reenabled.
+   *   
    *  All commands work like this.
    */
   @Override

@@ -34,7 +34,7 @@ public class AutoDriveTrajectory extends RamseteCommand
     private static double   kRamseteB = 2, kRamseteZeta = .7;
  
     // Estimate feed forward gains.
-    private static double   ksVolts = .2, kvVoltSecondsPerMeter = 2;
+    private static double   ksVolts = .02, kvVoltSecondsPerMeter = 2;
     private static double   kaVoltSecondsSquaredPerMeter = .2;
 
     /**

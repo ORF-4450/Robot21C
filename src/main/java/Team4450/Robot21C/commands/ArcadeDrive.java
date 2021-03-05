@@ -58,10 +58,11 @@ public class ArcadeDrive extends CommandBase
    *  runs. If another command runs, like shift gears for instance, this
    *  command will be interrupted and then rescheduled when shift gears
    *  is finished. That reschedule means initialize() is called again.
-   *  So it is important to realize that while this command class exists for
-   *  the entire run of teleop, it stops when it is preempted by another
-   *  command and then when rescheduled initialize will be called again and
-   *  then execute resumes being repeatedly called. All commands work like this.
+   *  When the robot is disabled this command is interrupted but retained
+   *  by the scheduler. When reenabled scheduler will call initialize to
+   *  restart running this command. Commands only cease to exist (deleted
+   *  by scheduler) when thier isFinished method returns true. All commands
+   *  work like this.
    */
   @Override
   public void initialize() 

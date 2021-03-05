@@ -59,10 +59,10 @@ public class RobotContainer
 	
 	private final DriveBase 	driveBase;
 	public static Pickup		pickup;
-	private final ColorWheel	colorWheel;
+	private final ColorWheel	colorWheel =  null;
     private final Climber		climber;
     public static Shooter       shooter;
-    private final Channel       channel;
+    public static Channel       channel;
     private final Turret        turret;
 
 	private final TankDrive		driveCommand;
@@ -70,8 +70,8 @@ public class RobotContainer
 
 	// Persistent Commands.
 	
-	private final TurnWheelCounting		turnWheelCounting;
-	private final TurnWheelToColor		turnWheelToColor;
+	private final TurnWheelCounting		turnWheelCounting = null;
+	private final TurnWheelToColor		turnWheelToColor = null;
 
 	// Some notes about Commands.
 	// When a Command is created with the New operator, its constructor is called. When the
@@ -184,7 +184,7 @@ public class RobotContainer
 		
 		driveBase = new DriveBase();
 		pickup = new Pickup();
-		colorWheel = new ColorWheel();
+		//colorWheel = new ColorWheel();
         climber = new Climber(() -> 0);   //() -> utilityStick.GetX());
         shooter = new Shooter();
         channel = new Channel();
@@ -192,8 +192,8 @@ public class RobotContainer
 		
 		// Create any persistent commands.
 		
-		turnWheelCounting = new TurnWheelCounting(colorWheel);
-		turnWheelToColor = new TurnWheelToColor(colorWheel);
+		//turnWheelCounting = new TurnWheelCounting(colorWheel);
+		//turnWheelToColor = new TurnWheelToColor(colorWheel);
 		
 		// Set the default climb command. This command will be scheduled automatically to run
 		// every teleop period and so use the utility joy stick to control the climber winch.
@@ -336,16 +336,19 @@ public class RobotContainer
 		
 		// Toggle color wheel motor on/off. Also stops the count and to-color commands but
 		// you have to click twice to stop those commands.
-		new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_BLUE.value)
-    		.whenReleased(new InstantCommand(colorWheel::toggleWheel, colorWheel));
+		//new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_BLUE.value)
+    	//	.whenReleased(new InstantCommand(colorWheel::toggleWheel, colorWheel));
 		
 		// Start/stop command to turn color wheel specified number of turns.
-		new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_BLUE_RIGHT.value)
-    		.toggleWhenActive(turnWheelCounting);
+		//new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_BLUE_RIGHT.value)
+    	//	.toggleWhenActive(turnWheelCounting);
 	
-		// Start/stop command to turn color wheel to target color sent by FMS.
-		new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_YELLOW.value)
-    		.toggleWhenActive(turnWheelToColor);
+        new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_BLUE_RIGHT.value)
+    		.whenReleased(new InstantCommand(shooter::togglePID, shooter));
+
+        // Start/stop command to turn color wheel to target color sent by FMS.
+		//new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_YELLOW.value)
+    	//	.toggleWhenActive(turnWheelToColor);
 		
 		// Toggle climber brake. Note we don't supply climber as subsystem on this command
 		// to get around a quirk in how the scheduler works...because on the toggle brake

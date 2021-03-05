@@ -9,9 +9,9 @@
     # 'WPI_VictorSPX'
     # 'WPI_TalonFX'
     # If doing drive test, treat this as the left side of the drivetrain
-    "controllerTypes": ["WPI-TalonSRX", "WPI-TalonSRX"],
+    "controllerTypes": ["WPI_TalonSRX", "WPI_TalonSRX"],
     # Only if you are doing drive (leave empty "[]" if not)
-    "rightControllerTypes": ["WPI-TalongSRX", "WPI-TalonSRX"],
+    "rightControllerTypes": ["WPI_TalonSRX", "WPI_TalonSRX"],
     # Set motors to inverted or not
     # If doing drive test, treat this as the left side of the drivetrain
     "motorsInverted": [True, True],
@@ -44,6 +44,10 @@
     # "0" (Pigeon CAN ID or AnalogGyro channel),
     # "new WPI_TalonSRX(3)" (Pigeon on a Talon SRX),
     # "" (NavX using default SPI, ADXRS450 using onboard CS0, or no gyro)
-    "gyroPort": "",
+    "gyroPort": "SPI.Port.kMXP"
 }
+
+
+
+
 
