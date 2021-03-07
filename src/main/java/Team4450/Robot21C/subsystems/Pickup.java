@@ -69,11 +69,11 @@ public class Pickup extends SubsystemBase
 		
 		synchronized (this)
 		{
-			//pickupValve.SetA();
+			pickupValve.SetA();
 			
 			extended = true;
 			
-			start(.25);
+			start(.30);
 		}
 	}
 	

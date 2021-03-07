@@ -71,7 +71,7 @@ public class Climb extends CommandBase
   @Override
   public void execute() 
   {
-	  // Squaring tones down the responsiveness of the winch.
+	// Squaring tones down the responsiveness of the winch.
     
     // Since this is the default command for the Climber, it is executed all the time
     // when robot enabled. So we disable any activity when in auto mode.

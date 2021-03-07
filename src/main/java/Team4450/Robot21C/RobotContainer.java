@@ -187,7 +187,7 @@ public class RobotContainer
 		driveBase = new DriveBase();
 		pickup = new Pickup();
 		//colorWheel = new ColorWheel();
-        climber = new Climber(() -> 0);   //() -> utilityStick.GetX());
+        climber = new Climber(() -> 0);   //() -> utilityStick.GetX());  // Controls climber traverse.
         shooter = new Shooter();
         channel = new Channel();
         turret = new Turret(channel);

@@ -24,7 +24,7 @@ public class Shooter extends PIDSubsystem
       
     private FXEncoder       encoder = new FXEncoder(shooterMotor);
 
-    private double          defaultPower = .75, maxRPM = 6200, targetRPM = 2000, toleranceRPM = 200;
+    private double          defaultPower = .80, maxRPM = 6000, targetRPM = 2000, toleranceRPM = 200;
     private double          feedForwardPower = 1.0;
     private static double   kP = .0002, kI = kP / 100, kD = 0;
     
@@ -35,6 +35,8 @@ public class Shooter extends PIDSubsystem
         super(new PIDController(kP, kI, kD));
 
         shooterMotor.setInverted(true);
+        
+        encoder.setInverted(true);
     
         getController().setTolerance(toleranceRPM);
         
@@ -50,8 +52,13 @@ public class Shooter extends PIDSubsystem
 	public void periodic() 
 	{
         // Call the base class periodic function so it can run the underlying
-        // PID control.
-        super.periodic();
+        // PID control. We also watch for robot being disabled and stop the
+        // wheel (and PID) if running.
+        
+        if (robot.isEnabled())
+            super.periodic();
+        else if (isRunning())
+            stopWheel();
 	}
 
 	private void updateDS()
@@ -68,7 +75,7 @@ public class Shooter extends PIDSubsystem
 	{
 		Util.consoleLog();
         
-        if (isRunning()) super.disable(); // Turn off PID if enabled.
+        if (isEnabled()) super.disable(); // Turn off PID if enabled.
 
         shooterMotor.stopMotor();
 		
@@ -109,6 +116,8 @@ public class Shooter extends PIDSubsystem
      */
     public boolean toggleWheel(double power)
     {
+        Util.consoleLog();
+
         if (isRunning())
             stopWheel();
         else
@@ -169,7 +178,8 @@ public class Shooter extends PIDSubsystem
     @Override
     protected void useOutput(double output, double setpoint) 
     {
-        Util.consoleLog("out=%.3f  set=%.3f  ff=%.3f  rpm=%.0f", output, setpoint, feedForwardPower, getRPM());
+        Util.consoleLog("rpm=%.0f  set=%.0f  ff=%.2f  out=%.2f  pwr=%.3f", getRPM(), setpoint, feedForwardPower, 
+                        output, output + feedForwardPower);
 
         // Set motor to feed forward power adjusted by PID result capped at +-1.0.
         shooterMotor.set(Util.clampValue(output + feedForwardPower, 1.0));
@@ -189,6 +199,8 @@ public class Shooter extends PIDSubsystem
     @Override
     public void enable()
     {
+        Util.consoleLog();
+
         super.enable();
 
         wheelRunning = true;
@@ -202,9 +214,11 @@ public class Shooter extends PIDSubsystem
     @Override
     public void disable()
     {
+        Util.consoleLog();
+
         super.disable();
 
-        wheelRunning = false;
+        stopWheel();
 		
 		updateDS();
     }
@@ -215,7 +229,9 @@ public class Shooter extends PIDSubsystem
      */
     public boolean togglePID()
     {
-        if (isRunning())
+        Util.consoleLog();
+
+        if (isEnabled())
            disable();
         else
            enable();

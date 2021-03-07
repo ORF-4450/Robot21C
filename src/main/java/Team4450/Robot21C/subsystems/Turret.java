@@ -91,7 +91,7 @@ public class Turret extends SubsystemBase
 	 */
 	public void startFeed(double power)
 	{
-		Util.consoleLog();
+		Util.consoleLog("%.2f", power);
 		
 		feedMotor.set(power);
 		
@@ -107,6 +107,8 @@ public class Turret extends SubsystemBase
     */
     public boolean toggleFeed(double power)
     {
+        Util.consoleLog("%.2f", power);
+
         if (isRunning())
             stopFeed();
         else
@@ -121,6 +123,8 @@ public class Turret extends SubsystemBase
     */
     public boolean toggleFeedForward()
     {
+        Util.consoleLog();
+
         if (isRunning())
             stopFeed();
         else
@@ -135,6 +139,8 @@ public class Turret extends SubsystemBase
      */
     public boolean toggleFeedBackward()
     {
+        Util.consoleLog();
+
         if (isRunning())
             stopFeed();
         else

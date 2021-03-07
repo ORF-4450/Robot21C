@@ -2,6 +2,7 @@ package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Lib.FXEncoder;
 import Team4450.Lib.LCD;
+import Team4450.Lib.SRXMagneticEncoderRelative;
 import Team4450.Lib.Util;
 
 import static Team4450.Robot21C.Constants.*;
@@ -94,7 +95,8 @@ public class AutoSlalom2 extends CommandBase
 		
 		commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, .50, FXEncoder.getTicksForDistance(9 * 12, DRIVE_WHEEL_DIAMETER), 
+        command = new AutoDrive(driveBase, .50, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(4 * 12, DRIVE_WHEEL_DIAMETER), 
                                 AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -102,7 +104,7 @@ public class AutoSlalom2 extends CommandBase
 
         commands.addCommands(command);
 
-		command = new AutoCurve(driveBase, .50, .16, 120,
+		command = new AutoCurve(driveBase, .50, .16, 115,
                                 AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -110,7 +112,8 @@ public class AutoSlalom2 extends CommandBase
 		
 		commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, .50, FXEncoder.getTicksForDistance(9 * 12, DRIVE_WHEEL_DIAMETER), 
+        command = new AutoDrive(driveBase, .50, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(5 * 12, DRIVE_WHEEL_DIAMETER), 
                                 AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -126,7 +129,7 @@ public class AutoSlalom2 extends CommandBase
 		
 		commands.addCommands(command);
 
-		command = new AutoCurve(driveBase, .50, .35, -125,
+		command = new AutoCurve(driveBase, .50, .36, -125,
                                 AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -134,7 +137,8 @@ public class AutoSlalom2 extends CommandBase
 		
 		commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, .50, FXEncoder.getTicksForDistance(5 * 12, DRIVE_WHEEL_DIAMETER), 
+        command = new AutoDrive(driveBase, .50, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(2.5 * 12, DRIVE_WHEEL_DIAMETER), 
                                 AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -142,7 +146,7 @@ public class AutoSlalom2 extends CommandBase
 
         commands.addCommands(command);
 
-		command = new AutoCurve(driveBase, .50, .25, 64,
+		command = new AutoCurve(driveBase, .50, .25, 68,
                                 AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -150,7 +154,8 @@ public class AutoSlalom2 extends CommandBase
 		
 		commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, .50, FXEncoder.getTicksForDistance(11 * 12, DRIVE_WHEEL_DIAMETER), 
+        command = new AutoDrive(driveBase, .50, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(5 * 12, DRIVE_WHEEL_DIAMETER), 
                                 AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -166,7 +171,8 @@ public class AutoSlalom2 extends CommandBase
 		
 		commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, .50, FXEncoder.getTicksForDistance(8 * 12, DRIVE_WHEEL_DIAMETER), 
+        command = new AutoDrive(driveBase, .50, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(5 * 12, DRIVE_WHEEL_DIAMETER), 
                                 AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,

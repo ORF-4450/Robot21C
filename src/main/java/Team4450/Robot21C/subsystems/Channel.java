@@ -86,6 +86,8 @@ public class Channel extends SubsystemBase
     */
     public boolean toggleBelt(double power)
     {
+        Util.consoleLog();
+        
         if (isRunning())
             stopBelt();
         else

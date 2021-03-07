@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC21C-03.04.21-1";
+	public static String		PROGRAM_NAME = "RAC21C-03.06.21-1";
 
 	public static Robot			robot;
 
