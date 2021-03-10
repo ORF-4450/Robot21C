@@ -98,7 +98,7 @@ public class AimTurret extends CommandBase
   }
   
   /**
-   * End Climber traverse mode.
+   * End Aiming command.
    */
   public void stop()
   {

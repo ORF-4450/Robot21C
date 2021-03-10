@@ -4,6 +4,8 @@ package Team4450.Robot21C.commands;
 import java.util.function.DoubleSupplier;
 
 import static Team4450.Robot21C.Constants.*;
+
+import Team4450.Robot21C.Robot;
 import Team4450.Robot21C.RobotContainer;
 import Team4450.Lib.LCD;
 import Team4450.Lib.Util;
@@ -95,7 +97,9 @@ public class TankDrive extends CommandBase
 	  LCD.printLine(LCD_2, "leftenc=%d  rightenc=%d", driveBase.getLeftEncoder(), driveBase.getRightEncoder());			
 
 	  LCD.printLine(LCD_3, "leftY=%.3f (%.3f)  rightY=%.3f (%.3f)", leftY, 
-				 driveBase.getLeftPower(), rightY, driveBase.getRightPower());
+                 driveBase.getLeftPower(), rightY, driveBase.getRightPower());
+                 
+      LCD.printLine(LCD_4, "utilY=%.3f  utilX=%.3f", RobotContainer.utilityStick.GetY(), RobotContainer.utilityStick.GetX());
 
 	  LCD.printLine(LCD_7, "Lrpm=%d - Rrpm=%d  Lmax vel=%.3f - Rmax vel=%.3f", driveBase.leftEncoder.getRPM(),
 			  driveBase.rightEncoder.getRPM(), driveBase.leftEncoder.getMaxVelocity(PIDRateType.velocityMPS),

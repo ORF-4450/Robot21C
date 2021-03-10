@@ -50,7 +50,7 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
           // our log file. The CommandScheduler also generates essentially the same warnings
           // but copying that is getting beyond what we should be doing, so we just set its
           // internal timeout (because it allows us to) to a longer value to turn off its
-          // warnings. It does therefore log to our log file. These warnings can be turned
+          // warnings. It does not log to our log file. These warnings can be turned back
           // on at times to check if we are having significant overruns but turned off if
           // things look ok. This is a major hack, the downside of which is that with each
           // release of Wpilib the copied files would have ot be recopied and remodified.
@@ -61,7 +61,8 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 
           enableWatchDogWarning(false);
           enableWatchDogFlush(false);
-          //CommandScheduler.getInstance().setPeriod(1.0);
+          this.setWatchDogTimeout(.04);
+          CommandScheduler.getInstance().setPeriod(1.0);
 
 		  // Set Java to catch any uncaught exceptions and record them in our log file. 
 			

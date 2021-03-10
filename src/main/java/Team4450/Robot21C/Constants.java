@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC21C-03.06.21-1";
+	public static String		PROGRAM_NAME = "RAC21C-03.09.21-1";
 
 	public static Robot			robot;
 
@@ -69,13 +69,13 @@ public final class Constants
 	
 	// LCD display line number constants showing class where the line is set.
 	public static final int		LCD_1 = 1;	// Robot, Auto Commands.
-	public static final int		LCD_2 = 2;	// DriveCommand.
-	public static final int		LCD_3 = 3;	// DriveCommand.
-	public static final int		LCD_4 = 4;	// AutoDrive.
-	public static final int		LCD_5 = 5;	// AutoDrive.
-	public static final int		LCD_7 = 7;	// DriveCommand.
-	public static final int		LCD_8 = 8;	// DriveCommand.
-	public static final int		LCD_9 = 9;	// DriveCommand.
+	public static final int		LCD_2 = 2;	// TankDrive, ArcadeDrive command.
+	public static final int		LCD_3 = 3;	// TankDrive, ArcadeDrive command.
+	public static final int		LCD_4 = 4;	// TankDrive command, AutoDrive commnd.
+	public static final int		LCD_5 = 5;	// TankDrive command
+	public static final int		LCD_7 = 7;	// TankDrive, ArcadeDrive command
+	public static final int		LCD_8 = 8;	// TankDrive, ArcadeDrive command
+	public static final int		LCD_9 = 9;	// TankDrive command.
 
 	// Default starting field position in meters for pose tracking. For 2020 full field lower right corner.
 	public static final double	INITIAL_X = 1.2;

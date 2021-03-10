@@ -153,7 +153,7 @@ public class AutoSlalom extends CommandBase
         {
           trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve("paths/" + fileName);
           
-          Util.consoleLog("loadinng trajectory: %s", trajectoryFilePath);
+          Util.consoleLog("loading trajectory: %s", trajectoryFilePath);
           
           trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryFilePath);
         } catch (IOException ex) {

@@ -100,7 +100,7 @@ public class RobotContainer
 	
 	private JoyStick	leftStick = new JoyStick(new Joystick(LEFT_STICK), "Left Stick", JoyStickButtonIDs.TRIGGER);
 	private JoyStick	rightStick = new JoyStick(new Joystick(RIGHT_STICK), "Right  Stick", JoyStickButtonIDs.TRIGGER);
-	public JoyStick		utilityStick = new JoyStick(new Joystick(UTILITY_STICK), "Utility Stick", JoyStickButtonIDs.TRIGGER);
+	public static JoyStick   utilityStick = new JoyStick(new Joystick(UTILITY_STICK), "Utility Stick", JoyStickButtonIDs.TRIGGER);
 	private Joystick	launchPad = new Joystick(LAUNCH_PAD);	//new LaunchPad(new Joystick(LAUNCH_PAD));
 
 	private AnalogInput	pressureSensor = new AnalogInput(PRESSURE_SENSOR);
@@ -163,8 +163,6 @@ public class RobotContainer
 		// Navx calibrates at power on and must complete before robot moves. Takes 12 seconds.
 
 		navx = NavX.getInstance(NavX.PortType.SPI);
-		
-		//final AnalogGyroSim m_gyroSim = new AnalogGyroSim(navx);
 
 		// Add navx as a Sendable. Updates the heading indicator automatically.
  		
@@ -179,7 +177,7 @@ public class RobotContainer
 		
 		utilityStick.invertX(true);
 
-		utilityStick.deadZoneY(.25);
+		utilityStick.deadZoneY(.50);
 		utilityStick.deadZoneX(.25);
 
 		// Create subsystems prior to button mapping.

@@ -96,6 +96,8 @@ public class ArcadeDrive extends CommandBase
 
     LCD.printLine(LCD_3, "power=%.3f  rot=%.3f tip=%b  (lpwr=%.3f) (rpwr=%.3f)   ", power, rotation,
         turnInPlace, driveBase.getLeftPower(), driveBase.getRightPower());
+                 
+    LCD.printLine(LCD_4, "utilY=%.3f  utilX=%.3f", RobotContainer.utilityStick.GetY(), RobotContainer.utilityStick.GetX());
 
 	LCD.printLine(LCD_7, "Lrpm=%d - Rrpm=%d  Lmax vel=%.3f - Rmax vel=%.3f", driveBase.leftEncoder.getRPM(),
 	    driveBase.rightEncoder.getRPM(), driveBase.leftEncoder.getMaxVelocity(PIDRateType.velocityMPS),

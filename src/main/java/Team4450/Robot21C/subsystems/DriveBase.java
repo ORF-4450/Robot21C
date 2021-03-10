@@ -254,7 +254,7 @@ public class DriveBase extends SubsystemBase
 		// cumulative encoder counts since at any time we can reset the encoders to facilitate
 		// driving functions like auto drive, alt driving mode and more. Odometer wants counts
 		// as total since start of match or last odometer reset.		
-		
+        
 		double left = leftEncoder.getDistance(DistanceUnit.Meters);
 		double right = rightEncoder.getDistance(DistanceUnit.Meters);
 		

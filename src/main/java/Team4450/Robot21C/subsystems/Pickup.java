@@ -73,7 +73,7 @@ public class Pickup extends SubsystemBase
 			
 			extended = true;
 			
-			start(.30);
+			start(.35);
 		}
 	}
 	

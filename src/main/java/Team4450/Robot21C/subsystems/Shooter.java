@@ -6,12 +6,15 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import Team4450.Lib.FXEncoder;
 import Team4450.Lib.Util;
-
+import Team4450.Lib.SRXMagneticEncoderRelative.PIDRateType;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 /**
  * Shooter subsystem.
@@ -24,9 +27,14 @@ public class Shooter extends PIDSubsystem
       
     private FXEncoder       encoder = new FXEncoder(shooterMotor);
 
-    private double          defaultPower = .80, maxRPM = 6000, targetRPM = 2000, toleranceRPM = 200;
-    private double          feedForwardPower = 1.0;
-    private static double   kP = .0002, kI = kP / 100, kD = 0;
+    // Green Zone default power  = 0.90
+    // Yellow Zone default power = 0.90
+    // Blue zone default power   = 0.95
+    // Red Zone default power    = 1.00
+
+    private double          defaultPower = 1.00, maxRPM = 6000, targetRPM = 1690, toleranceRPM = 25;
+    private double          feedForwardPower = .30;
+    private static double   kP = .0001, kI = kP / 100, kD = 0;
     
     private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(.05, 12 / maxRPM);
 
@@ -36,14 +44,17 @@ public class Shooter extends PIDSubsystem
 
         shooterMotor.setInverted(true);
         
-        encoder.setInverted(true);
+        //encoder.setInverted(true);
     
         getController().setTolerance(toleranceRPM);
         
         setSetpoint(targetRPM);
 		  
         shooterMotor.setNeutralMode(NeutralMode.Coast);
-
+        
+        // Set encoder to update every 100ms.
+        encoder.setStatusFramePeriod(100);
+        
         Util.consoleLog("Shooter created!");
     }    
 	
@@ -54,7 +65,9 @@ public class Shooter extends PIDSubsystem
         // Call the base class periodic function so it can run the underlying
         // PID control. We also watch for robot being disabled and stop the
         // wheel (and PID) if running.
-        
+
+        Util.consoleLog("%d  %d", encoder.get(), encoder.getRPM());
+
         if (robot.isEnabled())
             super.periodic();
         else if (isRunning())
@@ -90,7 +103,7 @@ public class Shooter extends PIDSubsystem
 	 */
 	public void startWheel(double power)
 	{
-		Util.consoleLog();
+		Util.consoleLog("%.2f", power);
         
         disable();  // Turn off underlying PID control. 
 
@@ -116,7 +129,7 @@ public class Shooter extends PIDSubsystem
      */
     public boolean toggleWheel(double power)
     {
-        Util.consoleLog();
+        Util.consoleLog("%.2f", power);
 
         if (isRunning())
             stopWheel();
@@ -171,14 +184,25 @@ public class Shooter extends PIDSubsystem
     //     double ff = m_shooterFeedforward.calculate(setpoint);
     //     double volts = (output * 12) + ff;
 
-    //     Util.consoleLog("out=%.3f  set=%.3f  ff=%.3f  v=%.3f", output, setpoint, ff, volts);
+    //     Util.consoleLog("rpm=%.0f  out=%.3f  set=%.3f  ff=%.3f  v=%.3f", getRPM(), output, setpoint, ff, volts);
 
     //     shooterMotor.setVoltage(volts);
     // }
     @Override
     protected void useOutput(double output, double setpoint) 
     {
-        Util.consoleLog("rpm=%.0f  set=%.0f  ff=%.2f  out=%.2f  pwr=%.3f", getRPM(), setpoint, feedForwardPower, 
+        double feedForwardPower;    
+
+        // Setpoint = 0 means the pid controller is diabled so kill power.
+
+        if (setpoint == 0) 
+            feedForwardPower = 0;
+        else
+            feedForwardPower = this.feedForwardPower;
+
+        //double feedForwardPower = setpoint / maxRPM;
+
+        Util.consoleLog("rpm=%.0f  set=%.0f  ff=%.2f  out=%.3f  pwr=%.3f", getRPM(), setpoint, feedForwardPower, 
                         output, output + feedForwardPower);
 
         // Set motor to feed forward power adjusted by PID result capped at +-1.0.
