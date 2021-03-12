@@ -78,7 +78,7 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
         
         driveBase.resetEncodersWithDelay();
         
-        RobotContainer.navx.resetYawWait(1, 5000);
+        RobotContainer.navx.resetYawWait(1, 1000);
     }
     
     public void execute() 

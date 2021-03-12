@@ -15,7 +15,9 @@ import Team4450.Lib.SRXMagneticEncoderRelative.PIDRateType;
 import Team4450.Robot21C.RobotContainer;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
@@ -101,11 +103,11 @@ public class DriveBase extends SubsystemBase
 		rightEncoder = new SRXMagneticEncoderRelative(RRCanTalon, DRIVE_WHEEL_DIAMETER);
 		leftEncoder = new SRXMagneticEncoderRelative(LRCanTalon, DRIVE_WHEEL_DIAMETER);
           
-        // The real robot has to invert the left encoder so both encoder read increasing
+        // The real robot has to invert the right encoder so both encoder read increasing
         // values going forward. This should be the same for simulation, but it did not 
         // work right so no invert under sim. I am sure this is due to a mistake in how
         // the simulation is coded, but going to live with it for now.
-        if (RobotBase.isReal()) leftEncoder.setInverted(true);
+        if (RobotBase.isReal()) rightEncoder.setInverted(true);
 		
 		// For 2020 robot, put rear talons into a differential drive object and set the
 	    // front talons to follow the rears.
@@ -201,9 +203,11 @@ public class DriveBase extends SubsystemBase
 		// Dummy encoders have to have ports that are not allocated to anything else.
 		// Can be non-existent ports.
 		leftDummyEncoder = new Encoder(DUMMY_LEFT_ENCODER, DUMMY_LEFT_ENCODER + 1);
-		rightDummyEncoder = new Encoder(DUMMY_RIGHT_ENCODER, DUMMY_RIGHT_ENCODER + 1);
+        rightDummyEncoder = new Encoder(DUMMY_RIGHT_ENCODER, DUMMY_RIGHT_ENCODER + 1);
 		
 		double distancePerTickMeters = Math.PI * Units.inchesToMeters(DRIVE_WHEEL_DIAMETER) / SRXMagneticEncoderRelative.TICKS_PER_REVOLUTION;
+        
+        Util.consoleLog("disttickmeters=%.6f", distancePerTickMeters);
 		
 		leftDummyEncoder.setDistancePerPulse(distancePerTickMeters);
 		rightDummyEncoder.setDistancePerPulse(distancePerTickMeters);
@@ -590,9 +594,9 @@ public class DriveBase extends SubsystemBase
 		
 		Util.consoleLog("at encoder reset lget=%d  rget=%d", leftEncoder.get(), rightEncoder.get());
 		
-		// Set encoders to update every 100ms.
-		rightEncoder.setStatusFramePeriod(100);
-		leftEncoder.setStatusFramePeriod(100);
+		// Set encoders to update every 20ms.
+		rightEncoder.setStatusFramePeriod(20);
+		leftEncoder.setStatusFramePeriod(20);
 
 		// Reset encoders with 112ms delay before proceeding.
 		int rightError = rightEncoder.reset(2);
@@ -699,7 +703,7 @@ public class DriveBase extends SubsystemBase
 	public double getAvgEncoderDist()
 	{
 		return  (leftEncoder.getDistance(DistanceUnit.Meters) + 
-				rightEncoder.getDistance(DistanceUnit.Meters)) / 2;
+				 rightEncoder.getDistance(DistanceUnit.Meters)) / 2;
 	}	
 	/** 
 	 * Left encoder counts.

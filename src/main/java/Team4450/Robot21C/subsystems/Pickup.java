@@ -19,6 +19,7 @@ public class Pickup extends SubsystemBase
 
 	private DigitalInput	ballEye = new DigitalInput(BALL_EYE);
 
+    private double          pickupPower = .25;
 	private boolean			extended = false, pickupRunning = false;
     public static boolean   balleye = false;
     
@@ -60,7 +61,7 @@ public class Pickup extends SubsystemBase
 	}
 	
 	/**
-	 * Extend the pickup arm and start the wheel motor.
+	 * Extend the pickup arm and start the wheel motor with default power.
 	 * Method is thread safe.
 	 */
 	public void extend()
@@ -73,7 +74,7 @@ public class Pickup extends SubsystemBase
 			
 			extended = true;
 			
-			start(.35);
+			start(pickupPower);
 		}
 	}
 	

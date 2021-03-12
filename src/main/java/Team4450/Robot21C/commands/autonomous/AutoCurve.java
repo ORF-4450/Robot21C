@@ -12,7 +12,7 @@ public class AutoCurve extends CommandBase
 {
 	private final DriveBase driveBase;
 
-	private double			kP = .04, kI = 0.004, kD = 0.0, kTolerance= 1.0;
+	private double			kP = .06, kI = kP / 10, kD = 0.0, kTolerance= 1.0;
 	private double			elapsedTime, yaw = 0, originalCurve, power, curve, target, startTime;
 	private int				iterations;
 	private StopMotors 		stop;
@@ -95,7 +95,7 @@ public class AutoCurve extends CommandBase
 		{
 			Util.checkRange(target, 180, "target");
 			
-			RobotContainer.navx.resetYawWait(1, 500);
+			RobotContainer.navx.resetYawWait(2, 500);
 		}
 		
 		if (pid == Pid.on)

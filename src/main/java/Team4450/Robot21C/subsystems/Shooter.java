@@ -8,6 +8,7 @@ import Team4450.Lib.FXEncoder;
 import Team4450.Lib.Util;
 import Team4450.Lib.SRXMagneticEncoderRelative.PIDRateType;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
@@ -32,28 +33,24 @@ public class Shooter extends PIDSubsystem
     // Blue zone default power   = 0.95
     // Red Zone default power    = 1.00
 
-    private double          defaultPower = 1.00, maxRPM = 6000, targetRPM = 1690, toleranceRPM = 25;
-    private double          feedForwardPower = .30;
-    private static double   kP = .0001, kI = kP / 100, kD = 0;
+    private double          defaultPower = 1.00, maxRPM = 6000, targetRPM = 3000, toleranceRPM = 50;
+    private static double   kP = .00015, kI = kP / 100, kD = 0;
     
-    private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(.05, 12 / maxRPM);
+    // ks and kv determined by characterizing the shooter motor. See the shooter characterization
+    // project.
+    private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(.498, .108);
 
 	public Shooter()
 	{
         super(new PIDController(kP, kI, kD));
 
         shooterMotor.setInverted(true);
-        
-        //encoder.setInverted(true);
     
         getController().setTolerance(toleranceRPM);
         
         setSetpoint(targetRPM);
 		  
         shooterMotor.setNeutralMode(NeutralMode.Coast);
-        
-        // Set encoder to update every 100ms.
-        encoder.setStatusFramePeriod(100);
         
         Util.consoleLog("Shooter created!");
     }    
@@ -66,10 +63,10 @@ public class Shooter extends PIDSubsystem
         // PID control. We also watch for robot being disabled and stop the
         // wheel (and PID) if running.
 
-        Util.consoleLog("%d  %d", encoder.get(), encoder.getRPM());
-
         if (robot.isEnabled())
+        {
             super.periodic();
+        }
         else if (isRunning())
             stopWheel();
 	}
@@ -105,7 +102,7 @@ public class Shooter extends PIDSubsystem
 	{
 		Util.consoleLog("%.2f", power);
         
-        disable();  // Turn off underlying PID control. 
+        if (isEnabled()) disable();  // Turn off underlying PID control. 
 
 		shooterMotor.set(power);
 		
@@ -178,35 +175,21 @@ public class Shooter extends PIDSubsystem
 
     // Called by underlying PID control with the output of the PID calculation
     // each time the scheduler calls the periodic function.
-    // @Override
-    // protected void useOutput(double output, double setpoint) 
-    // {
-    //     double ff = m_shooterFeedforward.calculate(setpoint);
-    //     double volts = (output * 12) + ff;
-
-    //     Util.consoleLog("rpm=%.0f  out=%.3f  set=%.3f  ff=%.3f  v=%.3f", getRPM(), output, setpoint, ff, volts);
-
-    //     shooterMotor.setVoltage(volts);
-    // }
     @Override
     protected void useOutput(double output, double setpoint) 
     {
-        double feedForwardPower;    
+        // Feed forward calculator wants setpoint in rotations per second so we
+        // convert our rpm setpoint to rps. Feed forward calculator should give us
+        // a voltage that will achieve the rpm we want. PID controller output will
+        // adjust the speed to keeep on the rpm and will compensate for rpm being
+        // drug down by a ball passing through the shooter.
+        double ff = m_shooterFeedforward.calculate(setpoint / 60);
+        
+        double volts = output + ff;
 
-        // Setpoint = 0 means the pid controller is diabled so kill power.
+        Util.consoleLog("rpm=%.0f  out=%.3f  set=%.3f  ff=%.3f  v=%.3f", getRPM(), output, setpoint, ff, volts);
 
-        if (setpoint == 0) 
-            feedForwardPower = 0;
-        else
-            feedForwardPower = this.feedForwardPower;
-
-        //double feedForwardPower = setpoint / maxRPM;
-
-        Util.consoleLog("rpm=%.0f  set=%.0f  ff=%.2f  out=%.3f  pwr=%.3f", getRPM(), setpoint, feedForwardPower, 
-                        output, output + feedForwardPower);
-
-        // Set motor to feed forward power adjusted by PID result capped at +-1.0.
-        shooterMotor.set(Util.clampValue(output + feedForwardPower, 1.0));
+        shooterMotor.setVoltage(volts);
     }
 
     // Called by underlying PID control to get the process measurement value each time
@@ -218,7 +201,10 @@ public class Shooter extends PIDSubsystem
     }
 
     /**
-     * Enable PID control to run shooter wheel at target RPM.
+     * Enable PID control to run shooter wheel at target RPM after we
+     * ramp up the feed forward power so the wheel reaches target RPM.
+     * We will then start the PID controller to maintain the power at
+     * that level.
      */
     @Override
     public void enable()

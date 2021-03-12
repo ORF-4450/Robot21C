@@ -82,8 +82,8 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
     Util.consoleLog("start hdng=%.2f  tgt=%.2f  yaw=%.2f yawR=%.2f", RobotContainer.navx.getHeading(), targetHeading,
                     RobotContainer.navx.getHeadingYaw(), RobotContainer.navx.getHeadingYawR());
          
-    // Reset gyro yaw to zero, wait up to 5 sec for navx to return zero yaw.
-    RobotContainer.navx.resetYawWait(1, 5000);
+    // Reset gyro yaw to zero, wait up to 1 sec for navx to return zero yaw.
+    RobotContainer.navx.resetYawWait(1, 1000);
   }
 
   @Override

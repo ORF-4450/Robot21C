@@ -14,7 +14,7 @@
     "rightControllerTypes": [],
     # Set motors to inverted or not
     # If doing drive test, treat this as the left side of the drivetrain
-    "motorsInverted": [],
+    "motorsInverted": [False],
     # Only if you are doing drive (leave empty "[]" if not)
     "rightMotorsInverted": [],
     # Encoder edges-per-revolution (*NOT* cycles per revolution!)
@@ -46,5 +46,6 @@
     # "" (NavX using default SPI, ADXRS450 using onboard CS0, or no gyro)
     "gyroPort": "",
 }
+
 
 

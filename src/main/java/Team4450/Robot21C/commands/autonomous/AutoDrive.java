@@ -13,7 +13,7 @@ public class AutoDrive extends CommandBase
 {
 	private final DriveBase driveBase;
 
-	private double			yaw, kSteeringGain = .10, elapsedTime = 0;
+	private double			yaw, kSteeringGain = .07, elapsedTime = 0;
 	private double			kP = .0001, kI = .00005, kD = 0;
 	private double			power, startTime; 
 	private int 			encoderCounts, iterations; 
@@ -112,7 +112,7 @@ public class AutoDrive extends CommandBase
 	@Override
 	public void initialize()
 	{
-		Util.consoleLog();
+		Util.consoleLog("target=%d", encoderCounts);
 
 		startTime = Util.timeStamp();
 		
@@ -129,7 +129,7 @@ public class AutoDrive extends CommandBase
 		{
 			Util.consoleLog("yaw before reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
 			
-			RobotContainer.navx.resetYawWait(1, 5000);
+			RobotContainer.navx.resetYawWait(2, 500);
 			
 			// Note, under simulation this yaw will not show zero until next execution of DriveBase.simulationPeriodic.
 			Util.consoleLog("yaw after reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
@@ -161,9 +161,11 @@ public class AutoDrive extends CommandBase
 	@Override
 	public void execute() 
 	{
+        int avgEncoderCount = driveBase.getAvgEncoder();
+
 		Util.consoleLog();
 
-		LCD.printLine(LCD_4, "Auto wheel encoder avg=%d", driveBase.getAvgEncoder());
+		LCD.printLine(LCD_4, "Auto wheel encoder avg=%d", avgEncoderCount);
 
 		// Use PID to determine the power applied. Should reduce power as we get close
 		// to the target encoder value.
@@ -172,15 +174,15 @@ public class AutoDrive extends CommandBase
 		{
 			elapsedTime = Util.getElaspedTime();
 			
-			power = pidController.calculate(driveBase.getAvgEncoder(), elapsedTime);
+			power = pidController.calculate(avgEncoderCount, elapsedTime);
 			
 			//power = pidController.get();
 			
-			Util.consoleLog("avenc=%d  error=%.2f  power=%.2f  time=%f", driveBase.getAvgEncoder(), 
+			Util.consoleLog("avenc=%d  error=%.2f  power=%.2f  time=%f", avgEncoderCount, 
 							pidController.getError(), power, elapsedTime);
 		}
 		else
-			Util.consoleLog("tgt=%d  act=%d", encoderCounts, Math.abs(driveBase.getAvgEncoder()));
+			Util.consoleLog("tgt=%d  act=%d", encoderCounts, Math.abs(avgEncoderCount));
 
 		// Yaw angle is negative if robot veering left, positive if veering right when going forward.
 		
@@ -220,6 +222,8 @@ public class AutoDrive extends CommandBase
 		Util.consoleLog("encoder counts=%d  actual count=%d  error=%.2f pct", encoderCounts, actualCount, 
 				((double) actualCount - encoderCounts) / (double) encoderCounts * 100.0);
 
+        Util.consoleLog("distmeters=%.3f", driveBase.getAvgEncoderDist());
+        
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
 
 		Util.consoleLog("end -----------------------------------------------------");

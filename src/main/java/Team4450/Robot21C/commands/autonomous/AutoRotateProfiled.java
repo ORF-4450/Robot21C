@@ -101,8 +101,8 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
         // Try to prevent over rotation.
         driveBase.SetCANTalonBrakeMode(true);
         
-        // Reset gyro yaw to zero, wait up to 5 sec for navx to return zero yaw.
-        RobotContainer.navx.resetYawWait(1, 5000);
+        // Reset gyro yaw to zero, wait up to 1 sec for navx to return zero yaw.
+        RobotContainer.navx.resetYawWait(1, 1000);
     }
 
     @Override
