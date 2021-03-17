@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import Team4450.Lib.Util;
 import Team4450.Robot21C.RobotContainer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,14 +20,17 @@ public class Turret extends SubsystemBase
   	
     private WPI_VictorSPX   feedMotor = new WPI_VictorSPX(TURRET_FEED_VICTOR);
     private WPI_VictorSPX   rotateMotor = new WPI_VictorSPX(TURRET_ROTATE_VICTOR);
-      
-    private double          defaultFeedPower = .25, defaultRotatePower = .25;
+    
+    private DigitalInput    limitSensorLeft = new DigitalInput(TURRET_LIMIT_LEFT);
+    private DigitalInput    limitSensorRight = new DigitalInput(TURRET_LIMIT_RIGHT);
+    
+    private double          defaultFeedPower = .25, defaultRotatePower = .20;
 
     private Channel         channel;
 
 	public Turret(Channel channel)
 	{
-        //Util.consoleLog();
+        Util.consoleLog();
         
         this.channel = channel;
 
@@ -40,6 +44,7 @@ public class Turret extends SubsystemBase
 	@Override
 	public void periodic() 
 	{
+        updateDS();    
 	}
 
     public void stop()
@@ -52,20 +57,23 @@ public class Turret extends SubsystemBase
 
 	private void updateDS()
 	{
-		Util.consoleLog();
-
-		SmartDashboard.putBoolean("Feed", feedRunning);
+        SmartDashboard.putBoolean("Feed", feedRunning);
+        //SmartDashboard.putBoolean("TurretLimitLeft", limitSensorLeft.get());      
+        //SmartDashboard.putBoolean("TurretLimitRight", limitSensorRight.get());      
 	}
 
     /**
-     * Rotate the turret using default power level.
+     * Rotate the turret using default power level. Optical sensors on turrent
+     * prevent over rotation.
      * @param power If + rotate right, - rotate left.
      */
     public void rotate(double power)
     {
-        if (power > 0)
+        // Sensors return true when not blocked by turret rotation.
+
+        if (power > 0 && limitSensorLeft.get())
             rotateMotor.set(defaultRotatePower);
-        else if (power < 0)
+        else if (power < 0 && limitSensorRight.get())
             rotateMotor.set(-defaultRotatePower);
         else
             rotateMotor.stopMotor();

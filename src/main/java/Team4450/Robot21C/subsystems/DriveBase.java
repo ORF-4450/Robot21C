@@ -188,7 +188,9 @@ public class DriveBase extends SubsystemBase
 		
 		resetOdometer(new Pose2d(INITIAL_X, INITIAL_Y, new Rotation2d()), INITIAL_HEADING);
 
-		if (RobotBase.isSimulation()) configureSimulation();
+        if (RobotBase.isSimulation()) configureSimulation();
+        
+        Util.consoleLog("DriveBase created!");
 	}
 
 	// Simulation classes help us simulate our robot. Our SRXMagneticEncoderRelative class
@@ -586,7 +588,9 @@ public class DriveBase extends SubsystemBase
 	 * you next read the encoder for a measurement (like in autonomous programs) the encoder has
 	 * not yet been reset and returns the previous count. This method resets and delays 112ms
 	 * which testing seemed to show would cause the next read of the reset encoder to return
-	 * zero.
+	 * zero. Note, the 112ms delay was with old way of getting encoder counts which had ~100ms
+     * response delay plus command send delay. With new way of getting counts, response delay
+     * is ~20ms plus ~10ms send delay. So we now wait 35ms to let reset complete.
 	 */
 	public void resetEncodersWithDelay()
 	{
@@ -594,13 +598,13 @@ public class DriveBase extends SubsystemBase
 		
 		Util.consoleLog("at encoder reset lget=%d  rget=%d", leftEncoder.get(), rightEncoder.get());
 		
-		// Set encoders to update every 20ms.
+		// Set encoders to update every 20ms just to make sure.
 		rightEncoder.setStatusFramePeriod(20);
 		leftEncoder.setStatusFramePeriod(20);
 
 		// Reset encoders with 112ms delay before proceeding.
-		int rightError = rightEncoder.reset(2);
-		int leftError = leftEncoder.reset(110);
+		int rightError = rightEncoder.reset(15);    // 15ms
+		int leftError = leftEncoder.reset(15);      // 15ms
 
 		lastLeftDist = lastRightDist = 0;
 

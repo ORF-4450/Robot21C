@@ -22,7 +22,7 @@ public class Channel extends SubsystemBase
 	public Channel()
 	{
         //Util.consoleLog();
-        
+
         beltMotor.setInverted(true);
 
 		Util.consoleLog("Channel created!");
@@ -36,8 +36,6 @@ public class Channel extends SubsystemBase
 
 	private void updateDS()
 	{
-		Util.consoleLog();
-
 		SmartDashboard.putBoolean("Belt", beltRunning);
 	}
 

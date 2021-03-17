@@ -44,6 +44,8 @@ Port	Device			Description
 1		Encoder			Winch encoder. Orange = 5v, blue = signal.
 2		Encoder			Winch encoder. black = ground, yellow = signal.
 3		Optical Sensor	Ball sensor on pickup.
+8       Optical sensor  Turret limit sensor left.
+9       Optical Sensor  Turret limit sensor right.
 
 
 Analog I/O Ports
@@ -116,4 +118,5 @@ Brake					boolean			True when climber brake is engaged.
 CountingTurns			boolean			True when color wheel is running and counting turns.
 RotatingToTarget		boolean			True when color wheel is running and rotating to target color.
 GameColor				string			Shows game color when sent from FMS.
-feed                    boolean         True when turret feed roller is running.
+Feed                    boolean         True when turret feed roller is running.
+zone                    string          Displays the shooting zone currently set (power level).

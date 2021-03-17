@@ -19,11 +19,12 @@ public class Pickup extends SubsystemBase
 
 	private DigitalInput	ballEye = new DigitalInput(BALL_EYE);
 
+    private Channel         channel;
     private double          pickupPower = .25;
 	private boolean			extended = false, pickupRunning = false;
     public static boolean   balleye = false;
     
-	public Pickup ()
+	public Pickup (Channel channel)
 	{
 		Util.consoleLog();
 
@@ -32,7 +33,9 @@ public class Pickup extends SubsystemBase
 		pickupTalon.setInverted(true);
 
 		InitializeCANTalon(pickupTalon);
-		
+        
+        this.channel = channel;
+
 		// Configure interrupt handler for the ballEye optical ball detector.
 		
 		ballEye.requestInterrupts(new InterruptHandler());
@@ -54,8 +57,6 @@ public class Pickup extends SubsystemBase
 
 	private void updateDS()
 	{
-		Util.consoleLog();
-
 		SmartDashboard.putBoolean("Pickup", pickupRunning);
 		SmartDashboard.putBoolean("PickupExtended", extended);
 	}
@@ -72,7 +73,9 @@ public class Pickup extends SubsystemBase
 		{
 			pickupValve.SetA();
 			
-			extended = true;
+            extended = true;
+            
+            channel.startBelt();
 			
 			start(pickupPower);
 		}
@@ -91,7 +94,9 @@ public class Pickup extends SubsystemBase
 			pickupValve.SetB();
 			
 			extended = false;
-			
+            
+            channel.stopBelt();
+
 			stop();
 		}
 	}

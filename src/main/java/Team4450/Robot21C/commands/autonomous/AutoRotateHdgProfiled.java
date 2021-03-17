@@ -1,11 +1,10 @@
 package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Robot21C.subsystems.DriveBase;
-
-import java.util.function.DoubleSupplier;
-
 import Team4450.Lib.Util;
 import Team4450.Robot21C.RobotContainer;
+import static Team4450.Robot21C.Constants.*;
+
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
@@ -24,10 +23,9 @@ public class AutoRotateHdgProfiled extends ProfiledPIDCommand
   private double        startTime, targetHeading;
   private int           iterations;
 
-  // We work in degrees but the profile works in radians, so we convert. 70 d/s is an eyeball
-  // estimate of rotational vel and acceleration is a guess.
-  private static double kMaxRotationVelrs = Math.toRadians(70);       // 70 degrees per second.
-  private static double kMaxRotationAccelrss = Math.toRadians(20);    // 20 degrees per second per second.
+  // We work in degrees but the profile works in radians, so we convert. 
+  private static double kMaxRotationVelrs = Math.toRadians(MAX_ROTATIONAL_VEL);       
+  private static double kMaxRotationAccelrss = Math.toRadians(MAX_ROTATIONAL_ACCEL); 
 
   /**
    * Turns to robot to the specified angle using a motion profile.

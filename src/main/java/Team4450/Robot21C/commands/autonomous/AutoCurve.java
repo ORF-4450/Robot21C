@@ -74,7 +74,8 @@ public class AutoCurve extends CommandBase
 	@Override
 	public void initialize()
 	{
-		Util.consoleLog();
+		Util.consoleLog("pwr=%.2f  curve=%.2f  target=%.2f  stop=%s  brakes=%s  pid=%s  hdg=%s", 
+						power, curve, target, stop, brakes, pid, heading);
 
 		startTime = Util.timeStamp();
 		
@@ -95,7 +96,7 @@ public class AutoCurve extends CommandBase
 		{
 			Util.checkRange(target, 180, "target");
 			
-			RobotContainer.navx.resetYawWait(2, 500);
+			RobotContainer.navx.resetYawWait(2.5, 1000);
 		}
 		
 		if (pid == Pid.on)

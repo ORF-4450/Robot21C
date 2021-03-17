@@ -181,6 +181,7 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 	  SmartDashboard.putBoolean("Shooter", false);
 	  SmartDashboard.putBoolean("Belt", false);
 	  SmartDashboard.putString("GameColor", "");
+      SmartDashboard.putString("Zone", "GREEN");
 
 	  Util.consoleLog("end -------------------------------------------------------------------------");
   }

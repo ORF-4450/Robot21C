@@ -44,6 +44,7 @@ import Team4450.Robot21C.subsystems.Channel;
 import Team4450.Robot21C.subsystems.Climber;
 import Team4450.Robot21C.subsystems.ColorWheel;
 import Team4450.Robot21C.subsystems.DriveBase;
+import Team4450.Robot21C.subsystems.LimeLight;
 import Team4450.Robot21C.subsystems.Pickup;
 import Team4450.Robot21C.subsystems.Shooter;
 import Team4450.Robot21C.subsystems.Turret;
@@ -60,11 +61,12 @@ public class RobotContainer
 	
 	private final DriveBase 	driveBase;
 	public static Pickup		pickup;
-	private final ColorWheel	colorWheel =  null;
+	private final ColorWheel	colorWheel =  null; // Not using it right now.
     private final Climber		climber;
     public static Shooter       shooter;
     private final Channel       channel;
     private final Turret        turret;
+    private final LimeLight     limeLight = null;
 
 	private final TankDrive		driveCommand;
 	//private final ArcadeDrive	driveCommand;
@@ -183,12 +185,13 @@ public class RobotContainer
 		// Create subsystems prior to button mapping.
 		
 		driveBase = new DriveBase();
-		pickup = new Pickup();
 		//colorWheel = new ColorWheel();
         climber = new Climber(() -> 0);   //() -> utilityStick.GetX());  // Controls climber traverse.
-        shooter = new Shooter();
         channel = new Channel();
         turret = new Turret(channel);
+        shooter = new Shooter(channel, turret);
+        pickup = new Pickup(channel);
+        //limeLight = new LimeLight();
 		
 		// Create any persistent commands.
 		
@@ -198,16 +201,16 @@ public class RobotContainer
 		// Set the default climb command. This command will be scheduled automatically to run
 		// every teleop period and so use the utility joy stick to control the climber winch.
 		// We pass in function lambda so the command can read the stick generically as a
-		// DoubleProvider (see below).
+		// DoubleProvider when it runs later (see below).
 		
-		climber.setDefaultCommand(new Climb(climber, () -> utilityStick.GetY()));
+		//climber.setDefaultCommand(new Climb(climber, () -> utilityStick.GetY()));
 		
 		// Set the default turret aiming command. This command will be scheduled automatically to run
 		// every teleop period and so use the utility joy stick to control the turret rotation.
 		// We pass in function lambda so the command can read the stick generically as a
 		// DoubleProvider (see below).
 		
-		turret.setDefaultCommand(new AimTurret(turret, () -> utilityStick.GetX()));
+		turret.setDefaultCommand(new AimTurret(turret, () -> utilityStick.GetX(), () -> shooter.isRunning()));
 	  
 		// Set the default drive command. This command will be scheduled automatically to run
 		// every teleop period and so use the joy sticks to drive the robot. We pass in function
@@ -342,9 +345,14 @@ public class RobotContainer
 		// Start/stop command to turn color wheel specified number of turns.
 		//new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_BLUE_RIGHT.value)
     	//	.toggleWhenActive(turnWheelCounting);
-	
+    
+        // Start/stop commnd for shooter wheel controlled by PID.
         new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_BLUE_RIGHT.value)
     		.whenReleased(new InstantCommand(shooter::togglePID, shooter));
+
+        // Change the shooter power/rpm level to next higher level.
+        new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_YELLOW.value)
+    		.whenReleased(new InstantCommand(shooter::changeZone, shooter));
 
         // Start/stop command to turn color wheel to target color sent by FMS.
 		//new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_YELLOW.value)

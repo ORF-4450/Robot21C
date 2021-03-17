@@ -33,10 +33,6 @@ public class AutoDriveTrajectory extends RamseteCommand
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     private static double   kRamseteB = 2, kRamseteZeta = .7;
  
-    // Estimate feed forward gains.
-    private static double   ksVolts = .02, kvVoltSecondsPerMeter = 2;
-    private static double   kaVoltSecondsSquaredPerMeter = .2;
-
     /**
      * Auto drive the given trajectory.
      * @param driveBase     Drive base to use.
@@ -49,7 +45,7 @@ public class AutoDriveTrajectory extends RamseteCommand
         super(trajectory,
                 driveBase::getOdometerPose,
                 new RamseteController(kRamseteB, kRamseteZeta),
-                new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter),
+                new SimpleMotorFeedforward(DB_KS, DB_KV, DB_KA),
                 new DifferentialDriveKinematics(Util.inchesToMeters(TRACK_WIDTH)),
                 driveBase::getWheelSpeeds,
                 new PIDController(kP, kI, kD),  // left motor PID controller.
@@ -135,7 +131,7 @@ public class AutoDriveTrajectory extends RamseteCommand
     public static DifferentialDriveVoltageConstraint getVoltageConstraint()
     {
         return new DifferentialDriveVoltageConstraint(
-                    new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter),
+                    new SimpleMotorFeedforward(DB_KS, DB_KV, DB_KA),
                     new DifferentialDriveKinematics(Util.inchesToMeters(TRACK_WIDTH)),
                     10);    // 10v to leave some room to go over the constraint.
     }

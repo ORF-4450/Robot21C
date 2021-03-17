@@ -1,21 +1,18 @@
 package Team4450.Robot21C.subsystems;
 
-import static Team4450.Robot21C.Constants.*;
+import static Team4450.Robot21C.Constants.SHOOTER_TALON;
+import static Team4450.Robot21C.Constants.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import Team4450.Lib.FXEncoder;
 import Team4450.Lib.Util;
-import Team4450.Lib.SRXMagneticEncoderRelative.PIDRateType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 /**
  * Shooter subsystem.
@@ -28,34 +25,42 @@ public class Shooter extends PIDSubsystem
       
     private FXEncoder       encoder = new FXEncoder(shooterMotor);
 
-    // Green Zone default power  = 0.90
-    // Yellow Zone default power = 0.90
-    // Blue zone default power   = 0.95
-    // Red Zone default power    = 1.00
+    private Channel         channel;
+    private Turret          turret;
 
-    private double          defaultPower = 1.00, maxRPM = 6000, targetRPM = 3000, toleranceRPM = 50;
+    private final double    greenZonePower  = 0.80, greenZoneRPM = 4850;
+    private final double    yellowZonePower = 0.90, yellowZoneRPM = 5400;
+    private final double    blueZonePower   = 0.95, blueZoneRPM = 5650;
+    private final double    redZonePower    = 1.00, redZoneRPM = 6000;
+    
+    public final double     defaultPower = greenZonePower, defaultRPM = greenZoneRPM;
+
+    private String          currentZone = "green";
+    private double          currentPower = defaultPower, maxRPM = 6000, targetRPM = defaultRPM, toleranceRPM = 50;
     private static double   kP = .00015, kI = kP / 100, kD = 0;
+    private boolean         robotEnabled;
     
     // ks and kv determined by characterizing the shooter motor. See the shooter characterization
     // project.
     private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(.498, .108);
 
-	public Shooter()
+	public Shooter(Channel channel, Turret turret)
 	{
         super(new PIDController(kP, kI, kD));
 
         shooterMotor.setInverted(true);
     
         getController().setTolerance(toleranceRPM);
-        
-        setSetpoint(targetRPM);
 		  
         shooterMotor.setNeutralMode(NeutralMode.Coast);
+
+        this.channel = channel;
+        this.turret = turret;
         
         Util.consoleLog("Shooter created!");
     }    
 	
-	// This method will be called once per scheduler run
+	// This method will be called once per scheduler run including when disabled.
 	@Override
 	public void periodic() 
 	{
@@ -65,17 +70,24 @@ public class Shooter extends PIDSubsystem
 
         if (robot.isEnabled())
         {
+            if (!robotEnabled) setZone("green");
+
             super.periodic();
+
+            robotEnabled = true;
         }
-        else if (isRunning())
-            stopWheel();
+        else
+        {
+            robotEnabled = false;
+
+            if (isRunning()) stopWheel();
+        }
 	}
 
 	private void updateDS()
 	{
-		Util.consoleLog();
-
 		SmartDashboard.putBoolean("Shooter", wheelRunning);
+		SmartDashboard.putString("Zone", currentZone.toUpperCase());
 	}
 
 	/**
@@ -95,16 +107,21 @@ public class Shooter extends PIDSubsystem
 	}
 
     /**
-	 * Start shooter wheel turning.
+	 * Start shooter wheel turning. Sets current power level to the
+     * level specified.
 	 * @param power Power level 0.0 to 1.0.
 	 */
 	public void startWheel(double power)
 	{
 		Util.consoleLog("%.2f", power);
         
+        currentPower = power;
+
         if (isEnabled()) disable();  // Turn off underlying PID control. 
 
-		shooterMotor.set(power);
+        backUpChannel();
+
+		shooterMotor.set(currentPower);
 		
 		wheelRunning = true;
 		
@@ -112,11 +129,11 @@ public class Shooter extends PIDSubsystem
     }
     
     /**
-     * Start shooter wheel turning with default power.
+     * Start shooter wheel turning with current power level.
      */
     public void startWheel()
     {
-        startWheel(defaultPower);
+        startWheel(currentPower);
     }
     
     /**
@@ -137,12 +154,12 @@ public class Shooter extends PIDSubsystem
     }
     
     /**
-     * Toggles shooter wheel on/off. Uses default power level when turning on.
+     * Toggles shooter wheel on/off. Uses current power level when turning on.
      * @return True if result is wheel on, false if off.
      */
     public boolean toggleWheel()
     {
-        return toggleWheel(defaultPower);
+        return toggleWheel(currentPower);
     }
 
 	/**
@@ -201,21 +218,34 @@ public class Shooter extends PIDSubsystem
     }
 
     /**
-     * Enable PID control to run shooter wheel at target RPM after we
-     * ramp up the feed forward power so the wheel reaches target RPM.
-     * We will then start the PID controller to maintain the power at
-     * that level.
+     * Enable PID control to run shooter wheel at current target RPM.
      */
     @Override
     public void enable()
     {
         Util.consoleLog();
 
+        backUpChannel();
+        
+        setSetpoint(targetRPM);
+
         super.enable();
 
         wheelRunning = true;
 		
 		updateDS();
+    }
+
+    /**
+     * Enable PID control to run shooter wheel at specified target RPM.
+     * Sets current target RPM to the specified value.
+     * @param rpm RPM to set PID controller to follow.
+     */
+    public void enable(double rpm)
+    {
+        targetRPM = rpm;
+
+        enable();
     }
 
     /**
@@ -247,5 +277,98 @@ public class Shooter extends PIDSubsystem
            enable();
 
         return isRunning();
+    }
+
+    /**
+     * Runs channel and feed roller backward before starting shooter motor
+     * to move ball out of contact with shooter roller.
+     */
+    private void backUpChannel()
+    {
+        Util.consoleLog();
+
+        channel.toggleBeltBackward();
+        turret.toggleFeedBackward();
+
+        Timer.delay(.75);   // set time so one ball is fed.
+
+        channel.stopBelt();
+        turret.stopFeed();
+    }
+
+    /**
+     * Change the current shooting zone power/rpm to the next higher level
+     * looping around to lowest. 
+     */
+    public String changeZone()
+    {
+        switch (currentZone)
+        {
+            case "green":
+                currentZone = "yellow";
+                break;
+
+            case "yellow":
+                currentZone = "blue";
+                break;
+
+            case "blue":
+                currentZone = "red";
+                break;
+
+            case "red":
+                currentZone = "green";
+                break;
+
+            default:
+                currentZone = "green";
+        }
+
+        return setZone(currentZone);
+    } 
+
+    /**
+     * Change the currentshooting zone power/rpm to the zone requested.
+     * @param zone Shooting zone (green/yellow/blue/red).
+     * @return
+     */
+    public String setZone(String zone)
+    {
+        switch (zone.toLowerCase())
+        {
+            case "yellow":
+                currentPower = yellowZonePower;
+                targetRPM = yellowZoneRPM;
+                break;
+
+            case "blue":
+                currentPower = blueZonePower;
+                targetRPM = blueZoneRPM;
+                break;
+
+            case "red":
+                currentPower = redZonePower;
+                targetRPM = redZoneRPM;
+                break;
+
+            case "green":
+                currentPower = greenZonePower;
+                targetRPM = greenZoneRPM;
+                break;
+
+            default:
+                zone = setZone("green");
+        }
+
+        currentZone = zone;
+
+        updateDS();
+
+        return zone;
+    }
+
+    public String getCurrentZone()
+    {
+        return currentZone;
     }
 }

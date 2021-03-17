@@ -112,7 +112,8 @@ public class AutoDrive extends CommandBase
 	@Override
 	public void initialize()
 	{
-		Util.consoleLog("target=%d", encoderCounts);
+        Util.consoleLog("pwr=%.2f  count=%d  stop=%s  brakes=%s  pid=%s  hdg=%s", power, encoderCounts, stop, 
+                        brakes, pid, heading);
 
 		startTime = Util.timeStamp();
 		

@@ -3,6 +3,8 @@ package Team4450.Robot21C.commands.autonomous;
 import Team4450.Robot21C.subsystems.DriveBase;
 import Team4450.Lib.Util;
 import Team4450.Robot21C.RobotContainer;
+import static Team4450.Robot21C.Constants.*;
+
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
@@ -20,7 +22,7 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 
     private static AutoRotateProfiled   thisInstance;
 
-    private static double kP = 2.5, kI = .20, kD = 0, toleranceRad = 1.0, toleranceVelrs = 1.0;
+    private static double kP = 15, kI = kP / 100, kD = 0, toleranceRad = 1.0, toleranceVelrs = 1.0;
     private double        targetAngle, startTime;
     private int           iterations;
 
@@ -29,10 +31,9 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     private static double kMaxRotationVelrs = Math.toRadians(70);       // 70 degrees per second.
     private static double kMaxRotationAccelrss = Math.toRadians(20);    // 20 degrees per second per second.
 
-    // Estimate both feed forward gains as 12v / max velocity. Feed forward does not seem to work
+    // Estimate both feed forward gains. Feed forward does not seem to work
     // but can't say for sure until we get the bot characterized and get the measured gains.
-    private SimpleMotorFeedforward  feedForward = new SimpleMotorFeedforward(12 / kMaxRotationVelrs, 
-                                                                             12 / kMaxRotationVelrs);
+    private SimpleMotorFeedforward  feedForward = new SimpleMotorFeedforward(DB_KS, DB_KV);
 
     /**
      * Turns to robot to the specified angle using a motion profile.
@@ -43,7 +44,8 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     public AutoRotateProfiled(DriveBase drive, double targetAngle) 
     {
         // Since we are extending ProfiledPIDCommand, we will call the underlying constructor
-        // to instantiate the components of ProfiledPIDCommand.
+        // to instantiate the components of ProfiledPIDCommand. For reasons I cannot explain,
+        // the PID function won't work with degrees but will work with radians.
         super(
             new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(kMaxRotationVelrs, 
                                                                                    kMaxRotationAccelrss)),
@@ -78,18 +80,18 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
     // this after characterization. It may be that the kP value used with FF is quite a bit
     // different than the 2.0 used without FF. However, the FF voltage is WAY off and that
     // may be the result of guessing the FF gains.
-    private void driveWithFeedForward(double power, TrapezoidProfile.State setPoint)
-    {
-        double ff = feedForward.calculate(setPoint.position, setPoint.velocity);
+    // private void driveWithFeedForward(double power, TrapezoidProfile.State setPoint)
+    // {
+    //     double ff = feedForward.calculate(setPoint.position); //, setPoint.velocity);
 
-        Util.consoleLog("pwr=%.3f pwr*12=%.3f  spp=%.3f spv=%.3f  ff=%.3fv", power, power * 12, setPoint.position, setPoint.velocity, ff);
+    //     Util.consoleLog("pwr=%.3f pwr*12=%.3f  spp=%.3f spv=%.3f  ff=%.3fv", power, power * 12, setPoint.position, setPoint.velocity, ff);
 
-        // Feed forward is in volts so we convert the PID output (radians) to
-        // voltage so it combines with ff and then we set motors with voltage.
-        power = power * 12 + ff;
+    //     // Feed forward is in volts so we convert the PID output (in radians) to
+    //     // voltage so it combines with ff and then we set motors with voltage.
+    //     power = power + ff;
         
-        driveBase.curvatureDrive(0, power, true);
-    }
+    //     driveBase.curvatureDrive(0, power, true);
+    // }
 
     @Override
     public void initialize()

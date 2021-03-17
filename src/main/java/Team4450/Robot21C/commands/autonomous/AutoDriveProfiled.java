@@ -67,7 +67,7 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
     @Override
     public void initialize()
     {
-        Util.consoleLog();
+        Util.consoleLog("distance=%.3fm  stop=%s  brakes=%s", distance, stop, brakes);
 
         startTime = Util.timeStamp();
 

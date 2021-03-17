@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC21C-03.11.21-1";
+	public static String		PROGRAM_NAME = "RAC21C-03.16.21-1";
 
 	public static Robot			robot;
 
@@ -45,7 +45,8 @@ public final class Constants
 	public static final int		CLIMBER_BRAKE_VALVE = 4;	// 4-5
 
 	// Digital Input port assignments. Encoder takes 2 ports.
-	public static final int		WINCH_SWITCH = 0, WINCH_ENCODER = 1, BALL_EYE = 3;
+    public static final int		WINCH_SWITCH = 0, WINCH_ENCODER = 1, BALL_EYE = 3, TURRET_LIMIT_LEFT = 8;
+    public static final int     TURRET_LIMIT_RIGHT = 9;
 
 	// Dummy encoders use DIO port numbers above the actual ports on RoboRio.
 	public static final int		DUMMY_LEFT_ENCODER = 10, DUMMY_RIGHT_ENCODER = 12;
@@ -77,8 +78,24 @@ public final class Constants
 	public static final int		LCD_8 = 8;	// TankDrive, ArcadeDrive command
 	public static final int		LCD_9 = 9;	// TankDrive command.
 
-	// Default starting field position in meters for pose tracking. For 2020 full field lower right corner.
+	// Default starting field position in meters for pose tracking. For 2020 full field lower left corner.
 	public static final double	INITIAL_X = 1.2;
 	public static final double	INITIAL_Y = 0.5;
-	public static final double	INITIAL_HEADING = 0;
+    public static final double	INITIAL_HEADING = 0;
+    
+    // Estimated by eyeball observation:
+
+    public static final double  MAX_ROTATIONAL_VEL = 70;    // Degrees per second.
+    public static final double  MAX_ROTATIONAL_ACCEL = 20;  // Degrees per second per second.
+
+    // Drive base characterization results.
+
+    public static final double  DB_KS = 1.0;
+    public static final double  DB_KV = 5.24;
+    public static final double  DB_KA = .0698;
+
+    public static final double  DB_POSITIONAL_KP = 5.14; // .567
+    public static final double  DB_POSITIONAL_KD = .131; // .056
+    public static final double  DB_VELOCITY_KP = .0742;  // .498
+    public static final double  DB_VELOCITY_KD = 0.0;
 }

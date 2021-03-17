@@ -65,7 +65,7 @@ public class AutoRotate extends CommandBase
 	@Override
 	public void initialize()
 	{
-		Util.consoleLog();
+        Util.consoleLog("pwr=%.2f  target=%.2f  pid=%s  hdg=%s", power, target, pid, heading);
 
 		startTime = Util.timeStamp();
 

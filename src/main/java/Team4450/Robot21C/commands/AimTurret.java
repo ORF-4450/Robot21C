@@ -1,6 +1,7 @@
 
 package Team4450.Robot21C.commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import Team4450.Lib.Util;
@@ -16,19 +17,21 @@ public class AimTurret extends CommandBase
   private final Turret 		    turret;
     
   private final DoubleSupplier	rotationPower;
+  private final BooleanSupplier shooterIsRunning;
   
   private boolean				endAiming;
 
   /**
    * Creates a new Turret Aiming command. Uses Utility stick X deflection
-   * to move the turret right/left.
+   * to move the turret right/left. Runs as Turret default command.
    *
    * @param subsystem The subsystem used by this command.
    * @param rotatePower A double supplier of the speed of rotation
    * as % power -1.0 to +1.0. Note, power is fixed in Turret class. Only
    * the sign is used to control direction, + right - left.
+   * @param shooterIsRunning True if shooter wheel is running, false if not.
    */
-  public AimTurret(Turret subsystem, DoubleSupplier rotationPower) 
+  public AimTurret(Turret subsystem, DoubleSupplier rotationPower, BooleanSupplier shooterIsRunning) 
   {
 	  Util.consoleLog();
 	  
@@ -38,7 +41,8 @@ public class AimTurret extends CommandBase
 	  
 	  addRequirements(turret);
 	  
-	  this.rotationPower = rotationPower;
+      this.rotationPower = rotationPower;
+      this.shooterIsRunning = shooterIsRunning;
   }
 
   /**
@@ -73,8 +77,10 @@ public class AimTurret extends CommandBase
   @Override
   public void execute() 
   {
-	  // Squaring tones down the responsiveness of the winch.
-	  turret.rotate(Util.squareInput(rotationPower.getAsDouble()));
+      // Squaring tones down the responsiveness of the turret.
+      
+	  if (shooterIsRunning.getAsBoolean()) turret.rotate(Util.squareInput(rotationPower.getAsDouble()));
+	  //turret.rotate(Util.squareInput(rotationPower.getAsDouble()));
   }
 
   /**
