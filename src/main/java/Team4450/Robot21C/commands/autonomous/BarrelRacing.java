@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
- * This is an autonomous command to perform the Slalom challenge.
+ * This is an autonomous program for the Barrel Racing challenge.
  */
-public class AutoSlalom2 extends CommandBase
+public class BarrelRacing extends CommandBase
 {
 	private final DriveBase driveBase;
 	
@@ -25,15 +25,15 @@ public class AutoSlalom2 extends CommandBase
     private Command					command = null;
     
     // These constants define the starting pose for this auto program. Defaults to the base starting pose.
-    private double                  kInitialX = INITIAL_X, kInitialY = INITIAL_Y, kInitialHeading = INITIAL_HEADING;
+    private double                  kInitialX = INITIAL_X, kInitialY = 2.2, kInitialHeading = INITIAL_HEADING;
 
 	/**
-	 * Creates a new AutoSlalom2 autonomous command. This command follows the
-     * path for the Slalom challenge.
+	 * Creates a new BarrelRacing autonomous command. This command follows the
+     * path for the Barrel Racing challenge.
 	 *
 	 * @param driveBase DriveBase subsystem used by this command to drive the robot.
 	 */
-	public AutoSlalom2(DriveBase driveBase) 
+	public BarrelRacing(DriveBase driveBase) 
 	{
 		Util.consoleLog();
 		
@@ -54,7 +54,7 @@ public class AutoSlalom2 extends CommandBase
 		
 		driveBase.setMotorSafety(false);  // Turn off watchdog.
 		
-	  	LCD.printLine(LCD_1, "Mode: Auto - AutoSlalom2 - All=%s, Location=%d, FMS=%b, msg=%s", alliance.name(), location, 
+	  	LCD.printLine(LCD_1, "Mode: Auto - BarrelRacing - All=%s, Location=%d, FMS=%b, msg=%s", alliance.name(), location, 
 				ds.isFMSAttached(), gameMessage);
 		
 		// Reset wheel encoders.	  	
@@ -84,25 +84,17 @@ public class AutoSlalom2 extends CommandBase
 		// executed one after the other until done.
 		
 		commands = new SequentialCommandGroup();
-
-		command = new AutoCurve(driveBase, .30, .70, -60, //.4
-                                AutoDrive.StopMotors.dontStop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
-		
-		commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, .30, //.5
-                                SRXMagneticEncoderRelative.getTicksForDistance(2 * 12, DRIVE_WHEEL_DIAMETER), 
-                                AutoDrive.StopMotors.dontStop,
+        command = new AutoDrive(driveBase, .30, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(9 * 12, DRIVE_WHEEL_DIAMETER), 
+                                AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
                                 AutoDrive.Heading.angle);
 
         commands.addCommands(command);
-
-		command = new AutoCurve(driveBase, .30, .70, 115, //.5
+        
+		command = new AutoCurve(driveBase, .30, .50, 180, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -110,59 +102,8 @@ public class AutoSlalom2 extends CommandBase
 		
 		commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, .10, //.5
-                                SRXMagneticEncoderRelative.getTicksForDistance(3 * 12, DRIVE_WHEEL_DIAMETER), 
+		command = new AutoCurve(driveBase, .30, .50, 175, 
                                 AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
-
-        commands.addCommands(command);
-
-		command = new AutoCurve(driveBase, .20, 1.00, -180,
-                                AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
-		
-		commands.addCommands(command);
-
-		command = new AutoCurve(driveBase, .20, .95, -115,
-                                AutoDrive.StopMotors.dontStop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
-		
-		commands.addCommands(command);
-        
-        command = new AutoDrive(driveBase, .50, 
-                                SRXMagneticEncoderRelative.getTicksForDistance(2 * 12, DRIVE_WHEEL_DIAMETER), 
-                                AutoDrive.StopMotors.dontStop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
-
-        commands.addCommands(command);
-
-		command = new AutoCurve(driveBase, .50, .40, 55,
-                                AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
-		
-		commands.addCommands(command);
-        
-        command = new AutoDrive(driveBase, .50, 
-                                SRXMagneticEncoderRelative.getTicksForDistance(2 * 12, DRIVE_WHEEL_DIAMETER), 
-                                AutoDrive.StopMotors.dontStop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
-
-        commands.addCommands(command);
-
-		command = new AutoCurve(driveBase, .50, .40, 55,
-                                AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
                                 AutoDrive.Heading.angle);
@@ -170,21 +111,71 @@ public class AutoSlalom2 extends CommandBase
 		commands.addCommands(command);
         
         command = new AutoDrive(driveBase, .30, 
-                                SRXMagneticEncoderRelative.getTicksForDistance(1 * 12, DRIVE_WHEEL_DIAMETER), 
+                                SRXMagneticEncoderRelative.getTicksForDistance(8 * 12, DRIVE_WHEEL_DIAMETER), 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+        
+		command = new AutoCurve(driveBase, .30, .50, -180,
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+		
+		commands.addCommands(command);
+        
+		command = new AutoCurve(driveBase, .30, .50, -90, 
+                                AutoDrive.StopMotors.dontStop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+		
+		commands.addCommands(command);
+        
+		command = new AutoCurve(driveBase, .30, .15, -85, 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+		
+		commands.addCommands(command);
+        
+		command = new AutoCurve(driveBase, .30, .50, -170, 
+                                AutoDrive.StopMotors.dontStop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+		
+		commands.addCommands(command);
+        
+        command = new AutoDrive(driveBase, .50, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(8 * 12, DRIVE_WHEEL_DIAMETER), 
                                 AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
                                 AutoDrive.Heading.angle);
 
         commands.addCommands(command);
-
-		command = new AutoCurve(driveBase, .30, .30, -45,
-                                AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.on,
+        
+		command = new AutoCurve(driveBase, .50, .10, -15, 
+                                AutoDrive.StopMotors.dontStop,
+                                AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
                                 AutoDrive.Heading.angle);
 		
 		commands.addCommands(command);
+        
+        command = new AutoDrive(driveBase, .50, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(13 * 12, DRIVE_WHEEL_DIAMETER), 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.on,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
         
         commands.schedule();
 	}

@@ -166,7 +166,7 @@ public class DriveBase extends SubsystemBase
 	
 		robotDrive.setQuickStopThreshold(0);
 
-		// Always start in low gear with braking enabled.
+		// Always start with braking enabled.
    		
    		SetCANTalonBrakeMode(true);
 		
@@ -224,12 +224,12 @@ public class DriveBase extends SubsystemBase
 		rightEncoderSim = new EncoderSim(rightDummyEncoder);	
 
 		// Create the simulation model of the drivetrain.
-		// The MOI of 1.0 is needed to get the sim to behave like a real robot...
+		// The MOI of 1.0 is guess needed to get the sim to behave like a real robot...
 		
 		driveSim = new DifferentialDrivetrainSim(
 			DCMotor.getCIM(2),       // 2 CIM motors on each side of the drivetrain.
 			18.0,                    // 18:1 gearing reduction.
-			1.0,                     // MOI of 7.5 kg m^2 (from CAD model). 1.0 is guess to get sim response to match robot.
+			1.0,                     // MOI of 7.5 kg m^2 (from CAD model).
 			125 * 0.453592,          // The mass of the robot is approx 60 kg or 125 lbs.
 			Units.inchesToMeters(DRIVE_WHEEL_DIAMETER / 2),	// Wheel radius.
 			Units.inchesToMeters(TRACK_WIDTH),              // Track width in meters.
@@ -376,7 +376,11 @@ public class DriveBase extends SubsystemBase
 	public void curvatureDrive(double power, double rotation, boolean quickTurn)
 	{
 		robotDrive.curvatureDrive(power, rotation, quickTurn);
-	}
+    
+        Util.consoleLog("pwr=%.3f rot=%.3f  lpwr=%.3f(%.3fv)  rpwr=%.3f(%.3fv)", power, rotation,
+                        LRCanTalon.getMotorOutputPercent(), LRCanTalon.getMotorOutputVoltage(),
+                        RRCanTalon.getMotorOutputPercent(), RRCanTalon.getMotorOutputVoltage());
+    }
 
     /**
 	 * Arcade drive function. Drives at set power with set curve/rotation.

@@ -30,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import Team4450.Robot21C.commands.ArcadeDrive;
 import Team4450.Robot21C.commands.autonomous.AutoSlalom;
 import Team4450.Robot21C.commands.autonomous.AutoSlalom2;
+import Team4450.Robot21C.commands.autonomous.BarrelRacing;
+import Team4450.Robot21C.commands.autonomous.Bounce;
 import Team4450.Robot21C.commands.AimTurret;
 import Team4450.Robot21C.commands.Climb;
 import Team4450.Robot21C.commands.TankDrive;
@@ -126,7 +128,9 @@ public class RobotContainer
         TestAuto2,
         TestAuto3,
         AutoSlalom,
-        AutoSlalom2
+        AutoSlalom2,
+        BarrelRacing,
+        Bounce
 	}
 
 	private static SendableChooser<AutoProgram>	autoChooser;
@@ -428,10 +432,16 @@ public class RobotContainer
             case AutoSlalom2:
 				autoCommand = new AutoSlalom2(driveBase);
 				break;
-		}
 
-		// The command to be run in autonomous.
-		
+            case BarrelRacing:
+                autoCommand = new BarrelRacing(driveBase);
+                break;
+
+            case Bounce:
+                autoCommand = new Bounce(driveBase);
+                break;
+        }
+
 		return autoCommand;
 	}
   
@@ -450,8 +460,12 @@ public class RobotContainer
 		autoChooser.addOption("Test Auto Program 2", AutoProgram.TestAuto2);		
 		autoChooser.addOption("Test Auto Program 3", AutoProgram.TestAuto3);		
 		autoChooser.addOption("Slalom", AutoProgram.AutoSlalom);		
-		//autoChooser.addOption("Slalom 2", AutoProgram.AutoSlalom2);		
-		autoChooser.setDefaultOption("Slalom 2", AutoProgram.AutoSlalom2);		
+		autoChooser.addOption("Slalom 2", AutoProgram.AutoSlalom2);		
+		autoChooser.addOption("Barrel Racing", AutoProgram.BarrelRacing);		
+		autoChooser.addOption("Bounce", AutoProgram.Bounce);		
+		//autoChooser.setDefaultOption("Slalom 2", AutoProgram.AutoSlalom2);		
+		//autoChooser.setDefaultOption("Barrel Racing", AutoProgram.BarrelRacing);		
+		autoChooser.setDefaultOption("Bounce", AutoProgram.Bounce);		
 				
 		SmartDashboard.putData(autoChooser);
 	}

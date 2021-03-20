@@ -28,7 +28,7 @@ public class Shooter extends PIDSubsystem
     private Channel         channel;
     private Turret          turret;
 
-    private final double    greenZonePower  = 0.80, greenZoneRPM = 4850;
+    private final double    greenZonePower  = 0.80, greenZoneRPM = 4900;
     private final double    yellowZonePower = 0.90, yellowZoneRPM = 5400;
     private final double    blueZonePower   = 0.95, blueZoneRPM = 5650;
     private final double    redZonePower    = 1.00, redZoneRPM = 6000;
@@ -37,8 +37,9 @@ public class Shooter extends PIDSubsystem
 
     private String          currentZone = "green";
     private double          currentPower = defaultPower, maxRPM = 6000, targetRPM = defaultRPM, toleranceRPM = 50;
-    private static double   kP = .00015, kI = kP / 100, kD = 0;
-    private boolean         robotEnabled;
+    private static double   kP = .0002, kI = kP / 100, kD = 0;
+    private boolean         robotEnabled, startUp;
+    private double          startTime;
     
     // ks and kv determined by characterizing the shooter motor. See the shooter characterization
     // project.
@@ -66,7 +67,8 @@ public class Shooter extends PIDSubsystem
 	{
         // Call the base class periodic function so it can run the underlying
         // PID control. We also watch for robot being disabled and stop the
-        // wheel (and PID) if running.
+        // wheel (and PID) if running. We also watch for disable/enable transition
+        // to reset the shooter power level.
 
         if (robot.isEnabled())
         {
@@ -75,6 +77,25 @@ public class Shooter extends PIDSubsystem
             super.periodic();
 
             robotEnabled = true;
+
+            // Util.consoleLog("current=%.3f", shooterMotor.getStatorCurrent());
+
+            // This code watches motor startup current draw and if too much we
+            // assume wheel is jammed by a ball. We stop wheel, back up channel
+            // and restart wheel. If no over draw for 1.5 sec we assume good
+            // start up and disable this check for rest of wheel run time.
+
+            // if (isRunning() && startUp)
+            // {
+            //     if (shooterMotor.getStatorCurrent() > 150)
+            //     {
+            //         stopWheel();
+            //         backUpChannel();
+            //         startWheel();
+            //     }
+
+            //     if (Util.getElaspedTime(startTime) > 1.5) startUp = false;
+            // }
         }
         else
         {
@@ -123,7 +144,10 @@ public class Shooter extends PIDSubsystem
 
 		shooterMotor.set(currentPower);
 		
-		wheelRunning = true;
+        wheelRunning = true;
+        
+        startUp = true;
+        startTime = Util.timeStamp();
 		
 		updateDS();
     }

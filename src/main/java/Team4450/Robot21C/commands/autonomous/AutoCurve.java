@@ -96,7 +96,7 @@ public class AutoCurve extends CommandBase
 		{
 			Util.checkRange(target, 180, "target");
 			
-			RobotContainer.navx.resetYawWait(2.5, 1000);
+			RobotContainer.navx.resetYawWait(); //(2.5, 1000);
 		}
 		
 		if (pid == Pid.on)
@@ -110,7 +110,7 @@ public class AutoCurve extends CommandBase
 			originalCurve = curve;
 			
 			if (heading == Heading.heading)
-				pidController.setSetpoint(0);		// We are trying to get the yaw to zero.
+				pidController.setSetpoint(0);		// We are trying to get the heading yaw to zero.
 			else
 				pidController.setSetpoint(target);	// We are trying to get to the target yaw.
 			
@@ -148,9 +148,9 @@ public class AutoCurve extends CommandBase
 
 			// Our target is zero yaw so we determine the difference between
 			// current yaw and target and perform the PID calculation which
-			// results in the speed (curve) of turn, reducing curve as the difference
-			// approaches zero. So our turn should slow and not overshoot. If
-			// it does, the PID controller will reverse curve and turn it back.
+            // results in the rotation (curve) 0.0-1.0 of turn, reducing curve 
+            // as the difference approaches zero. So our turn should slow and not 
+            // overshoot. If it does, the PID controller will reverse curve and turn it back.
 			
 			curve = pidController.calculate(yaw, elapsedTime);
 			

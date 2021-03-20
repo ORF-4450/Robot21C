@@ -140,7 +140,7 @@ public class AutoSlalom extends CommandBase
     }
     
     /**
-     * Loads a Pathweaver path file into a trajectory.
+     * Loads a Pathweaver path file into a trajectory. This method can take 10 seconds.
      * @param fileName Name of file. Will automatically look in deploy directory.
      * @return The path's trajectory.
      */

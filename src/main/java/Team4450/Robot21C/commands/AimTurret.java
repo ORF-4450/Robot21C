@@ -79,8 +79,8 @@ public class AimTurret extends CommandBase
   {
       // Squaring tones down the responsiveness of the turret.
       
-	  if (shooterIsRunning.getAsBoolean()) turret.rotate(Util.squareInput(rotationPower.getAsDouble()));
-	  //turret.rotate(Util.squareInput(rotationPower.getAsDouble()));
+	  //if (shooterIsRunning.getAsBoolean()) turret.rotate(Util.squareInput(rotationPower.getAsDouble()));
+	  turret.rotate(Util.squareInput(rotationPower.getAsDouble()));
   }
 
   /**
