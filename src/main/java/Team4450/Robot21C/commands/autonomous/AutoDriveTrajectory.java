@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
  */
 public class AutoDriveTrajectory extends RamseteCommand
 {
-    private static double   kP = .1, kI = kP / 100, kD = 0, startTime;
+    private static double   kP = .137, kI = kP / 100, kD = 0, startTime;
     private int             iterations;
 
     private DriveBase       driveBase;
@@ -47,6 +47,7 @@ public class AutoDriveTrajectory extends RamseteCommand
                 new RamseteController(kRamseteB, kRamseteZeta),
                 new SimpleMotorFeedforward(DB_KS, DB_KV, DB_KA),
                 new DifferentialDriveKinematics(Util.inchesToMeters(TRACK_WIDTH)),
+                //new DifferentialDriveKinematics(TRACK_WIDTH_C),
                 driveBase::getWheelSpeeds,
                 new PIDController(kP, kI, kD),  // left motor PID controller.
                 new PIDController(kP, kI, kD),  // Right motor PID controller.
@@ -133,6 +134,7 @@ public class AutoDriveTrajectory extends RamseteCommand
         return new DifferentialDriveVoltageConstraint(
                     new SimpleMotorFeedforward(DB_KS, DB_KV, DB_KA),
                     new DifferentialDriveKinematics(Util.inchesToMeters(TRACK_WIDTH)),
+                    //new DifferentialDriveKinematics(TRACK_WIDTH_C),
                     10);    // 10v to leave some room to go over the constraint.
     }
 
@@ -141,6 +143,7 @@ public class AutoDriveTrajectory extends RamseteCommand
         return new TrajectoryConfig(MAX_WHEEL_SPEED_MS, MAX_WHEEL_ACCEL_MSS)
                     // Add kinematics to ensure max speed is actually obeyed
                     .setKinematics(new DifferentialDriveKinematics(Util.inchesToMeters(TRACK_WIDTH)))
+                    //.setKinematics(new DifferentialDriveKinematics(TRACK_WIDTH_C))
                     // Apply the voltage constraint
                     .addConstraint(voltageConstraint);
     }

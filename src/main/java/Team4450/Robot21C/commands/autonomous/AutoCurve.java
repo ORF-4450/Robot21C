@@ -5,14 +5,14 @@ import Team4450.Lib.Util;
 import Team4450.Robot21C.RobotContainer;
 import Team4450.Robot21C.subsystems.DriveBase;
 import Team4450.Robot21C.commands.autonomous.AutoDrive.*;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutoCurve extends CommandBase
 {
 	private final DriveBase driveBase;
 
-	private double			kP = .06, kI = kP / 10, kD = 0.0, kTolerance= 1.0;
+	private double			kP = .09, kI = .02, kD = 0.0, kTolerance= 1.5;
 	private double			elapsedTime, yaw = 0, originalCurve, power, curve, target, startTime;
 	private int				iterations;
 	private StopMotors 		stop;
@@ -23,7 +23,10 @@ public class AutoCurve extends CommandBase
 	SynchronousPID	pidController = null;
 
 	/**
-	 * Automatically drive in a curve.
+	 * Automatically drive in a curve. Note the tightness of the curve is limited by
+     * the use of curavtureDrive function. This is best used for arcs. See AutoCurve2
+     * for tight turns. Typically you set the power you want and adjust the curve value
+     * to get the arc you want.
 	 * 
 	 * @param driveBase The DriveBase subsystem used by this command to drive the robot.
 	 * @param power Speed to drive, + is forward.
@@ -114,7 +117,8 @@ public class AutoCurve extends CommandBase
 			else
 				pidController.setSetpoint(target);	// We are trying to get to the target yaw.
 			
-			// The PID class needs delta time between calls to calculate the I term.
+			// The PID class needs delta time between calls to calculate the I term. This call starts
+            // the timer.
 			
 			Util.getElaspedTime();
 		}
@@ -166,7 +170,8 @@ public class AutoCurve extends CommandBase
 				power2 = power;
 			
 			driveBase.curvatureDrive(power2, curve, false);
-			
+            //driveBase.arcadeDrive(power2, curve, false);
+            
 			Util.consoleLog("power=%.2f  hdg=%.2f  yaw=%.2f  curve=%.2f  err=%.2f  time=%f", power2, 
 					RobotContainer.navx.getHeading(), yaw, curve, pidController.getError(), elapsedTime);			
 		}
@@ -203,10 +208,14 @@ public class AutoCurve extends CommandBase
 
 		Util.consoleLog("after stop  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
 
-		// Wait for robot to stop moving.
 		Util.consoleLog("moving=%b", RobotContainer.navx.isRotating());
-		//while (isAutoActive() && Devices.navx.isRotating()) {Timer.delay(.10);}
-		//Util.consoleLog("moving=%b", Devices.navx.isRotating());
+		
+		// Wait for robot to stop moving.
+        while (RobotContainer.navx.isRotating()) 
+        {
+            Util.consoleLog("moving=%b vel=%.3fd/s", RobotContainer.navx.isRotating(), RobotContainer.navx.getYawRate());
+            Timer.delay(.030);
+        }
 		
 		Util.consoleLog("end hdg=%.2f  yaw=%.2f ", RobotContainer.navx.getHeading(), yaw);
 		

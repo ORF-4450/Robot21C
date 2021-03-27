@@ -118,20 +118,20 @@ public class TestAuto3 extends CommandBase
         //                                 // Pass config
         //                                 config);		
 
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-                                        // Start at the origin set above
-                                        startPose,
-                                        // Pass through these two interior waypoints, making an 's' curve path
-                                        List.of(
-                                            new Translation2d(startPose.getX() + 1, startPose.getY()),
-                                            new Translation2d(startPose.getX() + 2, startPose.getY())
-                                        ),
-                                        // End 4 meters straight ahead of where we started, facing forward
-                                        new Pose2d(startPose.getX() + 3, startPose.getY(), startPose.getRotation()),
-                                        // Pass config
-                                        config);		
+        // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        //                                 // Start at the origin set above
+        //                                 startPose,
+        //                                 // Pass through these two interior waypoints, making an 's' curve path
+        //                                 List.of(
+        //                                     new Translation2d(startPose.getX() + 1, startPose.getY()),
+        //                                     new Translation2d(startPose.getX() + 2, startPose.getY())
+        //                                 ),
+        //                                 // End 4 meters straight ahead of where we started, facing forward
+        //                                 new Pose2d(startPose.getX() + 3, startPose.getY(), startPose.getRotation()),
+        //                                 // Pass config
+        //                                 config);		
         
-        exampleTrajectory = loadTrajectoryFile("Slalom-1.wpilib.json");
+        Trajectory exampleTrajectory = loadTrajectoryFile("Slalom-1.wpilib.json");
 
 		command = new AutoDriveTrajectory(driveBase, exampleTrajectory, StopMotors.stop, Brakes.on);
 		

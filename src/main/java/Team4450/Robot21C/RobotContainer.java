@@ -73,7 +73,7 @@ public class RobotContainer
 	private final TankDrive		driveCommand;
 	//private final ArcadeDrive	driveCommand;
 
-	// Persistent Commands.
+    // Persistent Commands.
 	
 	private final TurnWheelCounting		turnWheelCounting = null;
 	private final TurnWheelToColor		turnWheelToColor = null;
@@ -464,8 +464,8 @@ public class RobotContainer
 		autoChooser.addOption("Barrel Racing", AutoProgram.BarrelRacing);		
 		autoChooser.addOption("Bounce", AutoProgram.Bounce);		
 		//autoChooser.setDefaultOption("Slalom 2", AutoProgram.AutoSlalom2);		
-		//autoChooser.setDefaultOption("Barrel Racing", AutoProgram.BarrelRacing);		
-		autoChooser.setDefaultOption("Bounce", AutoProgram.Bounce);		
+		autoChooser.setDefaultOption("Barrel Racing", AutoProgram.BarrelRacing);		
+		//autoChooser.setDefaultOption("Bounce", AutoProgram.Bounce);		
 				
 		SmartDashboard.putData(autoChooser);
 	}

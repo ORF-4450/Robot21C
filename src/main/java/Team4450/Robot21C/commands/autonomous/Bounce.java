@@ -71,7 +71,7 @@ public class Bounce extends CommandBase
 		RobotContainer.navx.setTargetHeading(kInitialHeading);
 			
 		// Set Talon ramp rate for smooth acceleration from stop. Determine by observation.
-		driveBase.SetCANTalonRampRate(1.0);
+		driveBase.SetCANTalonRampRate(1.5);
 			
 		// Reset odometry tracking with initial x,y position and heading (set above) specific to this 
 		// auto routine. Robot must be placed in same starting location each time for pose tracking
@@ -84,82 +84,186 @@ public class Bounce extends CommandBase
 		// executed one after the other until done.
 		
 		commands = new SequentialCommandGroup();
-        
-		command = new AutoCurve(driveBase, .30, .23, -90, 
+
+        command = new AutoDrive(driveBase, .30, 
+                                9000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
                                 AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+       
+        command = new AutoRotate(driveBase, .30, 270, AutoDrive.Pid.on, AutoDrive.Heading.heading);
+
+        commands.addCommands(command);
+        
+        command = new AutoDrive(driveBase, .30, 
+                                8250, 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+         
+        command = new AutoDrive(driveBase, -.30, 
+                                6500, 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+       
+        command = new AutoRotate(driveBase, .40, 45, AutoDrive.Pid.on, AutoDrive.Heading.heading);
+
+        commands.addCommands(command);
+         
+        command = new AutoDrive(driveBase, .30, 
+                                11500, 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+
+		command = new AutoCurve2(driveBase, .32, .40, 280, 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.on,
+                                AutoDrive.Pid.off,
+                                AutoDrive.Heading.heading);
+
+        commands.addCommands(command);
+         
+        command = new AutoDrive(driveBase, .30, 
+                                17000, 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+         
+        command = new AutoDrive(driveBase, -.30, 
+                                18000, 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+
+        command = new AutoRotate(driveBase, .40, 0, AutoDrive.Pid.on, AutoDrive.Heading.heading);
+
+        commands.addCommands(command);
+         
+        command = new AutoDrive(driveBase, .30, 
+                                13000, 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+       
+        command = new AutoRotate(driveBase, .40, 280, AutoDrive.Pid.on, AutoDrive.Heading.heading);
+
+        commands.addCommands(command);
+         
+        command = new AutoDrive(driveBase, .30, 
+                                21000, 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+
+		command = new AutoCurve2(driveBase, -.40, -.345, -80, 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.on,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+		       
+		// command = new AutoCurve2(driveBase, .40, .45, -90, 
+        //                         AutoDrive.StopMotors.stop,
+        //                         AutoDrive.Brakes.on,
+        //                         AutoDrive.Pid.on,
+        //                         AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		// commands.addCommands(command);
           
-		command = new AutoCurve(driveBase, -.30, .10, -30, 
-                                AutoDrive.StopMotors.dontStop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+		// command = new AutoCurve(driveBase, -.30, .22, -25, 
+        //                         AutoDrive.StopMotors.dontStop,
+        //                         AutoDrive.Brakes.off,
+        //                         AutoDrive.Pid.on,
+        //                         AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		// commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, -.30, 
-                                SRXMagneticEncoderRelative.getTicksForDistance(3 * 12, DRIVE_WHEEL_DIAMETER), 
-                                AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+        // command = new AutoDrive(driveBase, -.30, 
+        //                         SRXMagneticEncoderRelative.getTicksForDistance(2, DRIVE_WHEEL_DIAMETER), 
+        //                         AutoDrive.StopMotors.stop,
+        //                         AutoDrive.Brakes.off,
+        //                         AutoDrive.Pid.on,
+        //                         AutoDrive.Heading.angle);
 
-        commands.addCommands(command);
+        // commands.addCommands(command);
         
-		command = new AutoCurve(driveBase, -.30, .40, -155, 
-                                AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+		// command = new AutoCurve2(driveBase, -.30, -.42, -140, 
+        //                         AutoDrive.StopMotors.stop,
+        //                         AutoDrive.Brakes.off,
+        //                         AutoDrive.Pid.on,
+        //                         AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		// commands.addCommands(command);
          
-        command = new AutoDrive(driveBase, -.30, 
-                                SRXMagneticEncoderRelative.getTicksForDistance(6 * 12, DRIVE_WHEEL_DIAMETER), 
-                                AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+        // command = new AutoDrive(driveBase, -.30, 
+        //                         SRXMagneticEncoderRelative.getTicksForDistance(6, DRIVE_WHEEL_DIAMETER), 
+        //                         AutoDrive.StopMotors.stop,
+        //                         AutoDrive.Brakes.off,
+        //                         AutoDrive.Pid.on,
+        //                         AutoDrive.Heading.angle);
 
-        commands.addCommands(command);
+        // commands.addCommands(command);
          
-        command = new AutoDrive(driveBase, .30, 
-                                SRXMagneticEncoderRelative.getTicksForDistance(6 * 12, DRIVE_WHEEL_DIAMETER), 
-                                AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+        // command = new AutoDrive(driveBase, .30, 
+        //                         SRXMagneticEncoderRelative.getTicksForDistance(6, DRIVE_WHEEL_DIAMETER), 
+        //                         AutoDrive.StopMotors.stop,
+        //                         AutoDrive.Brakes.off,
+        //                         AutoDrive.Pid.on,
+        //                         AutoDrive.Heading.angle);
 
-        commands.addCommands(command);
+        // //commands.addCommands(command);
         
-		command = new AutoCurve(driveBase, .30, .28, -172, 
-                                AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+		// command = new AutoCurve(driveBase, .30, .28, -172, 
+        //                         AutoDrive.StopMotors.stop,
+        //                         AutoDrive.Brakes.off,
+        //                         AutoDrive.Pid.on,
+        //                         AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		// //commands.addCommands(command);
          
-        command = new AutoDrive(driveBase, .30, 
-                                SRXMagneticEncoderRelative.getTicksForDistance(6 * 12, DRIVE_WHEEL_DIAMETER), 
-                                AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+        // command = new AutoDrive(driveBase, .30, 
+        //                         SRXMagneticEncoderRelative.getTicksForDistance(6, DRIVE_WHEEL_DIAMETER), 
+        //                         AutoDrive.StopMotors.stop,
+        //                         AutoDrive.Brakes.off,
+        //                         AutoDrive.Pid.on,
+        //                         AutoDrive.Heading.angle);
 
-        commands.addCommands(command);
+        // //commands.addCommands(command);
         
-		command = new AutoCurve(driveBase, -.30, .29, -95, 
-                                AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
-                                AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+		// command = new AutoCurve(driveBase, -.30, .29, -95, 
+        //                         AutoDrive.StopMotors.stop,
+        //                         AutoDrive.Brakes.off,
+        //                         AutoDrive.Pid.on,
+        //                         AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		// //commands.addCommands(command);
              
         commands.schedule();
 	}

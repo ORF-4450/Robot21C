@@ -2,11 +2,12 @@ package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Lib.SynchronousPID;
 import Team4450.Lib.Util;
-
+import Team4450.Lib.NavX.GyroAxis;
 import Team4450.Robot21C.RobotContainer;
 import Team4450.Robot21C.commands.autonomous.AutoDrive.Heading;
 import Team4450.Robot21C.commands.autonomous.AutoDrive.Pid;
 import Team4450.Robot21C.subsystems.DriveBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutoRotate extends CommandBase
@@ -14,7 +15,7 @@ public class AutoRotate extends CommandBase
 	private final DriveBase driveBase;
 
 	private double			yaw, elapsedTime = 0, power, target, saveHeading; 
-	private double			kP = .01, kI = 0.01, kD = 0, kTolerance = 1.0, startTime;
+	private double			kP = .0075, kI = 0.01, kD = 0, kTolerance = 1.5, startTime;
 	private int				iterations;
 	private Pid 			pid;
 	private Heading 		heading;
@@ -85,7 +86,7 @@ public class AutoRotate extends CommandBase
 		{
 			Util.checkRange(target, 180, "target");
 			
-			RobotContainer.navx.resetYawWait(1, 1000);
+			RobotContainer.navx.resetYaw(); //Wait(1, 1000);
 		}
 		
 		if (pid == Pid.on)
@@ -184,11 +185,14 @@ public class AutoRotate extends CommandBase
 		
 		Util.consoleLog("after stop  hdg=%.2f  yaw=%.2f", saveHeading, yaw);
 
-		// Wait for robot to stop moving.
 		Util.consoleLog("moving=%b", RobotContainer.navx.isRotating());
 		
-		//while (RobotContainer.navx.isRotating()) {Timer.delay(.10);}
-		//Util.consoleLog("moving=%b", Devices.navx.isRotating());
+		// Wait for robot to stop moving.
+        while (RobotContainer.navx.isRotating()) 
+        {
+            Util.consoleLog("moving=%b vel=%.3fd/s", RobotContainer.navx.isRotating(), RobotContainer.navx.getYawRate());
+            Timer.delay(.030);
+        }
 		
 		if (heading == Heading.heading)
 			yaw = RobotContainer.navx.getHeadingYaw();

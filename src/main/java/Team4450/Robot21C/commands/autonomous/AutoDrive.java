@@ -16,7 +16,8 @@ public class AutoDrive extends CommandBase
 	private double			yaw, kSteeringGain = .07, elapsedTime = 0;
 	private double			kP = .0001, kI = .00005, kD = 0;
 	private double			power, startTime; 
-	private int 			encoderCounts, iterations; 
+    private int 			encoderCounts, iterations, targetHeading; 
+    private boolean         driveToHeading;
 	private StopMotors 		stop;
 	private Brakes 			brakes;
 	private Pid 			pid;
@@ -85,7 +86,8 @@ public class AutoDrive extends CommandBase
 	 *
 	 * @param driveBase The DriveBase subsystem used by this command to drive the robot.
 	 * @param power Power applied, + is forward.
-	 * @param distane Target distance to move in inches, always +.
+	 * @param distance Target distance to move in feet, always +. Enter whole numbers as n.0 so Java
+     * will recognize the number as a double instead of an integer (other constructor).
 	 * @param stop Stop stops motors at end of move, dontStop leaves power on to flow into next move.
 	 * @param brakes Brakes on or off.
 	 * @param pid On is use PID to control movement, off is simple drive.
@@ -109,11 +111,48 @@ public class AutoDrive extends CommandBase
                   stop, brakes, pid, heading);
     }
 
+    /**
+	 * Creates a new AutoDrive command.
+	 * 
+	 * Auto drive straight in set direction and power for specified encoder count. Stops
+	 * with or without brakes on CAN bus drive system. Uses NavX yaw to drive straight.
+	 *
+	 * @param driveBase The DriveBase subsystem used by this command to drive the robot.
+	 * @param power Power applied, + is forward.
+	 * @param distance Target distance to move in feet, always +. Enter whole numbers as n.0 so Java
+     * will recognize the number as a double instead of an integer (other constructor).
+	 * @param stop Stop stops motors at end of move, dontStop leaves power on to flow into next move.
+	 * @param brakes Brakes on or off.
+	 * @param pid On is use PID to control movement, off is simple drive.
+	 * @param heading Target heading 0-359 to drive. Note robot is expected to point more or less in this
+     * direction at start and this method will try to drive to that heading. This method is not expected to
+     * rotate or turn to this heading from a starting heading signficantly different from the target.
+	 *
+	 * Note: This routine is designed for tank drive and the P,I,D,steering gain values will likely need adjusting 
+     * for each new drive base as gear ratios and wheel configuration may require different values to stop smoothly
+	 * and accurately.
+	 */
+    
+    public AutoDrive(DriveBase driveBase, 
+					 double power, 
+					 double distance, 
+					 StopMotors stop, 
+					 Brakes brakes, 
+					 Pid pid, 
+					 int targetHeading) 
+	{
+        this(driveBase, power, SRXMagneticEncoderRelative.getTicksForDistance(distance, DRIVE_WHEEL_DIAMETER),
+                  stop, brakes, pid, Heading.heading);
+
+        this.targetHeading = targetHeading;
+        driveToHeading = true;
+    }
+
 	@Override
 	public void initialize()
 	{
-        Util.consoleLog("pwr=%.2f  count=%d  stop=%s  brakes=%s  pid=%s  hdg=%s", power, encoderCounts, stop, 
-                        brakes, pid, heading);
+        Util.consoleLog("pwr=%.2f  count=%d  stop=%s  brakes=%s  pid=%s  hdg=%s  tgthdg=%d", power, encoderCounts, stop, 
+                        brakes, pid, heading, targetHeading);
 
 		startTime = Util.timeStamp();
 		
@@ -130,11 +169,17 @@ public class AutoDrive extends CommandBase
 		{
 			Util.consoleLog("yaw before reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
 			
-			RobotContainer.navx.resetYawWait(2, 500);
+			RobotContainer.navx.resetYawWait(); //(2, 500);
 			
 			// Note, under simulation this yaw will not show zero until next execution of DriveBase.simulationPeriodic.
 			Util.consoleLog("yaw after reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
-		}
+        }
+        else
+        {
+            // When driving to a heading, that heading can be set externally before this command executes
+            // or when this command executes (target passed in constructor).
+            if (driveToHeading) RobotContainer.navx.setTargetHeading(targetHeading);
+        }
 		
 		// If using PID to control distance, configure the PID object.
 		
@@ -179,7 +224,7 @@ public class AutoDrive extends CommandBase
 			
 			//power = pidController.get();
 			
-			Util.consoleLog("avenc=%d  error=%.2f  power=%.2f  time=%f", avgEncoderCount, 
+			Util.consoleLog("avenc=%d  error=%.2f  power=%.3f  time=%f", avgEncoderCount, 
 							pidController.getError(), power, elapsedTime);
 		}
 		else
@@ -194,15 +239,13 @@ public class AutoDrive extends CommandBase
 		
 		LCD.printLine(LCD_5, "yaw=%.2f", yaw);
 		
-		Util.consoleLog("yaw=%.2f  hdg=%.2f  curve=%.2f", yaw, RobotContainer.navx.getHeading(), 
-						Util.clampValue(-yaw * kSteeringGain, 1.0));
+		Util.consoleLog("yaw=%.2f  hdg=%.2f  hdgyaw=%.2f  curve=%.2f", yaw, RobotContainer.navx.getHeading(), 
+                        RobotContainer.navx.getHeadingYaw(), Util.clampValue(-yaw * kSteeringGain, 1.0));
 		
 		// Note we invert sign on the angle because we want the robot to turn in the opposite
 		// direction than it is currently going to correct it. So a + angle says robot is veering
 		// right so we set the turn value to - because - is a turn left which corrects our right
 		// drift. kSteeringGain controls how aggressively we turn to stay on course.
-		
-		//Util.consoleLog("lpwr=%.2f  rpwr=%.2f", -driveBase.getLeftPower(), driveBase.getRightPower());
 		
 		driveBase.curvatureDrive(power, Util.clampValue(-yaw * kSteeringGain, 1.0), false);
 
@@ -220,10 +263,10 @@ public class AutoDrive extends CommandBase
 		
 		int actualCount = Math.abs(driveBase.getAvgEncoder());
 		
-		Util.consoleLog("encoder counts=%d  actual count=%d  error=%.2f pct", encoderCounts, actualCount, 
+		Util.consoleLog("target counts=%d  actual count=%d  error=%.2f pct", encoderCounts, actualCount, 
 				((double) actualCount - encoderCounts) / (double) encoderCounts * 100.0);
 
-        Util.consoleLog("distmeters=%.3f", driveBase.getAvgEncoderDist());
+        Util.consoleLog("distmeters=%.3f  poseX=%.3f", driveBase.getAvgEncoderDist(), driveBase.getOdometerPose().getX() -  1.2);
         
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
 
@@ -251,7 +294,8 @@ public class AutoDrive extends CommandBase
 	public enum Heading
 	{
 		angle,
-		heading
+        heading,
+        totalAngle
 	}
 	
 	public enum StopMotors

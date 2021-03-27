@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC21C-03.17.21-1";
+	public static String		PROGRAM_NAME = "RAC21C-03.25.21-1";
 
 	public static Robot			robot;
 
@@ -90,12 +90,14 @@ public final class Constants
 
     // Drive base characterization results.
 
+    public static final double  TRACK_WIDTH_C = 1.09;       // Meters.
+
     public static final double  DB_KS = 1.0;
     public static final double  DB_KV = 5.24;
     public static final double  DB_KA = .0698;
 
-    public static final double  DB_POSITIONAL_KP = 5.14; // .567
-    public static final double  DB_POSITIONAL_KD = .131; // .056
-    public static final double  DB_VELOCITY_KP = .0742;  // .498
+    public static final double  DB_POSITIONAL_KP = 5.22; // .567
+    public static final double  DB_POSITIONAL_KD = .191; // .056
+    public static final double  DB_VELOCITY_KP = .137;  // .498
     public static final double  DB_VELOCITY_KD = 0.0;
 }

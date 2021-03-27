@@ -1,6 +1,7 @@
 package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Lib.LCD;
+import Team4450.Lib.SRXMagneticEncoderRelative;
 import Team4450.Lib.Util;
 
 import static Team4450.Robot21C.Constants.*;
@@ -88,7 +89,8 @@ public class TestAuto1 extends CommandBase
 		
 		// First action is to drive forward some encoder counts and stop with brakes on.
 		
-		command = new AutoDrive(driveBase, .50, 20000, 
+        command = new AutoDrive(driveBase, .50, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(3, DRIVE_WHEEL_DIAMETER), 
 								AutoDrive.StopMotors.stop,
 								AutoDrive.Brakes.on,
 								AutoDrive.Pid.on,
@@ -100,7 +102,7 @@ public class TestAuto1 extends CommandBase
 		
 		command = new AutoRotate(driveBase, .30, -90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 
-		commands.addCommands(command);
+		//commands.addCommands(command);
 		
 		// Next action is to drive same encoder counts and stop with brakes on.
 		
@@ -110,13 +112,13 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		//commands.addCommands(command);
 
 		// Next rotate right.
 
 		command = new AutoRotate(driveBase, .30, 90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 
-		commands.addCommands(command);
+		//commands.addCommands(command);
 		
 		// Now drive a curve to 90 degrees right.
 
@@ -126,7 +128,7 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		commands.addCommands(command);
+		//commands.addCommands(command);
 		
 		// Launch autonomous command sequence.
 		

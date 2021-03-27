@@ -13,6 +13,7 @@ import Team4450.Lib.ValveDA;
 import Team4450.Lib.SRXMagneticEncoderRelative.DistanceUnit;
 import Team4450.Lib.SRXMagneticEncoderRelative.PIDRateType;
 import Team4450.Robot21C.RobotContainer;
+import Team4450.Robot21C.wpilib.DifferentialDrive;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.CounterBase;
@@ -21,7 +22,7 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+//import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
@@ -349,7 +350,7 @@ public class DriveBase extends SubsystemBase
 	{
 		robotDrive.tankDrive(leftPower, rightPower, squareInputs);
 		
-		//Util.consoleLog("l=%.2f m=%.2f  r=%.2f m=%.2f", leftSpeed, LRCanTalon.get(), rightSpeed, RRCanTalon.get());
+		//Util.consoleLog("l=%.3f m=%.3f  r=%.3f m=%.3f", leftPower, LRCanTalon.get(), rightPower, RRCanTalon.get());
 	}
 	
 	/**
@@ -376,10 +377,10 @@ public class DriveBase extends SubsystemBase
 	public void curvatureDrive(double power, double rotation, boolean quickTurn)
 	{
 		robotDrive.curvatureDrive(power, rotation, quickTurn);
-    
-        Util.consoleLog("pwr=%.3f rot=%.3f  lpwr=%.3f(%.3fv)  rpwr=%.3f(%.3fv)", power, rotation,
-                        LRCanTalon.getMotorOutputPercent(), LRCanTalon.getMotorOutputVoltage(),
-                        RRCanTalon.getMotorOutputPercent(), RRCanTalon.getMotorOutputVoltage());
+ 
+        Util.consoleLog("pwr=%.3f rot=%.3f  lget=%.4f(%.4fv)  rget=%.4f(%.4fv)", power, rotation,
+                        LRCanTalon.get(), LRCanTalon.getMotorOutputVoltage(),
+                        -RRCanTalon.get(), -RRCanTalon.getMotorOutputVoltage());
     }
 
     /**
@@ -391,6 +392,10 @@ public class DriveBase extends SubsystemBase
 	public void arcadeDrive(double power, double rotation, boolean squareInputs)
 	{
 		robotDrive.arcadeDrive(power, rotation, squareInputs);
+ 
+        Util.consoleLog("pwr=%.3f rot=%.3f  lget=%.4f(%.4fv)  rget=%.4f(%.4fv)", power, rotation,
+                        LRCanTalon.get(), LRCanTalon.getMotorOutputVoltage(),
+                        -RRCanTalon.get(), -RRCanTalon.getMotorOutputVoltage());
     }
     
     /**
@@ -437,6 +442,7 @@ public class DriveBase extends SubsystemBase
 		if (RobotBase.isReal())
 			Util.consoleLog("talon init: %s   voltage=%.1f", talon.getDescription(), talon.getBusVoltage());
 
+        talon.configFactoryDefault();
 		talon.clearStickyFaults(0); //0ms means no blocking.
 	}
 	  
