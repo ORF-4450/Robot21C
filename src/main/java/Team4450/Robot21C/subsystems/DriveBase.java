@@ -169,7 +169,11 @@ public class DriveBase extends SubsystemBase
 
 		// Always start with braking enabled.
    		
-   		SetCANTalonBrakeMode(true);
+        SetCANTalonBrakeMode(true);
+           
+        // Always start with voltage compensation enabled for drive talons.
+
+        enableCANTalonVoltageCompenstation(false);
 		
 		// Always start with gearbox set to low speed.
 
@@ -504,7 +508,10 @@ public class DriveBase extends SubsystemBase
 	}
 	  
 	// Return voltage and current draw for each CAN Talon.
-	  
+    /**
+     * Return voltage and current draw for each CAN Talon.
+     * @return Formatted string with the talon information.
+     */
 	public String GetCANTalonStatus()
 	{
 		return String.format("%.1f/%.1f  %.1f/%.1f  %.1f/%.1f  %.1f/%.1f  %.1f/%.1f  %.1f/%.1f", 
@@ -513,7 +520,25 @@ public class DriveBase extends SubsystemBase
 				  RFCanTalon.getMotorOutputVoltage(), RFCanTalon.getStatorCurrent(),
 				  RRCanTalon.getMotorOutputVoltage(), RRCanTalon.getStatorCurrent()
 				  );
-	}
+    }
+    
+    /**
+     * Set CAN Talon Voltage Compendation mode on/off. Fixed at 12v max.
+     * @param enabled True to turn on voltage compensation, false to turn off.
+     */
+    public void enableCANTalonVoltageCompenstation(boolean enabled)
+    {
+        Util.consoleLog("%b", enabled);
+
+        LFCanTalon.configVoltageCompSaturation(12, 0);
+        LFCanTalon.enableVoltageCompensation(enabled);
+        LRCanTalon.configVoltageCompSaturation(12, 0);
+        LRCanTalon.enableVoltageCompensation(enabled);
+        RFCanTalon.configVoltageCompSaturation(12, 0);
+        RFCanTalon.enableVoltageCompensation(enabled);
+        RRCanTalon.configVoltageCompSaturation(12, 0);
+        RRCanTalon.enableVoltageCompensation(enabled);
+    }
 		
 	private void updateDS()
 	{

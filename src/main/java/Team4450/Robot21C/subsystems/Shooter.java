@@ -30,7 +30,7 @@ public class Shooter extends PIDSubsystem
 
     private final double    greenZonePower  = 0.80, greenZoneRPM = 4900;
     private final double    yellowZonePower = 0.90, yellowZoneRPM = 5400;
-    private final double    blueZonePower   = 0.95, blueZoneRPM = 5650;
+    private final double    blueZonePower   = 0.95, blueZoneRPM = 5850;
     private final double    redZonePower    = 1.00, redZoneRPM = 6000;
     
     public final double     defaultPower = greenZonePower, defaultRPM = greenZoneRPM;

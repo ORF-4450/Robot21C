@@ -94,7 +94,7 @@ public class BarrelRacing extends CommandBase
 
         commands.addCommands(command);
         
-		command = new AutoCurve2(driveBase, .36, .415, 330, 
+		command = new AutoCurve2(driveBase, .36, .425, 320, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -103,7 +103,7 @@ public class BarrelRacing extends CommandBase
 		commands.addCommands(command);
         
         command = new AutoDrive(driveBase, .30, 
-                                9.5,
+                                10.0,
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -115,7 +115,7 @@ public class BarrelRacing extends CommandBase
 
         commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, .40, 
+        command = new AutoDrive(driveBase, .30, 
                                 4.0,
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
@@ -124,20 +124,20 @@ public class BarrelRacing extends CommandBase
 
         commands.addCommands(command);
        
-        command = new AutoRotate(driveBase, .40, -90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
+        command = new AutoRotate(driveBase, .35, 180, AutoDrive.Pid.on, AutoDrive.Heading.heading);
 
         commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, .35, 
+        command = new AutoDrive(driveBase, .30, 
                                 4.0,
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+                                180);
 
         commands.addCommands(command);
        
-        command = new AutoRotate(driveBase, .40, -90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
+        command = new AutoRotate(driveBase, .35, 90, AutoDrive.Pid.on, AutoDrive.Heading.heading);
 
         commands.addCommands(command);
         
@@ -146,7 +146,7 @@ public class BarrelRacing extends CommandBase
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+                                90);
 
         commands.addCommands(command);
 
@@ -158,7 +158,7 @@ public class BarrelRacing extends CommandBase
 		
 		commands.addCommands(command);
         
-		command = new AutoCurve2(driveBase, .36, .40, -180, 
+		command = new AutoCurve2(driveBase, .36, .43, -180, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -175,7 +175,7 @@ public class BarrelRacing extends CommandBase
 
         commands.addCommands(command);
         
-		command = new AutoCurve(driveBase, .30, .10, -15, 
+		command = new AutoCurve(driveBase, .30, .10, -20, 
                                 AutoDrive.StopMotors.dontStop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,

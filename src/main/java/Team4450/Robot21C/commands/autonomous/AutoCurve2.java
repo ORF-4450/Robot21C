@@ -97,13 +97,13 @@ public class AutoCurve2 extends CommandBase
 		}
         else if (heading == Heading.totalAngle)
         {
-			RobotContainer.navx.resetYawWait(); //(2.5, 1000);
+			RobotContainer.navx.resetYaw(); //Wait(); //(2.5, 1000);
         }
         else
 		{
 			Util.checkRange(target, 180, "target");
 			
-			RobotContainer.navx.resetYawWait(); //(2.5, 1000);
+			RobotContainer.navx.resetYaw(); //Wait(); //(2.5, 1000);
 		}
 		
 		if (pid == Pid.on)
@@ -216,23 +216,32 @@ public class AutoCurve2 extends CommandBase
 	{
 		Util.consoleLog("interrupted=%b", interrupted);
 		
-		Util.consoleLog("end loop  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
-		
+        if (heading == Heading.heading)
+    		Util.consoleLog("end loop  hdg=%.2f  hdgyaw=%.2f", RobotContainer.navx.getHeading(), yaw);
+        else
+            Util.consoleLog("end loop  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
+        
 		// Stop motors. If you don't use stop, motors will keep running.
 		if (stop == StopMotors.stop) driveBase.stop();
 
-		Util.consoleLog("after stop  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
-
-		Util.consoleLog("moving=%b", RobotContainer.navx.isRotating());
+        if (heading == Heading.heading)
+    		Util.consoleLog("after stop  hdg=%.2f  hdgyaw=%.2f", RobotContainer.navx.getHeading(), yaw);
+        else
+            Util.consoleLog("after stop  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
 		
-		// Wait for robot to stop moving.
-        while (RobotContainer.navx.isRotating()) 
-        {
-            Util.consoleLog("moving=%b vel=%.3fd/s", RobotContainer.navx.isRotating(), RobotContainer.navx.getYawRate());
-            Timer.delay(.030);
-        }
-		
-		Util.consoleLog("end hdg=%.2f  yaw=%.2f ", RobotContainer.navx.getHeading(), yaw);
+		// Wait for robot to stop moving. Note: this only works if motor stop requested.
+        // while (RobotContainer.navx.getYawRate() > .99) 
+        // {
+        //     Util.consoleLog("yaw rate=%.2fd/s", RobotContainer.navx.getYawRate());
+        //     Timer.delay(.010);
+        // }
+		        
+        if (heading == Heading.heading)
+            Util.consoleLog("end hdg=%.2f  hdgyaw=%.2f ", RobotContainer.navx.getHeading(),
+                            RobotContainer.navx.getHeadingYaw());
+        else
+            Util.consoleLog("end hdg=%.2f  yaw=%.2f ", RobotContainer.navx.getHeading(),
+                            RobotContainer.navx.getYaw());
 		
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
 

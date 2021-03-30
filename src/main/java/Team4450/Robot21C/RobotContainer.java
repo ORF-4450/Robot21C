@@ -438,7 +438,7 @@ public class RobotContainer
                 break;
 
             case Bounce:
-                autoCommand = new Bounce(driveBase);
+                autoCommand = new Bounce(driveBase, pickup);
                 break;
         }
 

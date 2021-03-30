@@ -2,7 +2,6 @@ package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Lib.SynchronousPID;
 import Team4450.Lib.Util;
-import Team4450.Lib.NavX.GyroAxis;
 import Team4450.Robot21C.RobotContainer;
 import Team4450.Robot21C.commands.autonomous.AutoDrive.Heading;
 import Team4450.Robot21C.commands.autonomous.AutoDrive.Pid;
@@ -15,7 +14,7 @@ public class AutoRotate extends CommandBase
 	private final DriveBase driveBase;
 
 	private double			yaw, elapsedTime = 0, power, target, saveHeading; 
-	private double			kP = .0075, kI = 0.01, kD = 0, kTolerance = 1.5, startTime;
+	private double			kP = .0075, kI = 0.015, kD = 0, kTolerance = 1.5, startTime;
 	private int				iterations;
 	private Pid 			pid;
 	private Heading 		heading;
@@ -183,23 +182,21 @@ public class AutoRotate extends CommandBase
 		
 		driveBase.stop();
 		
-		Util.consoleLog("after stop  hdg=%.2f  yaw=%.2f", saveHeading, yaw);
-
-		Util.consoleLog("moving=%b", RobotContainer.navx.isRotating());
+		Util.consoleLog("at stop: hdg=%.2f  yaw=%.2f", saveHeading, yaw);
 		
-		// Wait for robot to stop moving.
-        while (RobotContainer.navx.isRotating()) 
+		// Wait for robot to stop moving. Note: this only works if motor stop requested.
+        while (RobotContainer.navx.getYawRate() > .99) 
         {
-            Util.consoleLog("moving=%b vel=%.3fd/s", RobotContainer.navx.isRotating(), RobotContainer.navx.getYawRate());
-            Timer.delay(.030);
+            Util.consoleLog("yaw rate=%.2fd/s", RobotContainer.navx.getYawRate());
+            Timer.delay(.010);
         }
 		
-		if (heading == Heading.heading)
-			yaw = RobotContainer.navx.getHeadingYaw();
-		else
-			yaw = RobotContainer.navx.getYaw();
-
-		Util.consoleLog("2  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
+        if (heading == Heading.heading)
+            Util.consoleLog("after stop: hdg=%.2f  hdgyaw=%.2f", RobotContainer.navx.getHeading(), 
+                            RobotContainer.navx.getHeadingYaw());
+        else
+            Util.consoleLog("after stop: hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), 
+                            RobotContainer.navx.getYaw());
 		
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
 

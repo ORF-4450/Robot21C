@@ -1,13 +1,14 @@
 package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Lib.LCD;
-import Team4450.Lib.SRXMagneticEncoderRelative;
 import Team4450.Lib.Util;
 
 import static Team4450.Robot21C.Constants.*;
 
 import Team4450.Robot21C.RobotContainer;
 import Team4450.Robot21C.subsystems.DriveBase;
+import Team4450.Robot21C.subsystems.Pickup;
+import Team4450.Robot21C.commands.NotifierCommand;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,7 +20,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
  */
 public class Bounce extends CommandBase
 {
-	private final DriveBase driveBase;
+    private final DriveBase driveBase;
+    private final Pickup    pickup;
 	
 	private SequentialCommandGroup	commands = null;
     private Command					command = null;
@@ -33,11 +35,12 @@ public class Bounce extends CommandBase
 	 *
 	 * @param driveBase DriveBase subsystem used by this command to drive the robot.
 	 */
-	public Bounce(DriveBase driveBase) 
+	public Bounce(DriveBase driveBase, Pickup pickup) 
 	{
 		Util.consoleLog();
 		
-		this.driveBase = driveBase;
+        this.driveBase = driveBase;
+        this.pickup = pickup;
 			  
 		// Use addRequirements() here to declare subsystem dependencies.
 		addRequirements(this.driveBase);
@@ -97,6 +100,11 @@ public class Bounce extends CommandBase
         command = new AutoRotate(driveBase, .30, 270, AutoDrive.Pid.on, AutoDrive.Heading.heading);
 
         commands.addCommands(command);
+
+        // Drop the pickup to contact the marker.
+        command = new NotifierCommand(pickup::toggleDeploy, 0.0, pickup);
+
+        commands.addCommands(command);
         
         command = new AutoDrive(driveBase, .30, 
                                 8250, 
@@ -110,13 +118,13 @@ public class Bounce extends CommandBase
         command = new AutoDrive(driveBase, -.30, 
                                 6500, 
                                 AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
+                                AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
                                 AutoDrive.Heading.angle);
 
         commands.addCommands(command);
        
-        command = new AutoRotate(driveBase, .40, 45, AutoDrive.Pid.on, AutoDrive.Heading.heading);
+        command = new AutoRotate(driveBase, .35, 45, AutoDrive.Pid.on, AutoDrive.Heading.heading);
 
         commands.addCommands(command);
          
@@ -137,10 +145,10 @@ public class Bounce extends CommandBase
 
         commands.addCommands(command);
          
-        command = new AutoDrive(driveBase, .30, 
+        command = new AutoDrive(driveBase, .35, 
                                 17000, 
                                 AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
+                                AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
                                 AutoDrive.Heading.angle);
 
@@ -160,11 +168,11 @@ public class Bounce extends CommandBase
         commands.addCommands(command);
          
         command = new AutoDrive(driveBase, .30, 
-                                13000, 
+                                10000, 
                                 AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
+                                AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+                                0);
 
         commands.addCommands(command);
        
@@ -175,7 +183,7 @@ public class Bounce extends CommandBase
         command = new AutoDrive(driveBase, .30, 
                                 21000, 
                                 AutoDrive.StopMotors.stop,
-                                AutoDrive.Brakes.off,
+                                AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
                                 AutoDrive.Heading.angle);
 

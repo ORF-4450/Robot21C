@@ -32,7 +32,7 @@ public class AutoDrive extends CommandBase
 	 * with or without brakes on CAN bus drive system. Uses NavX yaw to drive straight.
 	 *
 	 * @param driveBase The DriveBase subsystem used by this command to drive the robot.
-	 * @param power Power applied, + is forward.
+	 * @param power Power % applied, + is forward.
 	 * @param encoderCounts Target encoder counts to move, always +.
 	 * @param stop Stop stops motors at end of move, dontStop leaves power on to flow into next move.
 	 * @param brakes Brakes on or off.
@@ -85,7 +85,7 @@ public class AutoDrive extends CommandBase
 	 * with or without brakes on CAN bus drive system. Uses NavX yaw to drive straight.
 	 *
 	 * @param driveBase The DriveBase subsystem used by this command to drive the robot.
-	 * @param power Power applied, + is forward.
+	 * @param power Power % applied, + is forward.
 	 * @param distance Target distance to move in feet, always +. Enter whole numbers as n.0 so Java
      * will recognize the number as a double instead of an integer (other constructor).
 	 * @param stop Stop stops motors at end of move, dontStop leaves power on to flow into next move.
@@ -118,7 +118,42 @@ public class AutoDrive extends CommandBase
 	 * with or without brakes on CAN bus drive system. Uses NavX yaw to drive straight.
 	 *
 	 * @param driveBase The DriveBase subsystem used by this command to drive the robot.
-	 * @param power Power applied, + is forward.
+	 * @param power Power % applied, + is forward.
+	 * @param encoderCounts Target encoder counts to move, always +.
+	 * @param stop Stop stops motors at end of move, dontStop leaves power on to flow into next move.
+	 * @param brakes Brakes on or off.
+	 * @param pid On is use PID to control movement, off is simple drive.
+	 * @param heading Target heading 0-359 to drive. Note robot is expected to point more or less in this
+     * direction at start and this method will try to drive to that heading. This method is not expected to
+     * rotate or turn to this heading from a starting heading signficantly different from the target.
+	 *
+	 * Note: This routine is designed for tank drive and the P,I,D,steering gain values will likely need adjusting 
+     * for each new drive base as gear ratios and wheel configuration may require different values to stop smoothly
+	 * and accurately.
+	 */
+    
+    public AutoDrive(DriveBase driveBase, 
+					 double power, 
+					 int encoderCounts, 
+					 StopMotors stop, 
+					 Brakes brakes, 
+					 Pid pid, 
+					 int targetHeading) 
+	{
+        this(driveBase, power, encoderCounts, stop, brakes, pid, Heading.heading);
+
+        this.targetHeading = targetHeading;
+        driveToHeading = true;
+    }
+
+    /**
+	 * Creates a new AutoDrive command.
+	 * 
+	 * Auto drive straight in set direction and power for specified encoder count. Stops
+	 * with or without brakes on CAN bus drive system. Uses NavX yaw to drive straight.
+	 *
+	 * @param driveBase The DriveBase subsystem used by this command to drive the robot.
+	 * @param power Power % applied, + is forward.
 	 * @param distance Target distance to move in feet, always +. Enter whole numbers as n.0 so Java
      * will recognize the number as a double instead of an integer (other constructor).
 	 * @param stop Stop stops motors at end of move, dontStop leaves power on to flow into next move.
@@ -169,7 +204,7 @@ public class AutoDrive extends CommandBase
 		{
 			Util.consoleLog("yaw before reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
 			
-			RobotContainer.navx.resetYawWait(); //(2, 500);
+			RobotContainer.navx.resetYaw(); //Wait(); //(2, 500);
 			
 			// Note, under simulation this yaw will not show zero until next execution of DriveBase.simulationPeriodic.
 			Util.consoleLog("yaw after reset=%.2f  hdg=%.2f", RobotContainer.navx.getYaw(), RobotContainer.navx.getHeading());
@@ -224,7 +259,7 @@ public class AutoDrive extends CommandBase
 			
 			//power = pidController.get();
 			
-			Util.consoleLog("avenc=%d  error=%.2f  power=%.3f  time=%f", avgEncoderCount, 
+			Util.consoleLog("avenc=%d  error=%.2f  power=%.3f  time=%.3f", avgEncoderCount, 
 							pidController.getError(), power, elapsedTime);
 		}
 		else

@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC21C-03.25.21-1";
+	public static String		PROGRAM_NAME = "RAC21C-03.29.21-1";
 
 	public static Robot			robot;
 
@@ -69,14 +69,15 @@ public final class Constants
     public static final double  MAX_WHEEL_ACCEL_MSS = 1.5;
 	
 	// LCD display line number constants showing class where the line is set.
-	public static final int		LCD_1 = 1;	// Robot, Auto Commands.
-	public static final int		LCD_2 = 2;	// TankDrive, ArcadeDrive command.
-	public static final int		LCD_3 = 3;	// TankDrive, ArcadeDrive command.
-	public static final int		LCD_4 = 4;	// TankDrive command, AutoDrive commnd.
-	public static final int		LCD_5 = 5;	// TankDrive command
-	public static final int		LCD_7 = 7;	// TankDrive, ArcadeDrive command
-	public static final int		LCD_8 = 8;	// TankDrive, ArcadeDrive command
-	public static final int		LCD_9 = 9;	// TankDrive command.
+	public static final int		LCD_1 = 1;	    // Robot, Auto Commands.
+	public static final int		LCD_2 = 2;	    // TankDrive, ArcadeDrive command.
+	public static final int		LCD_3 = 3;	    // TankDrive, ArcadeDrive command.
+	public static final int		LCD_4 = 4;	    // TankDrive command, AutoDrive commnd.
+	public static final int		LCD_5 = 5;	    // TankDrive command
+	public static final int		LCD_7 = 7;	    // TankDrive, ArcadeDrive command
+	public static final int		LCD_8 = 8;	    // TankDrive, ArcadeDrive command
+	public static final int		LCD_9 = 9;	    // TankDrive command.
+	public static final int		LCD_10 = 10;	// Not used.
 
 	// Default starting field position in meters for pose tracking. For 2020 full field lower left corner.
 	public static final double	INITIAL_X = 1.2;
@@ -88,16 +89,16 @@ public final class Constants
     public static final double  MAX_ROTATIONAL_VEL = 70;    // Degrees per second.
     public static final double  MAX_ROTATIONAL_ACCEL = 20;  // Degrees per second per second.
 
-    // Drive base characterization results.
+    // Drive base characterization results:
 
-    public static final double  TRACK_WIDTH_C = 1.09;       // Meters.
+    public static final double  TRACK_WIDTH_C = 1.07;       // Meters.
 
-    public static final double  DB_KS = 1.0;
-    public static final double  DB_KV = 5.24;
-    public static final double  DB_KA = .0698;
+    public static final double  DB_KS = 1.74;
+    public static final double  DB_KV = 1.8;
+    public static final double  DB_KA = .422;
 
-    public static final double  DB_POSITIONAL_KP = 5.22; // .567
-    public static final double  DB_POSITIONAL_KD = .191; // .056
-    public static final double  DB_VELOCITY_KP = .137;  // .498
+    public static final double  DB_POSITIONAL_KP = .0688; 
+    public static final double  DB_POSITIONAL_KD = 36.5; 
+    public static final double  DB_VELOCITY_KP = .12;  
     public static final double  DB_VELOCITY_KD = 0.0;
 }
