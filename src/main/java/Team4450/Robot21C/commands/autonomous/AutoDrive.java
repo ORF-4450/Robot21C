@@ -14,7 +14,7 @@ public class AutoDrive extends CommandBase
 	private final DriveBase driveBase;
 
 	private double			yaw, kSteeringGain = .07, elapsedTime = 0;
-	private double			kP = .0001, kI = .00005, kD = 0;
+	private double			kP = .0003, kI = .0003, kD = 0;
 	private double			power, startTime; 
     private int 			encoderCounts, iterations, targetHeading; 
     private boolean         driveToHeading;

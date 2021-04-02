@@ -530,13 +530,13 @@ public class DriveBase extends SubsystemBase
     {
         Util.consoleLog("%b", enabled);
 
-        LFCanTalon.configVoltageCompSaturation(12, 0);
+        LFCanTalon.configVoltageCompSaturation(11, 0);
         LFCanTalon.enableVoltageCompensation(enabled);
-        LRCanTalon.configVoltageCompSaturation(12, 0);
+        LRCanTalon.configVoltageCompSaturation(11, 0);
         LRCanTalon.enableVoltageCompensation(enabled);
-        RFCanTalon.configVoltageCompSaturation(12, 0);
+        RFCanTalon.configVoltageCompSaturation(11, 0);
         RFCanTalon.enableVoltageCompensation(enabled);
-        RRCanTalon.configVoltageCompSaturation(12, 0);
+        RRCanTalon.configVoltageCompSaturation(11, 0);
         RRCanTalon.enableVoltageCompensation(enabled);
     }
 		
@@ -612,6 +612,8 @@ public class DriveBase extends SubsystemBase
 
 		lastLeftDist = lastRightDist = 0;
 
+        RobotContainer.navx.resetYaw();
+        
         // This has the effect of resetting encoder tracking in the driveSim.
 		if (driveSim != null) driveSim.setPose(driveSim.getPose());   //odometer.getPoseMeters());
 	}

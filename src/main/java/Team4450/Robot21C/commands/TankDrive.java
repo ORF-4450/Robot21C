@@ -26,7 +26,7 @@ public class TankDrive extends CommandBase
   private final DoubleSupplier	leftPower, rightPower;
   
   private boolean				altDriveMode, steeringAssistMode;
-  private double                kPowerGain = .75;
+  private double                kPowerGain = 1.0; //.75;
 
   /**
    * Creates a new TankDrive command.
@@ -96,8 +96,8 @@ public class TankDrive extends CommandBase
 	  
 	  LCD.printLine(LCD_2, "leftenc=%d  rightenc=%d", driveBase.getLeftEncoder(), driveBase.getRightEncoder());			
 
-	  LCD.printLine(LCD_3, "leftY=%.3f (%.3f)  rightY=%.3f (%.3f)", leftY, 
-                 driveBase.getLeftPower(), rightY, driveBase.getRightPower());
+      LCD.printLine(LCD_3, "leftY=%.3f (%.3f)  rightY=%.3f (%.3f)", leftY, driveBase.getLeftPower(), rightY,
+                    driveBase.getRightPower());
                  
       LCD.printLine(LCD_4, "utilY=%.3f  utilX=%.3f", RobotContainer.utilityStick.GetY(), RobotContainer.utilityStick.GetX());
 

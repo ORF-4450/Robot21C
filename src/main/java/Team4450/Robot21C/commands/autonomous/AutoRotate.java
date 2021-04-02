@@ -14,7 +14,7 @@ public class AutoRotate extends CommandBase
 	private final DriveBase driveBase;
 
 	private double			yaw, elapsedTime = 0, power, target, saveHeading; 
-	private double			kP = .0075, kI = 0.015, kD = 0, kTolerance = 1.5, startTime;
+	private double			kP = .0075, kI = 0.0075, kD = 0, kTolerance = 1.5, startTime;
 	private int				iterations;
 	private Pid 			pid;
 	private Heading 		heading;
@@ -152,7 +152,7 @@ public class AutoRotate extends CommandBase
 			
 			driveBase.curvatureDrive(0, curve, true);
 			
-			Util.consoleLog("curve=%.2f  hdg=%.2f  yaw=%.2f  err=%.2f  time=%.3f", curve, 
+			Util.consoleLog("curve=%.2f  hdg=%.2f  yaw=%.2f  err=%.2f  time=%.4f", curve, 
 							 saveHeading, yaw, pidController.getError(), elapsedTime); 
 		}
 		else if (heading == Heading.heading)
@@ -161,7 +161,7 @@ public class AutoRotate extends CommandBase
 			
 			yaw = RobotContainer.navx.getHeadingYaw();
 			
-			Util.consoleLog("curver=%.2f  yaw=%.2f  hdg=%.2f", curve, yaw,saveHeading);
+			Util.consoleLog("curve=%.2f  yaw=%.2f  hdg=%.2f", curve, yaw, saveHeading);
 		}
 		else 
 		{
@@ -180,23 +180,25 @@ public class AutoRotate extends CommandBase
 	{
 		Util.consoleLog("interrupted=%b", interrupted);
 		
-		driveBase.stop();
-		
-		Util.consoleLog("at stop: hdg=%.2f  yaw=%.2f", saveHeading, yaw);
-		
-		// Wait for robot to stop moving. Note: this only works if motor stop requested.
-        while (RobotContainer.navx.getYawRate() > .99) 
-        {
-            Util.consoleLog("yaw rate=%.2fd/s", RobotContainer.navx.getYawRate());
-            Timer.delay(.010);
-        }
-		
         if (heading == Heading.heading)
-            Util.consoleLog("after stop: hdg=%.2f  hdgyaw=%.2f", RobotContainer.navx.getHeading(), 
-                            RobotContainer.navx.getHeadingYaw());
+    		Util.consoleLog("end loop: hdg=%.2f  hdgyaw=%.2f", saveHeading, yaw);
         else
-            Util.consoleLog("after stop: hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), 
-                            RobotContainer.navx.getYaw());
+            Util.consoleLog("end loop: hdg=%.2f  yaw=%.2f", saveHeading, yaw);
+	
+        driveBase.stop();
+		
+        //Util.consoleLog("after stop: hdg=%.2f  hdgyaw=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), 
+        //                RobotContainer.navx.getHeadingYaw(), RobotContainer.navx.getYaw());
+	
+		// Wait for robot to stop moving. Note: this only works if motor stop requested.
+        // while (RobotContainer.navx.getYawRate() > .99) 
+        // {
+        //     Util.consoleLog("yaw rate=%.2fd/s", RobotContainer.navx.getYawRate());
+        //     Timer.delay(.010);
+        // }
+		
+        Util.consoleLog("end: hdg=%.2f  hdgyaw=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), 
+                        RobotContainer.navx.getHeadingYaw(), RobotContainer.navx.getYaw());
 		
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
 

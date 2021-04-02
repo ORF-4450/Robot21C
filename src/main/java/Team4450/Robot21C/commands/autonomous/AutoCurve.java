@@ -12,7 +12,7 @@ public class AutoCurve extends CommandBase
 {
 	private final DriveBase driveBase;
 
-	private double			kP = .09, kI = .02, kD = 0.0, kTolerance= 1.5;
+	private double			kP = .015, kI = .02, kD = 0.0, kTolerance= 1.5;
 	private double			elapsedTime, yaw = 0, originalCurve, power, curve, target, startTime;
 	private int				iterations;
 	private StopMotors 		stop;
@@ -172,7 +172,7 @@ public class AutoCurve extends CommandBase
 			driveBase.curvatureDrive(power2, curve, false);
             //driveBase.arcadeDrive(power2, curve, false);
             
-			Util.consoleLog("power=%.2f  hdg=%.2f  yaw=%.2f  curve=%.2f  err=%.2f  time=%f", power2, 
+			Util.consoleLog("power=%.2f  hdg=%.2f  yaw=%.2f  curve=%.2f  err=%.2f  time=%.4f", power2, 
 					RobotContainer.navx.getHeading(), yaw, curve, pidController.getError(), elapsedTime);			
 		}
 		else if (heading == Heading.heading)		// Simple turn, full curve until target heading reached.
@@ -209,24 +209,19 @@ public class AutoCurve extends CommandBase
 		// Stop motors. If you don't use stop, motors will keep running.
 		if (stop == StopMotors.stop) driveBase.stop();
 
-        if (heading == Heading.heading)
-    		Util.consoleLog("after stop  hdg=%.2f  hdgyaw=%.2f", RobotContainer.navx.getHeading(), yaw);
-        else
-            Util.consoleLog("after stop  hdg=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), yaw);
+        //Util.consoleLog("after stop  hdg=%.2f  hdgyaw=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(), 
+        //                RobotContainer.navx.getHeadingYaw(), RobotContainer.navx.getYaw());
 		
-		// Wait for robot to stop moving. Note: this only works if motor stop requested.
+        // Waiting does help, just allows robot to move further from momentum after stop. Will leave
+        // code here for now.		// Wait for robot to stop moving. Note: this only works if motor stop requested.
         // while (RobotContainer.navx.getYawRate() > .99) 
         // {
         //     Util.consoleLog("yaw rate=%.2fd/s", RobotContainer.navx.getYawRate());
         //     Timer.delay(.010);
         // }
         
-        if (heading == Heading.heading)
-            Util.consoleLog("end hdg=%.2f  hdgyaw=%.2f ", RobotContainer.navx.getHeading(),
-                            RobotContainer.navx.getHeadingYaw());
-        else
-            Util.consoleLog("end hdg=%.2f  yaw=%.2f ", RobotContainer.navx.getHeading(),
-                            RobotContainer.navx.getYaw());
+        Util.consoleLog("end hdg=%.2f  hdgyaw=%.2f  yaw=%.2f", RobotContainer.navx.getHeading(),
+                        RobotContainer.navx.getHeadingYaw(), RobotContainer.navx.getYaw());
 
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
 

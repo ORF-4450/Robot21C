@@ -88,16 +88,16 @@ public class Bounce extends CommandBase
 		
 		commands = new SequentialCommandGroup();
 
-        command = new AutoDrive(driveBase, .30, 
+        command = new AutoDrive(driveBase, .35, 
                                 9000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+                                0);
 
         commands.addCommands(command);
        
-        command = new AutoRotate(driveBase, .30, 270, AutoDrive.Pid.on, AutoDrive.Heading.heading);
+        command = new AutoRotate(driveBase, .35, 270, AutoDrive.Pid.on, AutoDrive.Heading.heading);
 
         commands.addCommands(command);
 
@@ -106,21 +106,21 @@ public class Bounce extends CommandBase
 
         commands.addCommands(command);
         
-        command = new AutoDrive(driveBase, .30, 
+        command = new AutoDrive(driveBase, .35, 
                                 8250, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+                                270);
 
         commands.addCommands(command);
          
-        command = new AutoDrive(driveBase, -.30, 
+        command = new AutoDrive(driveBase, -.35, 
                                 6500, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+                                270);
 
         commands.addCommands(command);
        
@@ -128,38 +128,38 @@ public class Bounce extends CommandBase
 
         commands.addCommands(command);
          
-        command = new AutoDrive(driveBase, .30, 
-                                11500, 
+        command = new AutoDrive(driveBase, .35, 
+                                15000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+                                45);
 
         commands.addCommands(command);
 
-		command = new AutoCurve2(driveBase, .32, .40, 280, 
+		command = new AutoCurve2(driveBase, .35, .31, 270, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.on,
-                                AutoDrive.Pid.off,
+                                AutoDrive.Pid.on,
                                 AutoDrive.Heading.heading);
 
         commands.addCommands(command);
          
-        command = new AutoDrive(driveBase, .35, 
+        command = new AutoDrive(driveBase, .40, 
                                 17000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+                                270);
 
         commands.addCommands(command);
          
-        command = new AutoDrive(driveBase, -.30, 
-                                18000, 
+        command = new AutoDrive(driveBase, -.40, 
+                                20000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+                                270);
 
         commands.addCommands(command);
 
@@ -167,8 +167,8 @@ public class Bounce extends CommandBase
 
         commands.addCommands(command);
          
-        command = new AutoDrive(driveBase, .30, 
-                                10000, 
+        command = new AutoDrive(driveBase, .40, 
+                                15000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
@@ -176,16 +176,16 @@ public class Bounce extends CommandBase
 
         commands.addCommands(command);
        
-        command = new AutoRotate(driveBase, .40, 280, AutoDrive.Pid.on, AutoDrive.Heading.heading);
+        command = new AutoRotate(driveBase, .40, 270, AutoDrive.Pid.on, AutoDrive.Heading.heading);
 
         commands.addCommands(command);
          
-        command = new AutoDrive(driveBase, .30, 
-                                21000, 
+        command = new AutoDrive(driveBase, .40, 
+                                20000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
-                                AutoDrive.Heading.angle);
+                                270);
 
         commands.addCommands(command);
 
