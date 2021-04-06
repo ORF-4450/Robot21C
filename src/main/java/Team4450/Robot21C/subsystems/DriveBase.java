@@ -173,7 +173,7 @@ public class DriveBase extends SubsystemBase
            
         // Always start with voltage compensation enabled for drive talons.
 
-        enableCANTalonVoltageCompenstation(false);
+        //enableCANTalonVoltageCompenstation(false);
 		
 		// Always start with gearbox set to low speed.
 
@@ -613,7 +613,7 @@ public class DriveBase extends SubsystemBase
 		lastLeftDist = lastRightDist = 0;
 
         RobotContainer.navx.resetYaw();
-        
+
         // This has the effect of resetting encoder tracking in the driveSim.
 		if (driveSim != null) driveSim.setPose(driveSim.getPose());   //odometer.getPoseMeters());
 	}

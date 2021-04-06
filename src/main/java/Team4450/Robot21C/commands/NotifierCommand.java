@@ -22,8 +22,9 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  */
 public class NotifierCommand extends CommandBase 
 {
-  protected final Notifier m_notifier;
+  protected final Notifier  m_notifier;
   protected final double 	m_period;
+  private         boolean   m_runWhenDisabled;
 
   /**
    * Creates a new NotifierCommand.
@@ -62,5 +63,16 @@ public class NotifierCommand extends CommandBase
 		  return true;
 	  else
 		  return false;
+  }
+
+  @Override
+  public boolean runsWhenDisabled()
+  {
+      return m_runWhenDisabled;
+  }
+
+  public void setRunWhenDisabled()
+  {
+      m_runWhenDisabled = true;
   }
 }

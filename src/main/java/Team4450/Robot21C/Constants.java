@@ -65,8 +65,10 @@ public final class Constants
 	public static final int		COLORWHEEL_ROTATIONS = 3;
 	public static final double	STEERING_ASSIST_GAIN = .05;
     public static final double	TRACK_WIDTH = 23;				// Inches. 
-    public static final double  MAX_WHEEL_SPEED_MS = 1.5;
-    public static final double  MAX_WHEEL_ACCEL_MSS = 1.5;
+
+    public static final double  MAX_WHEEL_SPEED = 1.0;          // Meters per second.
+    // Robot will go faster than this, more like 2mps but this value tones down autonomous.
+    public static final double  MAX_WHEEL_ACCEL = 1.0;          // Meters per second per second.
 	
 	// LCD display line number constants showing class where the line is set.
 	public static final int		LCD_1 = 1;	    // Robot, Auto Commands.
@@ -87,7 +89,7 @@ public final class Constants
     // Estimated by eyeball observation:
 
     public static final double  MAX_ROTATIONAL_VEL = 70;    // Degrees per second.
-    public static final double  MAX_ROTATIONAL_ACCEL = 20;  // Degrees per second per second.
+    public static final double  MAX_ROTATIONAL_ACCEL = 70;  // Degrees per second per second.
 
     // Drive base characterization results:
 

@@ -74,7 +74,7 @@ public class Bounce extends CommandBase
 		RobotContainer.navx.setTargetHeading(kInitialHeading);
 			
 		// Set Talon ramp rate for smooth acceleration from stop. Determine by observation.
-		driveBase.SetCANTalonRampRate(1.5);
+		driveBase.SetCANTalonRampRate(.5);
 			
 		// Reset odometry tracking with initial x,y position and heading (set above) specific to this 
 		// auto routine. Robot must be placed in same starting location each time for pose tracking
@@ -107,7 +107,7 @@ public class Bounce extends CommandBase
         commands.addCommands(command);
         
         command = new AutoDrive(driveBase, .35, 
-                                8250, 
+                                9000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -116,7 +116,7 @@ public class Bounce extends CommandBase
         commands.addCommands(command);
          
         command = new AutoDrive(driveBase, -.35, 
-                                6500, 
+                                6900, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
@@ -129,7 +129,7 @@ public class Bounce extends CommandBase
         commands.addCommands(command);
          
         command = new AutoDrive(driveBase, .35, 
-                                15000, 
+                                16500, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -146,7 +146,7 @@ public class Bounce extends CommandBase
         commands.addCommands(command);
          
         command = new AutoDrive(driveBase, .40, 
-                                17000, 
+                                17500, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
@@ -155,7 +155,7 @@ public class Bounce extends CommandBase
         commands.addCommands(command);
          
         command = new AutoDrive(driveBase, -.40, 
-                                20000, 
+                                22000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.off,
                                 AutoDrive.Pid.on,
@@ -168,7 +168,7 @@ public class Bounce extends CommandBase
         commands.addCommands(command);
          
         command = new AutoDrive(driveBase, .40, 
-                                15000, 
+                                17000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
@@ -181,7 +181,7 @@ public class Bounce extends CommandBase
         commands.addCommands(command);
          
         command = new AutoDrive(driveBase, .40, 
-                                20000, 
+                                22000, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,
@@ -189,7 +189,7 @@ public class Bounce extends CommandBase
 
         commands.addCommands(command);
 
-		command = new AutoCurve2(driveBase, -.40, -.345, -80, 
+		command = new AutoCurve2(driveBase, -.40, -.31, -80, 
                                 AutoDrive.StopMotors.stop,
                                 AutoDrive.Brakes.on,
                                 AutoDrive.Pid.on,

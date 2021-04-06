@@ -129,6 +129,11 @@ public class AutoDriveTrajectory extends RamseteCommand
         Util.consoleLog("end ----------------------------------------------------------");
     }
 
+    /**
+     * Generate a VoltageConstraint for use in generating a TrajectoryConfig. Uses track width
+     * and a feed forward based on characterization of the drive base.
+     * @return The VoltageConstraint.
+     */
     public static DifferentialDriveVoltageConstraint getVoltageConstraint()
     {
         return new DifferentialDriveVoltageConstraint(
@@ -138,9 +143,13 @@ public class AutoDriveTrajectory extends RamseteCommand
                     10);    // 10v to leave some room to go over the constraint.
     }
 
+    /**
+     * Generate a TrajectoryConfig given a VoltageConstraint and wheel speed info.
+     * @return The TrajectoryConfig.
+     */
     public static TrajectoryConfig getTrajectoryConfig(DifferentialDriveVoltageConstraint voltageConstraint)
     {
-        return new TrajectoryConfig(MAX_WHEEL_SPEED_MS, MAX_WHEEL_ACCEL_MSS)
+        return new TrajectoryConfig(MAX_WHEEL_SPEED, MAX_WHEEL_ACCEL)
                     // Add kinematics to ensure max speed is actually obeyed
                     .setKinematics(new DifferentialDriveKinematics(Util.inchesToMeters(TRACK_WIDTH)))
                     //.setKinematics(new DifferentialDriveKinematics(TRACK_WIDTH_C))

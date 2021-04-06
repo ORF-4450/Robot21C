@@ -97,7 +97,7 @@ public class AutoCurve2 extends CommandBase
 		}
         else if (heading == Heading.totalAngle)
         {
-			RobotContainer.navx.resetYaw(); //Wait(); //(2.5, 1000);
+			RobotContainer.navx.resetYawWait(); 
         }
         else
 		{
@@ -249,8 +249,8 @@ public class AutoCurve2 extends CommandBase
 	{
 		if (pid == Pid.on)							// pid controlled turn to within x degree of target.
 			return pidController.onTarget(kTolerance);
-		else if (heading == Heading.heading)		// Simple turn, full curve until target heading reached.
-			return Util.checkRange(yaw, 1.0);
+		else if (heading == Heading.heading)		// Simple turn, full curve until target heading yaw reached.
+			return Util.checkRange(yaw, kTolerance);
 		else										// Simple turn, full curve until target yaw reached.
 			return Math.abs(yaw) >= Math.abs(target);
 	}

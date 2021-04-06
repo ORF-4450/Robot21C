@@ -3,6 +3,8 @@ package Team4450.Robot21C;
 
 import static Team4450.Robot21C.Constants.*;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
@@ -18,15 +20,20 @@ import Team4450.Lib.JoyStick.JoyStickButtonIDs;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 import Team4450.Robot21C.commands.ArcadeDrive;
 import Team4450.Robot21C.commands.autonomous.AutoSlalom;
 import Team4450.Robot21C.commands.autonomous.AutoSlalom2;
@@ -117,7 +124,9 @@ public class RobotContainer
 
 	private Thread      		monitorBatteryThread, monitorPDPThread;
 	private MonitorCompressor	monitorCompressorThread;
-	private CameraFeed			cameraFeed;
+    private CameraFeed			cameraFeed;
+    
+    public static Trajectory           slalom1Trajectory;
 
     // List of autonomous programs. Any change here must be reflected in getAutonomousCommand()
     // and setAutoChoices() which appear later in this class.
@@ -166,11 +175,13 @@ public class RobotContainer
 		resetFaults();
 
 		// Create NavX object here since must done before CameraFeed is created (don't remember why).
-		// Navx calibrates at power on and must complete before robot moves. Takes 12 seconds.
+        // Navx calibrates at power on and must complete before robot moves. Takes ~1 second for 2nd
+        // generation Navx ~15 seconds for classic Navx. We assume there will be enough time between
+        // power on and our first movement because normally things don't happen that fast.
 
 		navx = NavX.getInstance(NavX.PortType.SPI);
 
-		// Add navx as a Sendable. Updates the heading indicator automatically.
+		// Add navx as a Sendable. Updates the dashboard heading indicator automatically.
  		
 		SmartDashboard.putData("Gyro2", navx);
 
@@ -179,7 +190,7 @@ public class RobotContainer
 		leftStick.invertY(true);
 		rightStick.invertY(true);  
 		
-		// Invert utility stick so pulling back is + which means go up.
+		// Invert utility stick so pulling back is + which typically means go up.
 		
 		utilityStick.invertX(true);
 
@@ -263,14 +274,24 @@ public class RobotContainer
 			Exception e = new Exception("NavX is NOT connected!");
 			Util.logException(e);
 		}
-		
+        
+        // Configure autonomous routines and send to dashboard.
+
 		setAutoChoices();
 
 		// Configure the button bindings.
-		// Don't if in simulation to remove missing joystick errors until we get them
+		// Skip for now in simulation to remove missing joystick errors until we get them
 		// simulated.
 		
-		if (RobotBase.isReal()) configureButtonBindings();
+        if (RobotBase.isReal()) configureButtonBindings();
+        
+        // This is a trick to get the trajectory file to load in a separate thread on first scheduler
+        // run. We do this because trajectory loads can take up to 10 seconds to load so we want this
+        // being done while we are getting started up. Hopefully will complete before we are ready to
+        // use the trajectory.
+        NotifierCommand loadTrajectory = new NotifierCommand(this::loadSalom1Trajectory, 0, driveBase);
+        loadTrajectory.setRunWhenDisabled();
+        CommandScheduler.getInstance().schedule(loadTrajectory);
 	}
 
 	/**
@@ -498,5 +519,36 @@ public class RobotContainer
 
 		pdp.clearStickyFaults();
 		compressor.clearAllPCMStickyFaults();
-	}
+    }
+         
+    /**
+     * Loads a Pathweaver path file into a trajectory.
+     * @param fileName Name of file. Will automatically look in deploy directory.
+     * @return The path's trajectory.
+     */
+    public static Trajectory loadTrajectoryFile(String fileName)
+    {
+        Trajectory  trajectory;
+        Path        trajectoryFilePath;
+
+        try 
+        {
+          trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve("paths/" + fileName);
+
+          Util.consoleLog("loading trajectory: %s", trajectoryFilePath);
+          
+          trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryFilePath);
+        } catch (IOException ex) {
+          throw new RuntimeException("Unable to open trajectory: " + ex.toString());
+        }
+
+        Util.consoleLog("trajectory loaded: %s", fileName);
+
+        return trajectory;
+    }
+
+    private void loadSalom1Trajectory()
+    {
+        slalom1Trajectory = loadTrajectoryFile("Slalom-1.wpilib.json");
+    }
 }

@@ -118,22 +118,24 @@ public class TestAuto3 extends CommandBase
         //                                 // Pass config
         //                                 config);		
 
-        // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        //                                 // Start at the origin set above
-        //                                 startPose,
-        //                                 // Pass through these two interior waypoints, making an 's' curve path
-        //                                 List.of(
-        //                                     new Translation2d(startPose.getX() + 1, startPose.getY()),
-        //                                     new Translation2d(startPose.getX() + 2, startPose.getY())
-        //                                 ),
-        //                                 // End 4 meters straight ahead of where we started, facing forward
-        //                                 new Pose2d(startPose.getX() + 3, startPose.getY(), startPose.getRotation()),
-        //                                 // Pass config
-        //                                 config);		
+        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+                                        // Start at the origin set above
+                                        startPose,
+                                        // Pass through these interior waypoints
+                                        List.of(
+                                            new Translation2d(startPose.getX() + 1, startPose.getY()),
+                                            new Translation2d(startPose.getX() + 1.5, startPose.getY() + 0.5),
+                                            new Translation2d(startPose.getX() + 2.0, startPose.getY() + 1.0),
+                                            new Translation2d(startPose.getX() + 1.5, startPose.getY() + 1.5),
+                                            new Translation2d(startPose.getX() + 1, startPose.getY() + 2.0)
+                                        ),
+                                        // End back where we started but left 2m, facing 180 from start.
+                                        new Pose2d(startPose.getX(), startPose.getY() + 2, new Rotation2d(Math.toRadians(180))),
+                                        // Pass config
+                                        config);		
         
-        Trajectory exampleTrajectory = loadTrajectoryFile("Slalom-1.wpilib.json");
 
-		command = new AutoDriveTrajectory(driveBase, exampleTrajectory, StopMotors.stop, Brakes.on);
+		command = new AutoDriveTrajectory(driveBase, RobotContainer.slalom1Trajectory, StopMotors.stop, Brakes.on);
 		
 		commands.addCommands(command);
 		
@@ -177,28 +179,5 @@ public class TestAuto3 extends CommandBase
 		
 		return !commands.isScheduled();
     }
-    
-    /**
-     * Loads a Pathweaver path file into a trajectory.
-     * @param fileName Name of file. Will automatically look in deploy directory.
-     * @return The path's trajectory.
-     */
-    private Trajectory loadTrajectoryFile(String fileName)
-    {
-        Trajectory  trajectory;
-        Path        trajectoryFilePath;
 
-        try 
-        {
-          trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve("paths/" + fileName);
-          
-          trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryFilePath);
-        } catch (IOException ex) {
-          throw new RuntimeException("Unable to open trajectory: " + ex.toString());
-        }
-
-        Util.consoleLog("trajectory loaded: %s", trajectoryFilePath);
-
-        return trajectory;
-    }
 }
