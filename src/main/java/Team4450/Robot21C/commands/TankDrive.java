@@ -26,7 +26,7 @@ public class TankDrive extends CommandBase
   private final DoubleSupplier	leftPower, rightPower;
   
   private boolean				altDriveMode, steeringAssistMode;
-  private double                kPowerGain = .90; //.75;
+  private double                kPowerGain = .80;   // This is to toen down joystick response.
 
   /**
    * Creates a new TankDrive command.

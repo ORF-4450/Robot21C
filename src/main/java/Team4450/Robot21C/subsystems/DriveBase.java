@@ -361,7 +361,8 @@ public class DriveBase extends SubsystemBase
 	 * Tank drive function. Passes left/right power values to the robot drive.
 	 * Should be called every scheduler run by the Drive command. Uses SlewRateLimiter
 	 * filter to modulate inputs to smooth out power delivery. Testing did not show any
-	 * advantage over square inputs but will keep this routine for now.
+	 * advantage over square inputs but will keep this routine for now. In theory, the
+     * CAN Talon ramp rate we set globally does the same job.
 	 * @param leftSpeed Left power setting -1.0 to +1.0.
 	 * @param rightSpeed Right power setting -1.0 to +1.0.
 	 */
@@ -382,9 +383,9 @@ public class DriveBase extends SubsystemBase
 	{
 		robotDrive.curvatureDrive(power, rotation, quickTurn);
  
-        Util.consoleLog("pwr=%.3f rot=%.3f  lget=%.4f(%.4fv)  rget=%.4f(%.4fv)", power, rotation,
-                        LRCanTalon.get(), LRCanTalon.getMotorOutputVoltage(),
-                        -RRCanTalon.get(), -RRCanTalon.getMotorOutputVoltage());
+        // Util.consoleLog("pwr=%.3f rot=%.3f  lget=%.4f(%.4fv)  rget=%.4f(%.4fv)", power, rotation,
+        //                 LRCanTalon.get(), LRCanTalon.getMotorOutputVoltage(),
+        //                 -RRCanTalon.get(), -RRCanTalon.getMotorOutputVoltage());
     }
 
     /**
@@ -397,9 +398,9 @@ public class DriveBase extends SubsystemBase
 	{
 		robotDrive.arcadeDrive(power, rotation, squareInputs);
  
-        Util.consoleLog("pwr=%.3f rot=%.3f  lget=%.4f(%.4fv)  rget=%.4f(%.4fv)", power, rotation,
-                        LRCanTalon.get(), LRCanTalon.getMotorOutputVoltage(),
-                        -RRCanTalon.get(), -RRCanTalon.getMotorOutputVoltage());
+        // Util.consoleLog("pwr=%.3f rot=%.3f  lget=%.4f(%.4fv)  rget=%.4f(%.4fv)", power, rotation,
+        //                 LRCanTalon.get(), LRCanTalon.getMotorOutputVoltage(),
+        //                 -RRCanTalon.get(), -RRCanTalon.getMotorOutputVoltage());
     }
     
     /**

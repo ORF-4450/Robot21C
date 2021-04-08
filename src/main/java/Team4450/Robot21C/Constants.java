@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC21C-04.01.21-1";
+	public static String		PROGRAM_NAME = "RAC21C-04.07.21-1";
 
 	public static Robot			robot;
 
@@ -65,10 +65,6 @@ public final class Constants
 	public static final int		COLORWHEEL_ROTATIONS = 3;
 	public static final double	STEERING_ASSIST_GAIN = .05;
     public static final double	TRACK_WIDTH = 23;				// Inches. 
-
-    public static final double  MAX_WHEEL_SPEED = 1.0;          // Meters per second.
-    // Robot will go faster than this, more like 2mps but this value tones down autonomous.
-    public static final double  MAX_WHEEL_ACCEL = 1.0;          // Meters per second per second.
 	
 	// LCD display line number constants showing class where the line is set.
 	public static final int		LCD_1 = 1;	    // Robot, Auto Commands.
@@ -85,6 +81,12 @@ public final class Constants
 	public static final double	INITIAL_X = 1.2;
 	public static final double	INITIAL_Y = 0.5;
     public static final double	INITIAL_HEADING = 0;
+
+    // Use these values in PathWeaver for speed and acceleration.
+    // Robot will go faster than this, more like 2mps but this value tones down autonomous speed.
+    
+    public static final double  MAX_WHEEL_SPEED = 1.0;          // Meters per second.
+    public static final double  MAX_WHEEL_ACCEL = 1.0;          // Meters per second per second.
     
     // Estimated by eyeball observation:
 

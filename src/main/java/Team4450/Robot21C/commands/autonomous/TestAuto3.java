@@ -124,18 +124,19 @@ public class TestAuto3 extends CommandBase
                                         // Pass through these interior waypoints
                                         List.of(
                                             new Translation2d(startPose.getX() + 1, startPose.getY()),
-                                            new Translation2d(startPose.getX() + 1.5, startPose.getY() + 0.5),
+                                            new Translation2d(startPose.getX() + 1.5, startPose.getY() + .5),
                                             new Translation2d(startPose.getX() + 2.0, startPose.getY() + 1.0),
                                             new Translation2d(startPose.getX() + 1.5, startPose.getY() + 1.5),
                                             new Translation2d(startPose.getX() + 1, startPose.getY() + 2.0)
-                                        ),
+                                            ),
                                         // End back where we started but left 2m, facing 180 from start.
-                                        new Pose2d(startPose.getX(), startPose.getY() + 2, new Rotation2d(Math.toRadians(180))),
+                                        new Pose2d(startPose.getX(), startPose.getY() + 2.0, new Rotation2d(Math.toRadians(180))),
                                         // Pass config
                                         config);		
         
 
-		command = new AutoDriveTrajectory(driveBase, RobotContainer.slalom1Trajectory, StopMotors.stop, Brakes.on);
+        //command = new AutoDriveTrajectory(driveBase, exampleTrajectory, StopMotors.stop, Brakes.on);
+        command = new AutoDriveTrajectory(driveBase, RobotContainer.slalom1Trajectory, StopMotors.stop, Brakes.on);
 		
 		commands.addCommands(command);
 		

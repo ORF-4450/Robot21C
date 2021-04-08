@@ -99,7 +99,7 @@ public class AutoDriveTrajectory extends RamseteCommand
         
         Pose2d pose = driveBase.getOdometerPose();
 
-        Util.consoleLog("robot poseX=%.2f  poseY=%.2f  poseAng=%.2f", pose.getX(), pose.getY(), -pose.getRotation().getDegrees());
+        Util.consoleLog("robot poseX=%.2f  poseY=%.2f  poseAng=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
 
         iterations++;
     }
@@ -122,7 +122,7 @@ public class AutoDriveTrajectory extends RamseteCommand
                 
         Pose2d pose = driveBase.getOdometerPose();
 
-        Util.consoleLog("poseX=%.2f  poseY=%.2f  poseAng=%.2f", pose.getX(), pose.getY(), -pose.getRotation().getDegrees());
+        Util.consoleLog("poseX=%.2f  poseY=%.2f  poseAng=%.2f", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
 
 		Util.consoleLog("iterations=%d  elapsed time=%.3fs", iterations, Util.getElaspedTime(startTime));
 
