@@ -35,9 +35,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import Team4450.Robot21C.commands.ArcadeDrive;
+import Team4450.Robot21C.commands.autonomous.AutoSlalomPath;
 import Team4450.Robot21C.commands.autonomous.AutoSlalom;
-import Team4450.Robot21C.commands.autonomous.AutoSlalom2;
 import Team4450.Robot21C.commands.autonomous.BarrelRacing;
+import Team4450.Robot21C.commands.autonomous.BarrelRacingPath;
 import Team4450.Robot21C.commands.autonomous.Bounce;
 import Team4450.Robot21C.commands.AimTurret;
 import Team4450.Robot21C.commands.Climb;
@@ -126,7 +127,7 @@ public class RobotContainer
 	private MonitorCompressor	monitorCompressorThread;
     private CameraFeed			cameraFeed;
     
-    public static Trajectory           slalom1Trajectory;
+    public static Trajectory           slalom1Trajectory, barrel1Trajectory;
 
     // List of autonomous programs. Any change here must be reflected in getAutonomousCommand()
     // and setAutoChoices() which appear later in this class.
@@ -136,8 +137,9 @@ public class RobotContainer
 		TestAuto1,
         TestAuto2,
         TestAuto3,
+        AutoSlalomPath,
         AutoSlalom,
-        AutoSlalom2,
+        BarrelRacingPath,
         BarrelRacing,
         Bounce
 	}
@@ -285,11 +287,15 @@ public class RobotContainer
 		
         if (RobotBase.isReal()) configureButtonBindings();
         
-        // This is a trick to get the trajectory file to load in a separate thread on first scheduler
+        // This is a trick to get the trajectory files to load in a separate thread on first scheduler
         // run. We do this because trajectory loads can take up to 10 seconds to load so we want this
         // being done while we are getting started up. Hopefully will complete before we are ready to
         // use the trajectory.
         NotifierCommand loadTrajectory = new NotifierCommand(this::loadSalom1Trajectory, 0, driveBase);
+        loadTrajectory.setRunWhenDisabled();
+        CommandScheduler.getInstance().schedule(loadTrajectory);
+
+        loadTrajectory = new NotifierCommand(this::loadBarrel1Trajectory, 0, driveBase);
         loadTrajectory.setRunWhenDisabled();
         CommandScheduler.getInstance().schedule(loadTrajectory);
 	}
@@ -446,13 +452,17 @@ public class RobotContainer
 				autoCommand = new TestAuto3(driveBase);
 				break;
 
+            case AutoSlalomPath:
+				autoCommand = new AutoSlalomPath(driveBase);
+				break;
+
             case AutoSlalom:
 				autoCommand = new AutoSlalom(driveBase);
 				break;
 
-            case AutoSlalom2:
-				autoCommand = new AutoSlalom2(driveBase);
-				break;
+            case BarrelRacingPath:
+                autoCommand = new BarrelRacingPath(driveBase);
+                break;
 
             case BarrelRacing:
                 autoCommand = new BarrelRacing(driveBase);
@@ -466,7 +476,7 @@ public class RobotContainer
 		return autoCommand;
 	}
   
-    // Configure SendableChooser (drop down list) with auto program choices and
+    // Configure SendableChooser (drop down list on dashboard) with auto program choices and
 	// send them to SmartDashboard/ShuffleBoard.
 	
 	private static void setAutoChoices()
@@ -480,13 +490,14 @@ public class RobotContainer
 		autoChooser.addOption("Test Auto Program 1", AutoProgram.TestAuto1);		
 		autoChooser.addOption("Test Auto Program 2", AutoProgram.TestAuto2);		
 		autoChooser.addOption("Test Auto Program 3", AutoProgram.TestAuto3);		
+		autoChooser.addOption("Slalom-Path", AutoProgram.AutoSlalomPath);		
 		autoChooser.addOption("Slalom", AutoProgram.AutoSlalom);		
-		autoChooser.addOption("Slalom 2", AutoProgram.AutoSlalom2);		
+		autoChooser.addOption("Barrel Racing-Path", AutoProgram.BarrelRacingPath);		
 		autoChooser.addOption("Barrel Racing", AutoProgram.BarrelRacing);		
 		autoChooser.addOption("Bounce", AutoProgram.Bounce);		
-		//autoChooser.setDefaultOption("Slalom 2", AutoProgram.AutoSlalom2);		
-		//autoChooser.setDefaultOption("Barrel Racing", AutoProgram.BarrelRacing);		
-		autoChooser.setDefaultOption("Bounce", AutoProgram.Bounce);		
+		//autoChooser.setDefaultOption("Slalom-Path", AutoProgram.AutoSlalomPath);		
+		autoChooser.setDefaultOption("Barrel Racing-Path", AutoProgram.BarrelRacingPath);		
+		//autoChooser.setDefaultOption("Bounce", AutoProgram.Bounce);		
 				
 		SmartDashboard.putData(autoChooser);
 	}
@@ -550,5 +561,10 @@ public class RobotContainer
     private void loadSalom1Trajectory()
     {
         slalom1Trajectory = loadTrajectoryFile("Slalom-1.wpilib.json");
+    }
+
+    private void loadBarrel1Trajectory()
+    {
+        barrel1Trajectory = loadTrajectoryFile("Barrel-1.wpilib.json");
     }
 }

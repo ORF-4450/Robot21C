@@ -16,7 +16,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
- * This is an autonomous program for the Bounce challenge.
+ * This is an autonomous program for the Bounce challenge. It uses our
+ * dead reckoning navigation commands.
  */
 public class Bounce extends CommandBase
 {

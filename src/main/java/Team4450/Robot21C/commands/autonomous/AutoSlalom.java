@@ -1,28 +1,22 @@
 package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Lib.LCD;
+import Team4450.Lib.SRXMagneticEncoderRelative;
 import Team4450.Lib.Util;
 
 import static Team4450.Robot21C.Constants.*;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import Team4450.Robot21C.RobotContainer;
-import Team4450.Robot21C.commands.autonomous.AutoDrive.Brakes;
-import Team4450.Robot21C.commands.autonomous.AutoDrive.StopMotors;
 import Team4450.Robot21C.subsystems.DriveBase;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
- * This is an example autonomous command based on 4450 customized version of
- * Wpilib Trajetory following commands.
+ * This is an autonomous command to perform the Slalom challenge. Is uses our
+ * dead reckoning navigation commands.
  */
 public class AutoSlalom extends CommandBase
 {
@@ -61,7 +55,7 @@ public class AutoSlalom extends CommandBase
 		
 		driveBase.setMotorSafety(false);  // Turn off watchdog.
 		
-	  	LCD.printLine(LCD_1, "Mode: Auto - AutoSlalom - All=%s, Location=%d, FMS=%b, msg=%s", alliance.name(), location, 
+	  	LCD.printLine(LCD_1, "Mode: Auto - AutoSlalom2 - All=%s, Location=%d, FMS=%b, msg=%s", alliance.name(), location, 
 				ds.isFMSAttached(), gameMessage);
 		
 		// Reset wheel encoders.	  	
@@ -91,14 +85,109 @@ public class AutoSlalom extends CommandBase
 		// executed one after the other until done.
 		
 		commands = new SequentialCommandGroup();
-		
-        Trajectory trajectory = loadTrajectoryFile("Slalom-1.wpilib.json");
 
-		command = new AutoDriveTrajectory(driveBase, trajectory, StopMotors.stop, Brakes.on);
+        command = new AutoCurve(driveBase, .30, .70, -60, //.4 .7
+                                AutoDrive.StopMotors.dontStop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
 		
 		commands.addCommands(command);
+        
+        command = new AutoDrive(driveBase, .30, //.5
+                                SRXMagneticEncoderRelative.getTicksForDistance(2, DRIVE_WHEEL_DIAMETER), 
+                                AutoDrive.StopMotors.dontStop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+
+		command = new AutoCurve(driveBase, .30, .70, 65, //.5
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.off,
+                                AutoDrive.Heading.heading);
 		
-		commands.schedule();
+		commands.addCommands(command);
+        
+        command = new AutoDrive(driveBase, .15, //.5
+                                SRXMagneticEncoderRelative.getTicksForDistance(3.3, DRIVE_WHEEL_DIAMETER), 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+
+		command = new AutoCurve2(driveBase, .36, .42, -160, // .7
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+		
+		commands.addCommands(command);
+
+		command = new AutoCurve2(driveBase, .36, .44, 135,
+                                AutoDrive.StopMotors.dontStop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.heading);
+		
+		commands.addCommands(command);
+        
+        command = new AutoDrive(driveBase, .25, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(1, DRIVE_WHEEL_DIAMETER), 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        //commands.addCommands(command);
+
+		command = new AutoCurve(driveBase, .30, .70, 180,
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.heading);
+		
+		commands.addCommands(command);
+        
+        command = new AutoDrive(driveBase, .30, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(2.5, DRIVE_WHEEL_DIAMETER), 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        commands.addCommands(command);
+
+		command = new AutoCurve(driveBase, .20, .95, 55,
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+		
+		commands.addCommands(command);
+        
+        command = new AutoDrive(driveBase, .15, 
+                                SRXMagneticEncoderRelative.getTicksForDistance(1, DRIVE_WHEEL_DIAMETER), 
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.off,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+
+        //commands.addCommands(command);
+
+		command = new AutoCurve(driveBase, .30, .90, -35,
+                                AutoDrive.StopMotors.stop,
+                                AutoDrive.Brakes.on,
+                                AutoDrive.Pid.on,
+                                AutoDrive.Heading.angle);
+		
+		commands.addCommands(command);
+        
+        commands.schedule();
 	}
 	
 	/**
@@ -137,31 +226,5 @@ public class AutoSlalom extends CommandBase
 		// due to how FIRST coded the SquentialCommandGroup class. 
 		
 		return !commands.isScheduled();
-    }
-    
-    /**
-     * Loads a Pathweaver path file into a trajectory. This method can take 10 seconds.
-     * @param fileName Name of file. Will automatically look in deploy directory.
-     * @return The path's trajectory.
-     */
-    private Trajectory loadTrajectoryFile(String fileName)
-    {
-        Trajectory  trajectory;
-        Path        trajectoryFilePath;
-
-        try 
-        {
-          trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve("paths/" + fileName);
-          
-          Util.consoleLog("loading trajectory: %s", trajectoryFilePath);
-          
-          trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryFilePath);
-        } catch (IOException ex) {
-          throw new RuntimeException("Unable to load trajectory: " + ex.toString());
-        }
-
-        Util.consoleLog("trajectory load complete");
-
-        return trajectory;
     }
 }

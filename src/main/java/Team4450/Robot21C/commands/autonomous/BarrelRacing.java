@@ -1,7 +1,6 @@
 package Team4450.Robot21C.commands.autonomous;
 
 import Team4450.Lib.LCD;
-import Team4450.Lib.SRXMagneticEncoderRelative;
 import Team4450.Lib.Util;
 
 import static Team4450.Robot21C.Constants.*;
@@ -15,7 +14,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
- * This is an autonomous program for the Barrel Racing challenge.
+ * This is an autonomous program for the Barrel Racing challenge. It uses our
+ * dead reckoning navigation commands.
  */
 public class BarrelRacing extends CommandBase
 {
