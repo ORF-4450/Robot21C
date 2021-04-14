@@ -173,7 +173,7 @@ public class DriveBase extends SubsystemBase
            
         // Always start with voltage compensation enabled for drive talons.
 
-        //enableCANTalonVoltageCompenstation(false);
+        enableCANTalonVoltageCompenstation(true);
 		
 		// Always start with gearbox set to low speed.
 
@@ -540,6 +540,13 @@ public class DriveBase extends SubsystemBase
         RRCanTalon.configVoltageCompSaturation(11, 0);
         RRCanTalon.enableVoltageCompensation(enabled);
     }
+
+    public void setPowerDeadBand(double power)
+    {
+        Util.consoleLog("%.2f", power);
+
+        robotDrive.setDeadband(power);
+    }
 		
 	private void updateDS()
 	{
@@ -640,7 +647,7 @@ public class DriveBase extends SubsystemBase
 		rightEncoder.setStatusFramePeriod(20);
 		leftEncoder.setStatusFramePeriod(20);
 
-		// Reset encoders with 112ms delay before proceeding.
+		// Reset encoders with 30ms delay before proceeding.
 		int rightError = rightEncoder.reset(15);    // 15ms
 		int leftError = leftEncoder.reset(15);      // 15ms
 

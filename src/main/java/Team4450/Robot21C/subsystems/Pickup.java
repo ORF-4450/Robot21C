@@ -75,9 +75,9 @@ public class Pickup extends SubsystemBase
 			
             extended = true;
             
-            //channel.startBelt();
+            channel.startBelt();
 			
-			//start(pickupPower);
+			start(pickupPower);
 		}
 	}
 	

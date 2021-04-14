@@ -22,14 +22,14 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 
     private static AutoRotateProfiled   thisInstance;
 
-    private static double kP = 15, kI = kP / 100, kD = 0, toleranceRad = 1.0, toleranceVelrs = 1.0;
+    private static double kP = 15, kI = kP / 100, kD = 0, kToleranceRad = 1.0, kToleranceVelrs = 1.0;
     private double        targetAngle, startTime;
     private int           iterations;
 
     // We work in degrees but the profile works in radians, so we convert. 70 d/s is an eyeball
     // estimate of rotational vel and acceleration is a guess.
-    private static double kMaxRotationVelrs = Math.toRadians(70);       // 70 degrees per second.
-    private static double kMaxRotationAccelrss = Math.toRadians(20);    // 20 degrees per second per second.
+    private static double kMaxRotationVelrs = Math.toRadians(MAX_ROTATIONAL_VEL);       
+    private static double kMaxRotationAccelrss = Math.toRadians(MAX_ROTATIONAL_ACCEL);   
 
     // Estimate both feed forward gains. Feed forward does not seem to work
     // but can't say for sure until we get the bot characterized and get the measured gains.
@@ -69,7 +69,7 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 
         // Set the controller tolerance - the velocity tolerance ensures the robot is stationary at the
         // setpoint before it is considered as having reached the reference
-        getController().setTolerance(toleranceRad, toleranceVelrs);
+        getController().setTolerance(kToleranceRad, kToleranceVelrs);
     }
 
     // Drive combining feed forward with PID output (angle error). The set point computed
@@ -104,7 +104,7 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
         driveBase.SetCANTalonBrakeMode(true);
         
         // Reset gyro yaw to zero, wait up to 1 sec for navx to return zero yaw.
-        RobotContainer.navx.resetYawWait(1, 1000);
+        RobotContainer.navx.resetYawWait(); //1, 1000);
     }
 
     @Override

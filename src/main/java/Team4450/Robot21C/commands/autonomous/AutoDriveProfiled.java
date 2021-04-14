@@ -23,9 +23,8 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
 {
     private DriveBase     driveBase;
 
-    private static double kP = 1.2, kI = .15, kD = 0, toleranceMeters = .05;
-    private static double kMaxVelms = 1.5, kMaxAccelmss = 1, curve;
-    private double        distance, kSteeringGain = .05, startTime;
+    private static double kP = 1.2, kI = .15, kD = 0, kToleranceMeters = .1, curve;
+    private double        distance, kSteeringGain = .07, startTime;
     private int           iterations;
     private StopMotors    stop;
     private Brakes        brakes;
@@ -41,7 +40,8 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
     public AutoDriveProfiled(DriveBase drive, double distance, StopMotors stop, Brakes brakes) 
     {
         super(
-            new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(kMaxVelms, kMaxAccelmss)),
+            new ProfiledPIDController(kP, kI, kD, 
+                                      new TrapezoidProfile.Constraints(MAX_WHEEL_SPEED, MAX_WHEEL_ACCEL)),
             // Closed loop on encoder distance via reference so pid controller can call it on each execute() call.
             drive::getAvgEncoderDist,
             // Set target distance.
@@ -61,7 +61,7 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
         this.distance = distance;
 
         // Set the controller tolerance.
-        getController().setTolerance(toleranceMeters);
+        getController().setTolerance(kToleranceMeters);
     }
         
     @Override
@@ -78,7 +78,7 @@ public class AutoDriveProfiled extends ProfiledPIDCommand
         
         driveBase.resetEncodersWithDelay();
         
-        RobotContainer.navx.resetYawWait(1, 1000);
+        RobotContainer.navx.resetYawWait(); //(1, 1000);
     }
     
     public void execute() 

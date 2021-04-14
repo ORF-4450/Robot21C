@@ -472,6 +472,9 @@ public class RobotContainer
                 autoCommand = new Bounce(driveBase, pickup);
                 break;
         }
+        
+        // Reset motor deadband for auto.
+        driveBase.setPowerDeadBand(.02);
 
 		return autoCommand;
 	}

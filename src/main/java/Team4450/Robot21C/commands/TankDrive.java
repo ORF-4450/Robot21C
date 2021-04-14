@@ -26,7 +26,7 @@ public class TankDrive extends CommandBase
   private final DoubleSupplier	leftPower, rightPower;
   
   private boolean				altDriveMode, steeringAssistMode;
-  private double                kPowerGain = .80;   // This is to toen down joystick response.
+  private double                kPowerGain = 1.0;   // This is to toen down joystick response.
 
   /**
    * Creates a new TankDrive command.
@@ -80,7 +80,9 @@ public class TankDrive extends CommandBase
 	  // squared input on drive methods to try to reduce how jerky and touchy the 
 	  // robot can be.
 	  
-	  driveBase.SetCANTalonRampRate(TALON_RAMP_RATE);
+      driveBase.SetCANTalonRampRate(TALON_RAMP_RATE);
+      
+      driveBase.setPowerDeadBand(.35);
   }
 
   /** 
@@ -153,7 +155,7 @@ public class TankDrive extends CommandBase
 		  SmartDashboard.putBoolean("SteeringAssist", steeringAssistMode);
 	  }
 	  else
-		  driveBase.tankDrive(leftY, rightY, true);		// Normal tank drive.
+          driveBase.tankDrive(leftY, rightY, true);		// Normal tank drive.
   }
 
   private boolean isLeftRightEqual(double left, double right, double percent)
