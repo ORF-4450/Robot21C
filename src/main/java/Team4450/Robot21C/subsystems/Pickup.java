@@ -8,6 +8,7 @@ import Team4450.Lib.Util;
 import Team4450.Lib.ValveDA;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.InterruptHandlerFunction;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -42,7 +43,7 @@ public class Pickup extends SubsystemBase
 		
 		// Listen for a falling edge interrupt.
 		
-		ballEye.setUpSourceEdge(true, false);
+		ballEye.setUpSourceEdge(false, true);
 
 		retract();
 		
@@ -75,7 +76,7 @@ public class Pickup extends SubsystemBase
 			
             extended = true;
             
-            channel.startBelt();
+            //channel.startBelt();
 			
 			start(pickupPower);
 		}
@@ -182,9 +183,13 @@ public class Pickup extends SubsystemBase
 	     public void interruptFired(int interruptAssertedMask, Object param) 
 	     {
 	    	 Util.consoleLog("ball  interrupt");
-	    	 
-	    	 //channel.intakeBall();
-	    	 
+
+             channel.startBelt();
+
+             Timer.delay(1.5);
+             
+             channel.stopBelt();
+
 	    	 //Channel channel = (Channel) param;
 	    	 //channel.intakeBall();
 	     }
