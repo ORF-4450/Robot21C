@@ -73,7 +73,7 @@ Utility Joystick
 Button Name				Function
 -----------------------------------------------------------------------------------
 TRIGGER                 Shoot ball.
-TOP_MIDDLE				Shooter motor toggle.
+TOP_MIDDLE				Shooter motor toggle (PID).
 TOP_BACK				Extend/retract pickup with motor.
 TOP_LEFT				Manual channel ball toward shooter.
 TO_RIGHT				Manual channel ball toward pickup.
@@ -85,8 +85,8 @@ Button Name				Function
 BUTTON_GREEN            Reset Odometer.
 BUTTON_RED				Reset wheel encoders in teleop.
 BUTTON_BLUE				Manual color wheel operation.
-BUTTON_BLUE_RIGHT		Toggle Shooter PID.  //Color wheel auto 3 turns.
-BUTTON_YELLOW			Color wheel Game Color auto locate.
+BUTTON_BLUE_RIGHT		Start Auto Aiming. //Toggle Shooter PID.  //Color wheel auto 3 turns.
+BUTTON_YELLOW			Change Shooter Zone. //Color wheel Game Color auto locate.
 BUTTON_RED_RIGHT		Climber brake toggle.
 
 ROCKER_LEFT_FRONT		Switch Cameras.

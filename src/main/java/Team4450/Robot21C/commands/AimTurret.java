@@ -10,7 +10,7 @@ import Team4450.Robot21C.subsystems.Turret;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- * Command that feeds % power to the Turrent rotation motor.
+ * Command that feeds utility stick X axis % power to the Turrent rotation motor.
  */
 public class AimTurret extends CommandBase 
 {

@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import Team4450.Robot21C.commands.ArcadeDrive;
+import Team4450.Robot21C.commands.AutoAimTurret;
 import Team4450.Robot21C.commands.autonomous.AutoSlalomPath;
 import Team4450.Robot21C.commands.autonomous.AutoSlalom;
 import Team4450.Robot21C.commands.autonomous.BarrelRacing;
@@ -343,8 +344,11 @@ public class RobotContainer
 			//.whenPressed(new InstantCommand(pickup::toggleDeploy, pickup));
 			.whenPressed(new NotifierCommand(pickup::toggleDeploy, 0.0, pickup));
         
+        //new JoystickButton(utilityStick.getJoyStick(), JoyStick.JoyStickButtonIDs.TOP_MIDDLE.value)
+		//	.whenPressed(new InstantCommand(shooter::toggleWheel, shooter));
+
         new JoystickButton(utilityStick.getJoyStick(), JoyStick.JoyStickButtonIDs.TOP_MIDDLE.value)
-			.whenPressed(new InstantCommand(shooter::toggleWheel, shooter));
+			.whenPressed(new InstantCommand(shooter::togglePID, shooter));		
 		
         new JoystickButton(utilityStick.getJoyStick(), JoyStick.JoyStickButtonIDs.TOP_LEFT.value)
 			.whenPressed(new InstantCommand(channel::toggleBeltForward, channel));
@@ -378,10 +382,14 @@ public class RobotContainer
     	//	.toggleWhenActive(turnWheelCounting);
     
         // Start/stop commnd for shooter wheel controlled by PID.
-        new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_BLUE_RIGHT.value)
-    		.whenReleased(new InstantCommand(shooter::togglePID, shooter));
+        //new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_BLUE_RIGHT.value)
+    	//	.whenReleased(new InstantCommand(shooter::togglePID, shooter));
 
-        // Change the shooter power/rpm level to next higher level.
+        // Start Auto Aiming of turret.
+        new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_BLUE_RIGHT.value)
+    		.whenReleased(new AutoAimTurret(turret, limeLight));
+
+        // Change the shooter power/rpm level to next higher level (zone).
         new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.BUTTON_YELLOW.value)
     		.whenReleased(new InstantCommand(shooter::changeZone, shooter));
 

@@ -194,7 +194,7 @@ public class LimeLight extends SubsystemBase
 	}
 
 	/**
-	 * Return Y axis center of target in pixels from left edge.
+	 * Return Y axis center of target in pixels from top edge.
 	 * @return Y center of target in pixels.
 	 */
 	public int centerY()

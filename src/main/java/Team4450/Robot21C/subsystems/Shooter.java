@@ -39,11 +39,11 @@ public class Shooter extends PIDSubsystem
     private double          currentPower = defaultPower, maxRPM = 6000, targetRPM = defaultRPM, toleranceRPM = 50;
     private static double   kP = .0002, kI = kP / 100, kD = 0;
     private boolean         robotEnabled, startUp;
-    private double          startTime;
+    private double          startTime, kS = .498, kV = .108;
     
     // ks and kv determined by characterizing the shooter motor. See the shooter characterization
     // project.
-    private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(.498, .108);
+    private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(kS, kV);
 
 	public Shooter(Channel channel, Turret turret)
 	{
@@ -80,7 +80,7 @@ public class Shooter extends PIDSubsystem
 
             // Util.consoleLog("current=%.3f", shooterMotor.getStatorCurrent());
 
-            // This code watches motor startup current draw and if too much we
+            // This code watches motor startup current draw and if too high we
             // assume wheel is jammed by a ball. We stop wheel, back up channel
             // and restart wheel. If no over draw for 1.5 sec we assume good
             // start up and disable this check for rest of wheel run time.
@@ -140,6 +140,9 @@ public class Shooter extends PIDSubsystem
 
         if (isEnabled()) disable();  // Turn off underlying PID control. 
 
+        // Back the balls down the channel to make sure the wheel is not jammed
+        // by a ball.
+        
         backUpChannel();
 
 		shooterMotor.set(currentPower);
@@ -314,7 +317,7 @@ public class Shooter extends PIDSubsystem
         channel.toggleBeltBackward();
         turret.toggleFeedBackward();
 
-        Timer.delay(.75);   // set time so one ball is fed.
+        Timer.delay(.75);   
 
         channel.stopBelt();
         turret.stopFeed();

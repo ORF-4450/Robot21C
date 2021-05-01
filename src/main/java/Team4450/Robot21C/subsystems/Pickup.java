@@ -37,11 +37,18 @@ public class Pickup extends SubsystemBase
         
         this.channel = channel;
 
-		// Configure interrupt handler for the ballEye optical ball detector.
+        // Configure interrupt handler for the ballEye optical ball detector. An interrupt
+        // handler will run the code (function) we specifiy when the RoboRio detects a change
+        // in the digital signal from the eye.
 		
 		ballEye.requestInterrupts(new InterruptHandler());
 		
-		// Listen for a falling edge interrupt.
+        // Listen for a falling edge interrupt. This because "edge" refers to voltage
+        // signal returned by the eye to the digital IO class. When the eye is not blocked
+        // it returns 5v which the DIO returns as True. We will invert this for our
+        // use as we like to think of not blocked as False and blocked as True. 
+        // Since we are interested in the transition between not blocked (5v) and
+        // blocked (0v), we interrupt on the falling (voltage) edge of the signal.
 		
 		ballEye.setUpSourceEdge(false, true);
 
@@ -201,14 +208,14 @@ public class Pickup extends SubsystemBase
 	}
 	
 	/**
-	 * Returns state of ball detector electric eye.
-	 * @return True means ball blocking eye. Will only be true when ball passing eye.
+	 * Returns state of ball detector electric eye. The electronics returns a high voltage
+     * signal (true) when the eye is NOT blocked. But that is inverted from the way we humans 
+     * think of this. We expect true when the eye is blocked. So we invert the state of the 
+     * eye to match the way humans think of the use of the eye.
+     * @return True means ball blocking eye. Will only be true when ball passing eye.
 	 */
 	public boolean getBallEye()
 	{
-
-		//balleye = !balleye;
-		//return balleye;
 		return !ballEye.get();
 	}
 
