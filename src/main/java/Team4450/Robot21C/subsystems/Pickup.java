@@ -43,7 +43,7 @@ public class Pickup extends SubsystemBase
 		
 		ballEye.requestInterrupts(new InterruptHandler());
 		
-        // Listen for a falling edge interrupt. This because "edge" refers to voltage
+        // Listen for a falling edge interrupt. This is because "edge" refers to voltage
         // signal returned by the eye to the digital IO class. When the eye is not blocked
         // it returns 5v which the DIO returns as True. We will invert this for our
         // use as we like to think of not blocked as False and blocked as True. 
@@ -189,6 +189,8 @@ public class Pickup extends SubsystemBase
 	     @Override
 	     public void interruptFired(int interruptAssertedMask, Object param) 
 	     {
+             //ballEye.disableInterrupts();
+
 	    	 Util.consoleLog("ball  interrupt");
 
              channel.startBelt();
@@ -198,7 +200,9 @@ public class Pickup extends SubsystemBase
              channel.stopBelt();
 
 	    	 //Channel channel = (Channel) param;
-	    	 //channel.intakeBall();
+             //channel.intakeBall();
+             
+             //ballEye.enableInterrupts();
 	     }
 	     
 //		 public Channel overridableParamter()

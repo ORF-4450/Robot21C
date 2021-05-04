@@ -85,17 +85,17 @@ public class Shooter extends PIDSubsystem
             // and restart wheel. If no over draw for 1.5 sec we assume good
             // start up and disable this check for rest of wheel run time.
 
-            // if (isRunning() && startUp)
-            // {
-            //     if (shooterMotor.getStatorCurrent() > 150)
-            //     {
-            //         stopWheel();
-            //         backUpChannel();
-            //         startWheel();
-            //     }
+            if (isRunning() && startUp)
+            {
+                if (shooterMotor.getStatorCurrent() > 150)
+                {
+                    stopWheel();
+                    backUpChannel();
+                    startWheel();
+                }
 
-            //     if (Util.getElaspedTime(startTime) > 1.5) startUp = false;
-            // }
+                if (Util.getElaspedTime(startTime) > 1.5) startUp = false;
+            }
         }
         else
         {
@@ -142,8 +142,10 @@ public class Shooter extends PIDSubsystem
 
         // Back the balls down the channel to make sure the wheel is not jammed
         // by a ball.
-        
-        backUpChannel();
+
+        // This is now being handled by code in periodic() function that monitors motor
+        // current to detect jam and backup only when needed.
+        //backUpChannel();
 
 		shooterMotor.set(currentPower);
 		
@@ -231,7 +233,7 @@ public class Shooter extends PIDSubsystem
         
         double volts = output + ff;
 
-        Util.consoleLog("rpm=%.0f  out=%.3f  set=%.3f  ff=%.3f  v=%.3f", getRPM(), output, setpoint, ff, volts);
+        //Util.consoleLog("rpm=%.0f  out=%.3f  set=%.3f  ff=%.3f  v=%.3f", getRPM(), output, setpoint, ff, volts);
 
         shooterMotor.setVoltage(volts);
     }
@@ -252,13 +254,18 @@ public class Shooter extends PIDSubsystem
     {
         Util.consoleLog();
 
-        backUpChannel();
+        // This is now being handled by code in periodic() function that monitors motor
+        // current to detect jam and backup only when needed.
+        //backUpChannel();
         
         setSetpoint(targetRPM);
 
         super.enable();
 
         wheelRunning = true;
+        
+        startUp = true;
+        startTime = Util.timeStamp();
 		
 		updateDS();
     }

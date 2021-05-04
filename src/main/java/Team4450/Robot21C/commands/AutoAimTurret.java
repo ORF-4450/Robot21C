@@ -48,6 +48,10 @@ public class AutoAimTurret extends PIDCommand
     public void initialize() 
     {
         Util.consoleLog();
+        
+        limeLight.selectPipeline(0);
+        limeLight.setCameraMode(LimeLight.CameraMode.vision);
+        limeLight.setLedMode(LimeLight.LedMode.on);
 
         updateDS();
     }
@@ -75,6 +79,9 @@ public class AutoAimTurret extends PIDCommand
 
         // When we end, we are no longer targeting, even if we have found and locked the target.
         targetVisible = false;
+        
+        limeLight.setCameraMode(LimeLight.CameraMode.driver);
+        limeLight.setLedMode(LimeLight.LedMode.off);
 
         updateDS();
     }

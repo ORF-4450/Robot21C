@@ -77,7 +77,7 @@ public class RobotContainer
     public static Shooter       shooter;
     private final Channel       channel;
     private final Turret        turret;
-    private final LimeLight     limeLight = null;
+    private final LimeLight     limeLight;
 
 	private final TankDrive		driveCommand;
 	//private final ArcadeDrive	driveCommand;
@@ -209,7 +209,7 @@ public class RobotContainer
         turret = new Turret(channel);
         shooter = new Shooter(channel, turret);
         pickup = new Pickup(channel);
-        //limeLight = new LimeLight();
+        limeLight = new LimeLight();
 		
 		// Create any persistent commands.
 		
