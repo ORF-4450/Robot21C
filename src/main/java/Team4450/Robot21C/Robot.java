@@ -6,13 +6,14 @@ import Team4450.Lib.*;
 import Team4450.Robot21C.subsystems.ColorWheel;
 import static Team4450.Robot21C.Constants.*;
 
-//import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
+ * This is the top class or starting point for team robot code. This class acts as an interface
+ * between team code and the FIRST supplied (WpiLib) robot control infrastructure.
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
@@ -149,8 +150,7 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 	  catch (Exception e) {
 			Util.logException(e);
 			this.endCompetition();
-	  }
-	  
+	  }	  
   }
 
   /**
@@ -182,7 +182,8 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 	  SmartDashboard.putBoolean("Belt", false);
 	  SmartDashboard.putString("GameColor", "");
       SmartDashboard.putString("Zone", "GREEN");
-
+      SmartDashboard.putBoolean("TargetLocked", false);
+	
 	  Util.consoleLog("end -------------------------------------------------------------------------");
   }
 

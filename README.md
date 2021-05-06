@@ -3,7 +3,7 @@
 FRC Team 4450 2021 Robot Control program.
 
 This is the Command based 2021 competition robot control program reference implementation created by the Olympia Robotics Federation (FRC Team 4450). 
-Operates the robot "TBA" for FRC game "INFINITE RECHARGE".
+Operates the robot "Gregory" for FRC game "INFINITE RECHARGE".
 
 ----------------------------------------------------------------------------
 ## Instructions to setup development environment for VS Code
@@ -15,6 +15,13 @@ Operates the robot "TBA" for FRC game "INFINITE RECHARGE".
 ### If RobotLib gets an update:
 1) download the RobotLib.json file from the RobotLib Github repo and drop it into the vendordeps folder inside the project folder. Build the project.
 ****************************************************************************************************************
+Version 21C.1
+
+*   Final version of the code after post season development work.
+
+R. Corn
+May 2021
+
 Version 21C.0
 
 *	Developed from Robot20C for compatibility with 2021 Wpilib updates and to integrate Wpilib support for

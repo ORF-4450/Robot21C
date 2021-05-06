@@ -6,7 +6,7 @@ import java.util.function.DoubleSupplier;
 
 import Team4450.Lib.Util;
 import Team4450.Robot21C.subsystems.Turret;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
@@ -65,8 +65,8 @@ public class AimTurret extends CommandBase
   {
 	  Util.consoleLog();
 	  
-	  endAiming = false;
-  }
+      endAiming = false;
+  }  
 
   /** 
    * Called every time the scheduler runs while the command is scheduled. Passes

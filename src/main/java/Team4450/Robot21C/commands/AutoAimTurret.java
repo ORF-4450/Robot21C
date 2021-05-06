@@ -9,14 +9,16 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 
 /**
  * A command that will aim the turret automatically based on LimeLight camera information.
+ * Uses a PID controller to aim the turret.
  */
 public class AutoAimTurret extends PIDCommand 
 {
-    private static double       kP = .10, kI = .01, kD = 0;
-    private double              kToleranceDeg = 1.0;
+    private static double       kP = .02, kI = .02, kD = 0;
+    private double              kToleranceDeg = .5;
     private Turret              turret;
     private LimeLight           limeLight;
     private boolean             targetVisible, targetLocked;
+
     /**
      * Turns turret to center the target in the LimeLight field of view.
      *
@@ -32,14 +34,14 @@ public class AutoAimTurret extends PIDCommand
             // Set target as zero (X offset from center of field of view)
             0,
             // Pipe output to turn turret
-            output -> turret.rotate(output),
+            output -> turret.rotateVariable(output),
             // Require the turret
             turret);
 
         this.turret = turret;
         this.limeLight = limeLight;
-
-        //getController().enableContinuousInput(-180, 180);
+        
+        limeLight.selectPipeline(0);
 
         getController().setTolerance(kToleranceDeg);
     }
@@ -48,10 +50,8 @@ public class AutoAimTurret extends PIDCommand
     public void initialize() 
     {
         Util.consoleLog();
-        
-        limeLight.selectPipeline(0);
-        limeLight.setCameraMode(LimeLight.CameraMode.vision);
-        limeLight.setLedMode(LimeLight.LedMode.on);
+
+        targetVisible = targetLocked = false;
 
         updateDS();
     }
@@ -66,9 +66,14 @@ public class AutoAimTurret extends PIDCommand
 
         // If the target is visible in the field of view, execute the embedded PID command
         // to turn the turret to center the target image in field of view.
-        if (targetVisible) super.execute();
+        if (targetVisible)
+        {
+            super.execute();
 
-        updateDS();
+            Util.consoleLog("error=%.2f", m_controller.getPositionError());
+        }
+
+        //updateDS();
     }
 
     @Override
@@ -79,9 +84,6 @@ public class AutoAimTurret extends PIDCommand
 
         // When we end, we are no longer targeting, even if we have found and locked the target.
         targetVisible = false;
-        
-        limeLight.setCameraMode(LimeLight.CameraMode.driver);
-        limeLight.setLedMode(LimeLight.LedMode.off);
 
         updateDS();
     }

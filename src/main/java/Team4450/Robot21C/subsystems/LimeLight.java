@@ -2,10 +2,13 @@ package Team4450.Robot21C.subsystems;
 
 import java.util.ArrayList;
 
+import javax.lang.model.util.ElementScanner6;
+
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 
 import Team4450.Lib.Util;
+import static Team4450.Robot21C.Constants.*;
 
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -77,6 +80,16 @@ public class LimeLight extends SubsystemBase
 			snapshot.setDouble(0);
 	}
 	
+	// This method will be called once per scheduler run by the scheduler.
+	@Override
+	public void periodic() 
+	{
+        if (robot.isEnabled())
+            setLedMode(LedMode.on);
+        else
+            setLedMode(LedMode.off);
+    }
+
 	/**
 	 * Update the targeting information held in this class from the LimeLight via the
 	 * network tables.
@@ -85,7 +98,9 @@ public class LimeLight extends SubsystemBase
 	public boolean processImage()
 	{
 		double targetVisible = tv.getDouble(0);
-		
+    
+        Util.consoleLog("tv=%.0f", targetVisible);
+
 		if (targetVisible != 0)
 			targetFound = true;
 		else
@@ -208,9 +223,9 @@ public class LimeLight extends SubsystemBase
 	 * @return The offset in degrees. - target is left of center, + target is
 	 * right of center.
 	 */
-	public int offsetX()
+	public double offsetX()
 	{
-		return (int) xOffset;
+		return xOffset;
 	}
 
 	/**
@@ -218,9 +233,9 @@ public class LimeLight extends SubsystemBase
 	 * Note, the center of field of view is the location of the cursor.
 	 * @return The offset in degrees. - target is below center, + target is above center.
 	 */
-	public int offsetY()
+	public double offsetY()
 	{
-		return (int) yOffset;
+		return  yOffset;
 	}
 
 	/**

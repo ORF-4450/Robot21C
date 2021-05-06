@@ -79,6 +79,23 @@ public class Turret extends SubsystemBase
             rotateMotor.stopMotor();
     }
 
+    /**
+     * Rotate the turret using specified power level. Optical sensors on turrent
+     * prevent over rotation.
+     * @param power If + rotate right, - rotate left.
+     */
+    public void rotateVariable(double power)
+    {
+        // Sensors return true when not blocked by turret rotation.
+
+        if (power > 0 && limitSensorLeft.get())
+            rotateMotor.set(power);
+        else if (power < 0 && limitSensorRight.get())
+            rotateMotor.set(power);
+        else
+            rotateMotor.stopMotor();
+    }
+
 	/**
 	 * Stop feed roller.
 	 */

@@ -21,8 +21,8 @@ public class Pickup extends SubsystemBase
 	private DigitalInput	ballEye = new DigitalInput(BALL_EYE);
 
     private Channel         channel;
-    private double          pickupPower = .30;
-	private boolean			extended = false, pickupRunning = false;
+    private double          pickupPower = .25, interruptTime;
+	private boolean			extended = false, pickupRunning = false, interrupted;
     public static boolean   balleye = false;
     
 	public Pickup (Channel channel)
@@ -55,13 +55,18 @@ public class Pickup extends SubsystemBase
 		retract();
 		
 		Util.consoleLog("Pickup created!");
-	}
-	
-	@Override
-	public void periodic() 
-	{
-		// This method will be called once per scheduler run
-	}
+    }
+    
+    // Called on each run of the scheduler.
+    @Override
+    public void periodic() 
+    {
+        // So the ball eye started raising double interrupts for single break of
+        // the light beam. Could not figure out why so added some code to record
+        // the time of an interrupt and wait 1/4 second before responding to a
+        // new interrupt.
+        if (Util.getElaspedTime(interruptTime) > .25) interrupted = false;
+    }
 
 	private void updateDS()
 	{
@@ -189,20 +194,21 @@ public class Pickup extends SubsystemBase
 	     @Override
 	     public void interruptFired(int interruptAssertedMask, Object param) 
 	     {
-             //ballEye.disableInterrupts();
+             if (interrupted) return;
 
 	    	 Util.consoleLog("ball  interrupt");
 
              channel.startBelt();
 
-             Timer.delay(1.5);
+             Timer.delay(1.25);
              
              channel.stopBelt();
 
+             interrupted = true;
+             interruptTime = Util.timeStamp();
+
 	    	 //Channel channel = (Channel) param;
              //channel.intakeBall();
-             
-             //ballEye.enableInterrupts();
 	     }
 	     
 //		 public Channel overridableParamter()
