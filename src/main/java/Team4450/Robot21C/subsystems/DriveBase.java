@@ -15,9 +15,7 @@ import Team4450.Lib.SRXMagneticEncoderRelative.PIDRateType;
 import Team4450.Robot21C.RobotContainer;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -113,7 +111,7 @@ public class DriveBase extends SubsystemBase
 		  
 		LFCanTalon.set(ControlMode.Follower, LRCanTalon.getDeviceID());
 		RFCanTalon.set(ControlMode.Follower, RRCanTalon.getDeviceID());
-		  
+
 		robotDrive = new DifferentialDrive(LRCanTalon, RRCanTalon);
 
    		// Configure starting motor safety. This runs a timer between updates of the
@@ -522,7 +520,7 @@ public class DriveBase extends SubsystemBase
     }
     
     /**
-     * Set CAN Talon Voltage Compendation mode on/off. Fixed at 12v max.
+     * Set CAN Talon Voltage Compendation mode on/off. Fixed at 11v max.
      * @param enabled True to turn on voltage compensation, false to turn off.
      */
     public void enableCANTalonVoltageCompenstation(boolean enabled)

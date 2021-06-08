@@ -64,7 +64,8 @@ public class Turret extends SubsystemBase
 
     /**
      * Rotate the turret using default power level. Optical sensors on turrent
-     * prevent over rotation.
+     * prevent over rotation. Input power is only used to determine direction of
+     * rotation. We use fixed power to keep turret movement at a fixed slow rate.
      * @param power If + rotate right, - rotate left.
      */
     public void rotate(double power)
@@ -81,7 +82,9 @@ public class Turret extends SubsystemBase
 
     /**
      * Rotate the turret using specified power level. Optical sensors on turrent
-     * prevent over rotation.
+     * prevent over rotation. Given that the power level can vary, it is possible
+     * to rotate fast enough to defeat the optical sensors and over rotate. This
+     * function is intended for use by the auto aiming comand.
      * @param power If + rotate right, - rotate left.
      */
     public void rotateVariable(double power)

@@ -5,7 +5,6 @@ import java.util.function.DoubleSupplier;
 
 import static Team4450.Robot21C.Constants.*;
 
-import Team4450.Robot21C.Robot;
 import Team4450.Robot21C.RobotContainer;
 import Team4450.Lib.LCD;
 import Team4450.Lib.Util;
@@ -26,7 +25,7 @@ public class TankDrive extends CommandBase
   private final DoubleSupplier	leftPower, rightPower;
   
   private boolean				altDriveMode, steeringAssistMode;
-  private double                kPowerGain = 1.0;   // This is to toen down joystick response.
+  private double                kPowerGain = 1.0;   // This is to tone down joystick response.
 
   /**
    * Creates a new TankDrive command.
@@ -82,7 +81,7 @@ public class TankDrive extends CommandBase
 	  
       driveBase.SetCANTalonRampRate(TALON_RAMP_RATE);
       
-      driveBase.setPowerDeadBand(.35);
+      //driveBase.setPowerDeadBand(.35);
   }
 
   /** 
@@ -155,7 +154,7 @@ public class TankDrive extends CommandBase
 		  SmartDashboard.putBoolean("SteeringAssist", steeringAssistMode);
 	  }
 	  else
-          driveBase.tankDrive(leftY, rightY, true);		// Normal tank drive.
+          driveBase.tankDrive(leftY, rightY, false);		// Normal tank drive.
   }
 
   private boolean isLeftRightEqual(double left, double right, double percent)

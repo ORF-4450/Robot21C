@@ -21,7 +21,7 @@ public class Pickup extends SubsystemBase
 	private DigitalInput	ballEye = new DigitalInput(BALL_EYE);
 
     private Channel         channel;
-    private double          pickupPower = .25, interruptTime;
+    private double          pickupPower = .35, interruptTime;
 	private boolean			extended = false, pickupRunning = false, interrupted;
     public static boolean   balleye = false;
     
@@ -200,7 +200,7 @@ public class Pickup extends SubsystemBase
 
              channel.startBelt();
 
-             Timer.delay(1.25);
+             Timer.delay(1.5);
              
              channel.stopBelt();
 

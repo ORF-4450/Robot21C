@@ -41,7 +41,7 @@ public class AutoAimTurret extends PIDCommand
         this.turret = turret;
         this.limeLight = limeLight;
         
-        limeLight.selectPipeline(0);
+        limeLight.selectPipeline(1);
 
         getController().setTolerance(kToleranceDeg);
     }

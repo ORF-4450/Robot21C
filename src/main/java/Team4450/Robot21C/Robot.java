@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * This is the top class or starting point for team robot code. This class acts as an interface
- * between team code and the FIRST supplied (WpiLib) robot control infrastructure.
- * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * between out team code and the FIRST supplied (WpiLib) robot control infrastructure.
+ * The WpiLib host automatically loads this class, and calls the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * the containing package after creating this project, you must also update the Main.java file in the
  * project.
  */
 public class Robot extends Team4450.Robot21C.wpilib.TimedRobot 
@@ -24,7 +24,7 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
   private RobotContainer	robotContainer;
   
   /**
-   * This function is run when the robot is first started up and should be used for any
+   * This function is called when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
@@ -108,8 +108,9 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 	   		
 		  SmartDashboard.putData("Version", SendableVersion.INSTANCE);
 		  
-		  // Instantiate our RobotContainer. This will perform all our button bindings, and put our
-		  // autonomous chooser on the dashboard.
+          // Instantiate our RobotContainer class. This will perform all necessary setup of the various
+          // subsystems, commands and other items that are needed to to be ready before we start doing
+          // either autonomous or teleop modes.
 		  
 		  robotContainer = new RobotContainer();
 		  
@@ -121,8 +122,8 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
   }
 
   /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+   * This function is called every driver station packet, no matter the mode. Use this for items like
+   * diagnostics that you want run during disabled, autonomous, teleoperated and test.
    *
    * <p>This runs after the mode specific periodic functions, but before
    * LiveWindow and SmartDashboard integrated updating.
@@ -131,7 +132,7 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
   public void robotPeriodic() 
   {
       // This function is called approx every .02 second.
-	  // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+	  // Runs the Scheduler. It is responsible for polling buttons, adding newly-scheduled
 	  // commands, running already-scheduled commands, removing finished or interrupted commands,
 	  // and running subsystem periodic() methods. This must be called from the robot's periodic
 	  // function in order for anything in the Command-based framework to work.
