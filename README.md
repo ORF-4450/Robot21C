@@ -15,6 +15,13 @@ Operates the robot "Gregory" for FRC game "INFINITE RECHARGE".
 ### If RobotLib gets an update:
 1) download the RobotLib.json file from the RobotLib Github repo and drop it into the vendordeps folder inside the project folder. Build the project.
 ****************************************************************************************************************
+Version 21C.2
+
+*   More post season tinkering and doc updates.
+
+R. Corn
+June 2021
+
 Version 21C.1
 
 *   Final version of the code after post season development work.
