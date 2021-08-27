@@ -9,7 +9,8 @@ plugins {
 
     // This is a plugin that allows us to access git information about the version
     // of the code we are compiling and include it in the manifiest of the Jar
-    // created by the gradle build.
+    // created by the gradle build. From the Jar manifiest, the code can extract
+    // that information and include it in the robot trace files.
     id "org.ajoberstar.grgit" version "3.0.0"
 }
 
