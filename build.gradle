@@ -1,6 +1,7 @@
 plugins {
+    // Select Java lauguage plugin.
     id "java"
-    
+
     // The version below should be the desired version of Wpilib. GradleRIO and
     // Wpilib are always released in sync as GradleRIO has embedded info about
     // all of the FIRST software tools that need to be included in a build.
