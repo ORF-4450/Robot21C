@@ -446,13 +446,16 @@ public class RobotContainer
 	private void configureButtonBindingsSim() 
 	{
         Util.consoleLog();
-        		
+                
+        // These buttons do two functions:
+        // Test gamepad button processing.
+        // Demonstate how to pass parameters to a runnable. See Channel class.
+
         new JoystickButton(gamePad.getJoyStick(), GamePad.GamePadButtonIDs.A.value)
 			.whenPressed(new InstantCommand(channel.toggleTheBelt(true), channel));
 		
         new JoystickButton(gamePad.getJoyStick(), GamePad.GamePadButtonIDs.B.value)
 			.whenPressed(new InstantCommand(channel.toggleTheBelt(false), channel));
-
     }
 
 	/**

@@ -114,12 +114,20 @@ public class Channel extends SubsystemBase
         return toggleBelt(-defaultPower);
     }
     
+    /**
+     * This is an example of how to pass parameters to a runnable. The two funtions above
+     * could be done on one, with a parameter for direction or perhaps power. Both ways
+     * are legitimate but this shows how to pass a parameter to a runnable if a case
+     * surfaces that needs a parameter. See RobotContainer button config method.
+     * @param forward Direction of belt travel. True is forward.
+     * @return A runnable object suitable for passing to an InstantCommand.
+     */
     public Runnable toggleTheBelt(boolean forward)
     {
         Runnable aRunnable = new Runnable() {
             public void run()
             {
-               if (forward)
+                if (forward)
                     toggleBeltForward();
                 else
                     toggleBeltBackward();
