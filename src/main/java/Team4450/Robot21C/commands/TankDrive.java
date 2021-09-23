@@ -148,7 +148,7 @@ public class TankDrive extends CommandBase
 		  else
 		  {
 			  steeringAssistMode = false;
-			  driveBase.tankDrive(leftY, rightY, true);	// Normal tank drive.
+			  driveBase.tankDrive(leftY, rightY, false);	// Normal tank drive.
 		  }
 	
 		  SmartDashboard.putBoolean("SteeringAssist", steeringAssistMode);

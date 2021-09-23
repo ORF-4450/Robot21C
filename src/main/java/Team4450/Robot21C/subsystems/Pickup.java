@@ -125,7 +125,7 @@ public class Pickup extends SubsystemBase
 			retract();
 		else
 		  	extend();
-	}
+    }
 	
 	/**
 	 * Start pick up wheel and enable optical sensor interrupts.

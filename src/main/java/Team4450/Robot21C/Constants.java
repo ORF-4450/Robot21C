@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC21C-06.07.21-1";
+	public static String		PROGRAM_NAME = "RAC21C-09.22.21-1";
 
 	public static Robot			robot;
 
@@ -36,7 +36,7 @@ public final class Constants
     public static final int     TURRET_ROTATE_VICTOR = 10, TURRET_FEED_VICTOR = 11;
 	
 	// Joystick port assignments.
-	public static final int		LEFT_STICK = 0, RIGHT_STICK = 1, UTILITY_STICK = 2, LAUNCH_PAD = 3;
+	public static final int		LEFT_STICK = 0, RIGHT_STICK = 1, UTILITY_STICK = 2, LAUNCH_PAD = 3, GAME_PAD = 4;
 
 	// Pneumatic valve controller port assignments.
 	public static final int		COMPRESSOR = 0;
@@ -59,7 +59,9 @@ public final class Constants
 
 	public static final DriverStation	ds = DriverStation.getInstance();
 
-	public static final double	TALON_RAMP_RATE = 1.0;			// Takes 1 sec for full power to applied.
+    public static final double	TALON_RAMP_RATE = 1.0;			// Takes 1 sec for full power to be applied.
+                                                                // Tried going above 1.0 but behavior became
+                                                                // sketchy...
 	public static final double  DRIVE_WHEEL_DIAMETER = 6.20;	// Inches.
 	public static final double	COLORWHEEL_SPEED = .25;
 	public static final int		COLORWHEEL_ROTATIONS = 3;

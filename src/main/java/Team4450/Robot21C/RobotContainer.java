@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
 import Team4450.Lib.CameraFeed;
+import Team4450.Lib.GamePad;
 import Team4450.Lib.JoyStick;
 import Team4450.Lib.LaunchPad;
 import Team4450.Lib.MonitorBattery;
@@ -16,6 +17,7 @@ import Team4450.Lib.MonitorCompressor;
 import Team4450.Lib.MonitorPDP;
 import Team4450.Lib.NavX;
 import Team4450.Lib.Util;
+import Team4450.Lib.GamePad.GamePadButtonIDs;
 import Team4450.Lib.JoyStick.JoyStickButtonIDs;
 
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -116,6 +118,8 @@ public class RobotContainer
 	public static JoyStick   utilityStick = new JoyStick(new Joystick(UTILITY_STICK), "Utility Stick", JoyStickButtonIDs.TRIGGER);
 	private Joystick	launchPad = new Joystick(LAUNCH_PAD);	//new LaunchPad(new Joystick(LAUNCH_PAD));
 
+    private GamePad     gamePad = new GamePad(new Joystick(GAME_PAD), "Game Pad", GamePadButtonIDs.START);
+
 	private AnalogInput	pressureSensor = new AnalogInput(PRESSURE_SENSOR);
 	  
 	private PowerDistributionPanel	pdp = new PowerDistributionPanel();
@@ -191,12 +195,12 @@ public class RobotContainer
 		// Invert driving joy stick Y axis so + values mean forward.
 	  
 		leftStick.invertY(true);
-		rightStick.invertY(true);  
+        rightStick.invertY(true);
+        gamePad.invertY(true);  
 		
 		// Invert utility stick so pulling back is + which typically means go up.
 		
 		utilityStick.invertX(true);
-
 		utilityStick.deadZoneY(.50);
 		utilityStick.deadZoneX(.25);
 
@@ -240,8 +244,13 @@ public class RobotContainer
 		// read the values later when the Drive command is executing under the Scheduler. Drive command
 		// code does not have to know anything about the JoySticks (or any other source) but can still
 		// read them.
-	  
-		driveBase.setDefaultCommand(driveCommand = new TankDrive(driveBase, () -> leftStick.GetY(), () -> rightStick.GetY()));
+      
+        if (RobotBase.isReal())
+             driveBase.setDefaultCommand(driveCommand = new TankDrive(driveBase, () -> leftStick.GetY(), 
+                                                                                 () -> rightStick.GetY()));
+        else
+            driveBase.setDefaultCommand(driveCommand = new TankDrive(driveBase, () -> gamePad.GetLeftY(), 
+                                                                                () -> gamePad.GetRightY()));
        
 		// driveBase.setDefaultCommand(driveCommand = new ArcadeDrive(driveBase, 
 		// 															() -> rightStick.GetY(), 
@@ -282,11 +291,12 @@ public class RobotContainer
 
 		setAutoChoices();
 
-		// Configure the button bindings.
-		// Skip for now in simulation to remove missing joystick errors until we get them
-		// simulated.
+		// Configure the button bindings for real and simulated robot.
 		
-        if (RobotBase.isReal()) configureButtonBindings();
+        if (RobotBase.isReal()) 
+            configureButtonBindings();
+        else
+            configureButtonBindingsSim();
         
         // This is a trick to get the trajectory files to load in a separate thread on first scheduler
         // run. We do this because trajectory loads can take up to 10 seconds to load so we want this
@@ -306,6 +316,8 @@ public class RobotContainer
 	 * instantiating a {@link GenericHID} or one of its subclasses ({@link
 	 * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
 	 * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     * 
+     * These buttons are for real robot with 3 sticks and launchpad.
 	 */
 	private void configureButtonBindings() 
 	{
@@ -422,6 +434,26 @@ public class RobotContainer
 		new JoystickButton(launchPad, LaunchPad.LaunchPadControlIDs.ROCKER_LEFT_FRONT.value)
 	    	.whenReleased(new InstantCommand(cameraFeed::ChangeCamera));
 	}
+
+	/**
+	 * Use this method to define your button->command mappings.  Buttons can be created by
+	 * instantiating a {@link GenericHID} or one of its subclasses ({@link
+	 * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
+	 * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     * 
+     * These buttons are for simulated robot with Xbox controller on port 4.
+	 */
+	private void configureButtonBindingsSim() 
+	{
+        Util.consoleLog();
+        		
+        new JoystickButton(gamePad.getJoyStick(), GamePad.GamePadButtonIDs.A.value)
+			.whenPressed(new InstantCommand(channel.toggleTheBelt(true), channel));
+		
+        new JoystickButton(gamePad.getJoyStick(), GamePad.GamePadButtonIDs.B.value)
+			.whenPressed(new InstantCommand(channel.toggleTheBelt(false), channel));
+
+    }
 
 	/**
 	 * Use this to pass the autonomous command(s) to the main {@link Robot} class.

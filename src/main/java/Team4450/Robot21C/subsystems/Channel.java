@@ -59,7 +59,7 @@ public class Channel extends SubsystemBase
 	 */
 	public void startBelt(double power)
 	{
-		Util.consoleLog();
+		Util.consoleLog("%.2f", power);
 		
 		beltMotor.set(power);
 		
@@ -84,7 +84,7 @@ public class Channel extends SubsystemBase
     */
     public boolean toggleBelt(double power)
     {
-        Util.consoleLog();
+        //Util.consoleLog("%.2f", power);
         
         if (isRunning())
             stopBelt();
@@ -113,7 +113,21 @@ public class Channel extends SubsystemBase
     {
         return toggleBelt(-defaultPower);
     }
-
+    
+    public Runnable toggleTheBelt(boolean forward)
+    {
+        Runnable aRunnable = new Runnable() {
+            public void run()
+            {
+               if (forward)
+                    toggleBeltForward();
+                else
+                    toggleBeltBackward();
+            }
+        };
+    
+        return aRunnable;
+    }
 	/**
 	 * Returns running state of belt.
 	 * @return True is running.
