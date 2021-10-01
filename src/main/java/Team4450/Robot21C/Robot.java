@@ -8,9 +8,9 @@ import static Team4450.Robot21C.Constants.*;
 
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.WPILibVersion;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
  * This is the top class or starting point for team robot code. This class acts as an interface
@@ -97,8 +97,8 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 	   		
 		  SmartDashboard.putString("Program", PROGRAM_NAME);
 		
-		  // Log RobotLib version we are using.
-		  Util.consoleLog("RobotLib=%s", LibraryVersion.version);
+		  // Log RobotLib and WPILib versions we are using.
+		  Util.consoleLog("RobotLib=%s, WPILib=%s", LibraryVersion.version, WPILibVersion.Version);
 		  
 		  // Note: Any Sendables added to SmartDashboard or Shuffleboard are sent to the DS on every
 		  // loop of a TimedRobot. In this case it means that the SendableVersion data would be sent
