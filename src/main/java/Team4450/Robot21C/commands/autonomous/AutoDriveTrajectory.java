@@ -95,6 +95,7 @@ public class AutoDriveTrajectory extends RamseteCommand
     {
         Util.consoleLog();
 
+        // Causes the Ramsete controller to advance one step, driving the robot one step along the path.
         super.execute();
         
         Pose2d pose = driveBase.getOdometerPose();

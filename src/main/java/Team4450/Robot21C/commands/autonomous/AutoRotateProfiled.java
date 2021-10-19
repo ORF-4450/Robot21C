@@ -22,7 +22,9 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
 
     private static AutoRotateProfiled   thisInstance;
 
-    private static double kP = 15, kI = kP / 100, kD = 0, kToleranceRad = 1.0, kToleranceVelrs = 1.0;
+    // Note: kP was 15 but sim does not work right as 15 causes to much rotation. 5 works in sim.
+    // But, 5 may be too little for a real robot and not output enough power to move. Need to test.
+    private static double kP = 5, kI = kP / 100, kD = 0, kToleranceRad = 1.0, kToleranceVelrs = 1.0;
     private double        targetAngle, startTime;
     private int           iterations;
 
@@ -118,7 +120,7 @@ public class AutoRotateProfiled extends ProfiledPIDCommand
                         getController().getSetpoint().position, m_measurement.getAsDouble(),
                         getController().getPositionError());
 
-        Util.consoleLog("yaw=%.3f  hdng=%.2f  lpwr=%.2f  rpwr=%.2f", RobotContainer.navx.getYaw(),
+        Util.consoleLog("yaw=%.2f  hdng=%.2f  lpwr=%.2f  rpwr=%.2f", RobotContainer.navx.getYaw(),
                         RobotContainer.navx.getHeading(), driveBase.getLeftPower(), -driveBase.getRightPower());
 
         iterations++;

@@ -107,7 +107,7 @@ public class TestAuto2 extends CommandBase
 
         // Now rotate to heading 0.
 
-		command = new AutoRotateHdgProfiled(driveBase, 180);
+		command = new AutoRotateHdgProfiled(driveBase, 0);
 
 		commands.addCommands(command);
         
@@ -119,7 +119,7 @@ public class TestAuto2 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		//commands.addCommands(command);
+		commands.addCommands(command);
 		
 		// Launch autonomous command sequence.
 		

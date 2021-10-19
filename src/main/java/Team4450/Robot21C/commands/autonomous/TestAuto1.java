@@ -63,7 +63,7 @@ public class TestAuto1 extends CommandBase
 	  	driveBase.resetEncodersWithDelay();
 	  	
 	  	// Set NavX yaw tracking to 0.
-        RobotContainer.navx.resetYaw();   
+        RobotContainer.navx.resetYawWait();   
 
 		// Set heading to initial angle (0 is robot pointed down the field) so
 		// NavX class can track which way the robot is pointed all during the match.
@@ -102,7 +102,7 @@ public class TestAuto1 extends CommandBase
 		
 		command = new AutoRotate(driveBase, .30, -90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 
-		//commands.addCommands(command);
+		commands.addCommands(command);
 		
 		// Next action is to drive same encoder counts and stop with brakes on.
 		
@@ -112,13 +112,13 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		//commands.addCommands(command);
+		commands.addCommands(command);
 
 		// Next rotate right.
 
 		command = new AutoRotate(driveBase, .30, 90, AutoDrive.Pid.on, AutoDrive.Heading.angle);
 
-		//commands.addCommands(command);
+		commands.addCommands(command);
 		
 		// Now drive a curve to 90 degrees right.
 
@@ -128,7 +128,7 @@ public class TestAuto1 extends CommandBase
 								AutoDrive.Pid.on,
 								AutoDrive.Heading.angle);
 		
-		//commands.addCommands(command);
+		commands.addCommands(command);
 		
 		// Launch autonomous command sequence.
 		

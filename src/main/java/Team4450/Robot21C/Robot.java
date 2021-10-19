@@ -55,7 +55,7 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
           // warnings. It does not log to our log file. These warnings can be turned back
           // on at times to check if we are having significant overruns but turned off if
           // things look ok. This is a major hack, the downside of which is that with each
-          // release of Wpilib the copied files would have ot be recopied and remodified.
+          // release of Wpilib the copied files would have to be recopied and remodified.
           // IterativeRobotBase and Watchdog have been modified.
           // Note that the periodic function is called very .02 sec. If our code runs too
           // long that can lead to various control problems. But, it has proven hard to
@@ -218,7 +218,7 @@ public class Robot extends Team4450.Robot21C.wpilib.TimedRobot
 	  
       robotContainer.resetFaults();
 
-	  // RobotContainer figures out which auto command is selected to run.
+	  // RobotContainer function determines which auto command is selected to run.
 	  
 	  Command autonomousCommand = robotContainer.getAutonomousCommand();
 

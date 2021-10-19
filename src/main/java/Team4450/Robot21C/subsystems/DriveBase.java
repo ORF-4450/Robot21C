@@ -105,6 +105,13 @@ public class DriveBase extends SubsystemBase
         // work right so no invert under sim. I am sure this is due to a mistake in how
         // the simulation is coded, but going to live with it for now.
         if (RobotBase.isReal()) rightEncoder.setInverted(true);
+
+        if (RobotBase.isSimulation())
+        {
+            // Needed for Built-in SRX encoder sim support, not used at this time.
+            //leftEncoder.setInverted(true);
+            //rightEncoder.setInverted(true);
+        }
 		
 		// For 2020 robot, put rear talons into a differential drive object and set the
 	    // front talons to follow the rears.
@@ -218,7 +225,12 @@ public class DriveBase extends SubsystemBase
 		// Configure our SRXMagneticEncoderRelative instances to use the dummy encoders instead
 		// of actual CTRE magnetic encoders connected to TalonSRX controllers.
 		leftEncoder.setSimEncoder(leftDummyEncoder);
-		rightEncoder.setSimEncoder(rightDummyEncoder);
+        rightEncoder.setSimEncoder(rightDummyEncoder);
+        
+        // This code is used with the built-in SRXMagneticEncoder sim support instead of above
+        // code. Not used at this time as buit-in sim support is not reliable.
+        //leftEncoder.initSim();
+        //rightEncoder.initSim();
 
 		// Create the encoder simulation classes that wrap the dummy encoders.
 		leftEncoderSim = new EncoderSim(leftDummyEncoder);
@@ -237,12 +249,16 @@ public class DriveBase extends SubsystemBase
 			null);
 
 		// Create a dummy analog gyro which will be passed into our NavX wrapper class and will
-		// drive our class instead on an actual Navx (not sumulated at this time).
+		// drive that class instead of an actual Navx (See NavX class in RobotLib for more info).
 		dummyGyro = new AnalogGyro(SIM_GYRO);
 
 		gyroSim = new AnalogGyroSim(dummyGyro);
 
 		RobotContainer.navx.setSimGyro(dummyGyro);
+
+        // Use for built-in sim support in NavX instead of above code. Not used at this time as
+        // the built-in sim support is not reliable.
+        //RobotContainer.navx.initSimV2();
 
 		// the Field2d class lets us visualize our robot in the simulation GUI. We have to
 		// add it to the dashboard. Field2d is updated by the odometer class instance we
@@ -271,18 +287,25 @@ public class DriveBase extends SubsystemBase
 		lastLeftDist = left;
 		lastRightDist = right;
 		
-    	Pose2d pose = odometer.update(RobotContainer.navx.getTotalYaw2d(), cumulativeLeftDist, cumulativeRightDist);
+    	//Pose2d pose = odometer.update(RobotContainer.navx.getTotalYaw2d(), cumulativeLeftDist, cumulativeRightDist);
+    	Pose2d pose = odometer.update(RobotContainer.navx.getTotalAngle2d(), cumulativeLeftDist, cumulativeRightDist);
 
-		if (robot.isEnabled() && RobotBase.isSimulation()) 
-			Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftDist, cumulativeRightDist,
-							pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalYaw2d().getDegrees());
-		
-		// Update the sim field display with the current pose, or position, of the robot after we
+        if (robot.isEnabled() && RobotBase.isSimulation()) 
+        {
+            Util.consoleLog();
+//			Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftDist, cumulativeRightDist,
+//							pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalYaw2d().getDegrees());
+            Util.consoleLog("clc=%.3f  crc=%.3f  px=%.3f py=%.3f prot=%.3f tyaw=%.3f", cumulativeLeftDist, cumulativeRightDist,
+							pose.getX(), pose.getY(), pose.getRotation().getDegrees(), RobotContainer.navx.getTotalAngle2d().getDegrees());
+        }
+
+		// Update the sim field display with the current pose, or position and direction of the robot, after we
 		// updated that pose above.
 		if (RobotBase.isSimulation()) fieldSim.setRobotPose(pose);
 	}
 	
-	// Updates simulation data prior to each periodic() call when under simulation.
+    // Updates simulation data *after* to each periodic() (above) call when under simulation. Then all other
+    // commands have thier execute funtion called.
 	@Override
   	public void simulationPeriodic() 
   	{
@@ -305,27 +328,36 @@ public class DriveBase extends SubsystemBase
 			SmartDashboard.putNumber("LeftDistance", driveSim.getLeftPositionMeters());
 			SmartDashboard.putNumber("RightDistance", driveSim.getRightPositionMeters());
 
-			// Drive the dummy encoders via EncoderSim instances, which in turn drive our SRXMagneticEncoder
+			// Drive the dummy encoders (via EncoderSim instances) which in turn drive our SRXMagneticEncoder
 			// instances.
 			leftEncoderSim.setDistance(driveSim.getLeftPositionMeters());
 			leftEncoderSim.setRate(driveSim.getLeftVelocityMetersPerSecond());
 
+            // Use with built-in SRX encoder support. Not used at this time.
+            //leftEncoder.setSimValues(driveSim.getLeftPositionMeters(), driveSim.getLeftVelocityMetersPerSecond());
+
 			rightEncoderSim.setDistance(driveSim.getRightPositionMeters());
 			rightEncoderSim.setRate(driveSim.getRightVelocityMetersPerSecond());
 			
-            // Update the dummy analog gyro with GyroSim instance, which in turn drives our NavX class instance.
+            //rightEncoder.setSimValues(driveSim.getRightPositionMeters(), driveSim.getRightVelocityMetersPerSecond());
+
+            // Update the dummy analog gyro (via GyroSim instance) which drives our NavX class instance.
             // We change the sign because the sign convention of Rotation2d is opposite of our convention used
             // in the Navx class.
-			gyroSim.setAngle(-driveSim.getHeading().getDegrees());
+		    gyroSim.setAngle(-driveSim.getHeading().getDegrees());
+            
+            // Used with built-in NavX sim support. Not used at this time.
+            //RobotContainer.navx.setSimAngle(-driveSim.getHeading().getDegrees());
 
-			Util.consoleLog("lcount=%d  ldist=%.4f  lget=%d ldist=%.4f", leftDummyEncoder.get(), 
+			Util.consoleLog("lcount=%d  ldist=%.3fm  lget=%d ldist=%.3fm", leftDummyEncoder.get(), 
 							leftDummyEncoder.getDistance(), leftEncoder.get(), leftEncoder.getDistance(DistanceUnit.Meters));
 
-			Util.consoleLog("rcount=%d  rdist=%.4f  rget=%d rdist=%.4f", rightDummyEncoder.get(), 
+			Util.consoleLog("rcount=%d  rdist=%.3fm  rget=%d rdist=%.3fm", rightDummyEncoder.get(), 
 							rightDummyEncoder.getDistance(), rightEncoder.get(), rightEncoder.getDistance(DistanceUnit.Meters));
 
-			Util.consoleLog("angle=%.2f  offset=%.2f  dshd=%.2f  hdng=%.2f", dummyGyro.getAngle(), dummyGyro.getOffset(),
-							-driveSim.getHeading().getDegrees(), RobotContainer.navx.getHeading());
+			Util.consoleLog("angle=%.2f  offset=%.2f  dshd=%.3f  hdng=%.2f", dummyGyro.getAngle(), dummyGyro.getOffset(),
+                            -driveSim.getHeading().getDegrees(), RobotContainer.navx.getHeading());
+                            //RobotContainer.navx.getYawRate());
 		}
 	}
 
@@ -760,8 +792,8 @@ public class DriveBase extends SubsystemBase
 	}
 	
 	/** 
-	 * Left encoder counts.
-	 * @return Left encoder counts.
+	 * Right encoder counts.
+	 * @return Right encoder counts.
 	 */
 	public int getRightEncoder()
 	{
@@ -770,7 +802,6 @@ public class DriveBase extends SubsystemBase
 
     /**
      * Returns the turn rate of the robot.
-     *
      * @return The turn rate of the robot, in degrees per second
      */
     public double getTurnRate() 
@@ -780,7 +811,6 @@ public class DriveBase extends SubsystemBase
 
     /**
      * Returns the current wheel speeds of the robot.
-     *
      * @return The current wheel speeds (meters per second).
      */
     public DifferentialDriveWheelSpeeds getWheelSpeeds() 
