@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "RAC21C-09.30.21-1";
+	public static String		PROGRAM_NAME = "RAC21C-12.07.21-1";
 
 	public static Robot			robot;
 
@@ -45,8 +45,7 @@ public final class Constants
 	public static final int		CLIMBER_BRAKE_VALVE = 4;	// 4-5
 
 	// Digital Input port assignments. Encoder takes 2 ports.
-    public static final int		WINCH_SWITCH = 0, WINCH_ENCODER = 1, BALL_EYE = 3, TURRET_LIMIT_LEFT = 8;
-    public static final int     TURRET_LIMIT_RIGHT = 9;
+    public static final int		WINCH_SWITCH = 0, WINCH_ENCODER = 1, BALL_EYE = 3;
 
 	// Dummy encoders use DIO port numbers above the actual ports on RoboRio.
 	public static final int		DUMMY_LEFT_ENCODER = 10, DUMMY_RIGHT_ENCODER = 12;
@@ -54,8 +53,10 @@ public final class Constants
 	// Analog Input port assignments.
 	// Simulated Gyro needs an actual analog port and has to be 0 or 1.
 	public static final int		SIM_GYRO = 0;
-	public static final int		CLIMBER_GYRO = 1;
-	public static final int		PRESSURE_SENSOR = 2;
+    public static final int		CLIMBER_GYRO = 1;
+    public static final int     TURRET_LIMIT_LEFT = 1;
+    public static final int		PRESSURE_SENSOR = 2;
+    public static final int     TURRET_LIMIT_RIGHT = 3;
 
 	public static final DriverStation	ds = DriverStation.getInstance();
 

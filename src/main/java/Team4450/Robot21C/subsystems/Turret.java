@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import Team4450.Lib.Util;
 import Team4450.Robot21C.RobotContainer;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,8 +22,8 @@ public class Turret extends SubsystemBase
     private WPI_VictorSPX   feedMotor = new WPI_VictorSPX(TURRET_FEED_VICTOR);
     private WPI_VictorSPX   rotateMotor = new WPI_VictorSPX(TURRET_ROTATE_VICTOR);
     
-    private DigitalInput    limitSensorLeft = new DigitalInput(TURRET_LIMIT_LEFT);
-    private DigitalInput    limitSensorRight = new DigitalInput(TURRET_LIMIT_RIGHT);
+    private AnalogInput     limitSensorLeft = new AnalogInput(TURRET_LIMIT_LEFT);
+    private AnalogInput     limitSensorRight = new AnalogInput(TURRET_LIMIT_RIGHT);
     
     private double          defaultFeedPower = .25, defaultRotatePower = .20;
 
@@ -58,8 +59,8 @@ public class Turret extends SubsystemBase
 	private void updateDS()
 	{
         SmartDashboard.putBoolean("Feed", feedRunning);
-        //SmartDashboard.putBoolean("TurretLimitLeft", limitSensorLeft.get());      
-        //SmartDashboard.putBoolean("TurretLimitRight", limitSensorRight.get());      
+        SmartDashboard.putNumber("TurretLimitLeft", limitSensorLeft.getValue());      
+        SmartDashboard.putNumber("TurretLimitRight", limitSensorRight.getValue());      
 	}
 
     /**
@@ -70,11 +71,11 @@ public class Turret extends SubsystemBase
      */
     public void rotate(double power)
     {
-        // Sensors return true when not blocked by turret rotation.
+        // Sensors are analog and return above 400 when not blocked by turret rotation.
 
-        if (power > 0 && limitSensorLeft.get())
+        if (power > 0 && limitSensorLeft.getValue() > 400)
             rotateMotor.set(defaultRotatePower);
-        else if (power < 0 && limitSensorRight.get())
+        else if (power < 0 && limitSensorRight.getValue() > 400)
             rotateMotor.set(-defaultRotatePower);
         else
             rotateMotor.stopMotor();
@@ -91,9 +92,9 @@ public class Turret extends SubsystemBase
     {
         // Sensors return true when not blocked by turret rotation.
 
-        if (power > 0 && limitSensorLeft.get())
+        if (power > 0 && limitSensorLeft.getValue() > 400)
             rotateMotor.set(power);
-        else if (power < 0 && limitSensorRight.get())
+        else if (power < 0 && limitSensorRight.getValue() > 400)
             rotateMotor.set(power);
         else
             rotateMotor.stopMotor();
