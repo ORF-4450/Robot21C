@@ -190,7 +190,7 @@ public class RobotContainer
 
 		// Add navx as a Sendable. Updates the dashboard heading indicator automatically.
  		
-		//SmartDashboard.putData("Gyro2", navx);
+		SmartDashboard.putData("Gyro2", navx);
 
 		// Invert driving joy stick Y axis so + values mean forward.
 	  

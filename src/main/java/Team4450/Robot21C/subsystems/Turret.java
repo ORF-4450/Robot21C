@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import Team4450.Lib.Util;
 import Team4450.Robot21C.RobotContainer;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
